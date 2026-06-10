@@ -579,7 +579,7 @@ const Q = [
  o:['var','let','const','static'],a:2,
  e:'const is block-scoped and cannot be reassigned after declaration. var is function-scoped; let is block-scoped but reassignable.'},
 
-{t:'mc',q:'What does <code>typeof null</code> return in JavaScript?',
+{t:'mc',q:'What does "typeof null" return in JavaScript?',
  o:['"null"','"undefined"','"object"','"boolean"'],a:2,
  e:'typeof null === "object" is a famous historical bug in JavaScript. null is NOT an object, but the type check returns "object".'},
 
@@ -587,7 +587,7 @@ const Q = [
  o:['[]','{}','"0"','0'],a:3,
  e:'0 is falsy. Empty arrays [], empty objects {}, and the string "0" are all truthy.'},
 
-{t:'mc',q:'What is the result of <code>"5" + 3</code> in JavaScript?',
+{t:'mc',q:'What is the result of ""5" + 3" in JavaScript?',
  o:['8','"53"','Error','"8"'],a:1,
  e:'The + operator with a string triggers string concatenation. "5" + 3 = "53".'},
 
@@ -603,11 +603,11 @@ const Q = [
  o:['Number()','Math.round()','parseInt()','parseFloat()'],a:2,
  e:'parseInt("42px") returns 42. It reads until it hits a non-numeric character. Number("42px") would return NaN.'},
 
-{t:'mc',q:'What does the <code>??</code> (nullish coalescing) operator return?',
+{t:'mc',q:'What does the "??" (nullish coalescing) operator return?',
  o:['The right side if the left is falsy','The right side only if the left is null or undefined','Always the left side','The left side if it is truthy'],a:1,
  e:'?? only triggers for null/undefined — unlike || which also triggers for 0, "", and false.'},
 
-{t:'mc',q:'What is the output of <code>typeof function(){}</code>?',
+{t:'mc',q:'What is the output of "typeof function(){}"?',
  o:['"object"','"undefined"','"function"','"callable"'],a:2,
  e:'Functions have their own typeof result: "function". Everything else (arrays, objects, null) returns "object".'},
 
@@ -615,7 +615,7 @@ const Q = [
  o:['Math.random() * 10','Math.floor(Math.random() * 10)','Math.floor(Math.random() * 10) + 1','Math.ceil(Math.random() * 9)'],a:2,
  e:'Math.floor(Math.random() * 10) + 1 gives integers 1–10. Without +1 you get 0–9.'},
 
-{t:'mc',q:'What does <code>Number("")</code> return?',
+{t:'mc',q:'What does "Number("")" return?',
  o:['NaN','undefined','0','"0"'],a:2,
  e:'Number("") converts an empty string to 0. Number("hello") would return NaN.'},
 
@@ -623,7 +623,7 @@ const Q = [
  o:['\'Hello ${name}\'','"Hello ${name}"','`Hello ${name}`','Hello + ${name}'],a:2,
  e:'Template literals use backticks (`) and ${} for interpolation. Single and double quotes do not support ${}.'},
 
-{t:'mc',q:'What does <code>!!"hello"</code> evaluate to?',
+{t:'mc',q:'What does "!!"hello"" evaluate to?',
  o:['false','"hello"','true','0'],a:2,
  e:'!! is the double-NOT trick to coerce to boolean. "hello" is truthy, so !!"hello" === true.'},
 
@@ -631,7 +631,7 @@ const Q = [
  o:['1-indexed (January = 1)','0-indexed (January = 0)','Named strings only','Based on locale settings'],a:1,
  e:'JavaScript months are 0-indexed: 0 = January, 11 = December. This is a common source of bugs.'},
 
-{t:'mc',q:'What does <code>var</code> use for scoping?',
+{t:'mc',q:'What does "var" use for scoping?',
  o:['Block scope','Module scope','Function scope','Global scope only'],a:2,
  e:'var is function-scoped — it is accessible anywhere within the function it was declared in, even inside inner blocks.'},
 
@@ -640,11 +640,11 @@ const Q = [
  o:['Arrow function','Function expression','Function declaration','IIFE'],a:2,
  e:'Function declarations are fully hoisted. Function expressions and arrow functions are not — they follow variable hoisting rules.'},
 
-{t:'mc',q:'What is the key difference between arrow functions and regular functions regarding <code>this</code>?',
+{t:'mc',q:'What is the key difference between arrow functions and regular functions regarding "this"?',
  o:['Arrow functions have no parameters','Arrow functions always return undefined','Arrow functions inherit this from their surrounding lexical scope','Arrow functions are faster to execute'],a:2,
  e:'Arrow functions have no own "this" — they inherit it from the enclosing scope (lexical this). Regular functions bind "this" based on how they are called.'},
 
-{t:'mc',q:'What does the rest parameter (<code>...args</code>) do in a function?',
+{t:'mc',q:'What does the rest parameter ("...args") do in a function?',
  o:['Spreads an array into arguments','Collects all remaining arguments into an array','Creates a copy of the function','Prevents the function from returning'],a:1,
  e:'Rest parameters collect any number of remaining arguments into an array: function sum(...nums) collects all passed numbers.'},
 
@@ -677,7 +677,7 @@ const Q = [
  e:'Lexical (or static) scope means a function can access variables defined in any outer scope where it was written — not where it is called from.'},
 
 // ── SECTION 3: Arrays (MC 26-37) ───────────────────────────────────────────
-{t:'mc',q:'What does <code>arr.push(item)</code> return?',
+{t:'mc',q:'What does "arr.push(item)" return?',
  o:['The item that was added','The first element','The new length of the array','undefined'],a:2,
  e:'push() adds to the END of the array and returns the new length. pop() removes from the end and returns the removed item.'},
 
@@ -685,7 +685,7 @@ const Q = [
  o:['shift()','splice()','pop()','slice()'],a:2,
  e:'pop() removes and returns the last element. shift() removes the first. splice() is for arbitrary positions.'},
 
-{t:'mc',q:'What is the difference between <code>slice()</code> and <code>splice()</code>?',
+{t:'mc',q:'What is the difference between "slice()" and "splice()"?',
  o:['They are identical','slice mutates the array; splice does not','slice returns a new array without mutating; splice mutates the original','splice returns a copy; slice changes the original'],a:2,
  e:'slice() extracts a portion into a NEW array without changing the original. splice() MODIFIES the original by removing, inserting, or replacing elements.'},
 
@@ -693,15 +693,15 @@ const Q = [
  o:['forEach','find','filter','reduce'],a:2,
  e:'filter() creates a new array with only elements where the callback returns true. forEach has no return value; find returns the first match.'},
 
-{t:'mc',q:'What does <code>arr.map(n => n * 2)</code> return?',
+{t:'mc',q:'What does "arr.map(n => n * 2)" return?',
  o:['It modifies arr in-place by doubling each value','A new array where every element is doubled','The sum of all elements doubled','The first element that is even'],a:1,
  e:'map() creates a NEW array by transforming every element with the callback. It does not mutate the original array.'},
 
-{t:'mc',q:'What is the initial value in <code>arr.reduce((acc, n) => acc + n, 0)</code>?',
+{t:'mc',q:'What is the initial value in "arr.reduce((acc, n) => acc + n, 0)"?',
  o:['The first element of arr','n','0','acc'],a:2,
  e:'The second argument to reduce() is the initial value of the accumulator. Here it is 0, so the sum starts at 0.'},
 
-{t:'mc',q:'What does <code>[1,2,3].indexOf(99)</code> return?',
+{t:'mc',q:'What does "[1,2,3].indexOf(99)" return?',
  o:['null','false','undefined','-1'],a:3,
  e:'indexOf returns -1 when the value is not found in the array. This is the standard "not found" signal for indexOf and lastIndexOf.'},
 
@@ -717,7 +717,7 @@ const Q = [
  o:['const copy = arr.clone()','const copy = arr','const copy = [...arr]','const copy = arr.copy()'],a:2,
  e:'The spread operator [...arr] creates a shallow copy. const copy = arr just copies the reference — both point to the same array.'},
 
-{t:'mc',q:'What does <code>Array.from("hello")</code> return?',
+{t:'mc',q:'What does "Array.from("hello")" return?',
  o:['["hello"]','["h","e","l","l","o"]','"hello"','5'],a:1,
  e:'Array.from() converts iterable objects (like strings) to arrays. Each character becomes an element: ["h","e","l","l","o"].'},
 
@@ -730,15 +730,15 @@ const Q = [
  o:['const [name, age] = person','const {name, age} = person','const name, age = person','const (name, age) = person'],a:1,
  e:'Object destructuring uses curly braces: const {name, age} = person. Array destructuring uses square brackets.'},
 
-{t:'mc',q:'What does <code>Object.keys(obj)</code> return?',
+{t:'mc',q:'What does "Object.keys(obj)" return?',
  o:['An array of the object\'s values','An array of the object\'s key-value pairs','An array of the object\'s property names','The number of properties'],a:2,
  e:'Object.keys() returns an array of the object\'s own enumerable property names (keys). Object.values() returns the values.'},
 
-{t:'mc',q:'What does <code>Object.freeze(obj)</code> do?',
+{t:'mc',q:'What does "Object.freeze(obj)" do?',
  o:['Creates a deep copy of the object','Prevents any modifications to the object','Converts the object to JSON','Removes all methods from the object'],a:1,
  e:'Object.freeze() prevents adding, removing, or changing any properties. Attempted changes silently fail (or throw in strict mode).'},
 
-{t:'mc',q:'In a class, what does the <code>super()</code> call do?',
+{t:'mc',q:'In a class, what does the "super()" call do?',
  o:['Calls the class\'s own constructor again','Creates a new instance of the class','Calls the PARENT class\'s constructor','Converts the class to a function'],a:2,
  e:'super() calls the constructor of the parent class. It must be called in a subclass constructor before using "this".'},
 
@@ -750,7 +750,7 @@ const Q = [
  o:['_','@','#','$'],a:2,
  e:'Private class fields are prefixed with #: class Counter { #count = 0; }. They cannot be accessed from outside the class.'},
 
-{t:'mc',q:'What does <code>JSON.stringify(obj, null, 2)</code> do differently from <code>JSON.stringify(obj)</code>?',
+{t:'mc',q:'What does "JSON.stringify(obj, null, 2)" do differently from "JSON.stringify(obj)"?',
  o:['Adds security encryption','Formats the JSON with 2-space indentation for readability','Removes null values from the output','Converts the object to an array'],a:1,
  e:'The third argument to JSON.stringify() is the indentation level. null, 2 means no replacer, 2-space indent — useful for readable output.'},
 
@@ -762,11 +762,11 @@ const Q = [
  o:['const {name as fullName} = person','const {fullName: name} = person','const {name: fullName} = person','const {name, fullName} = person'],a:2,
  e:'Rename with colon: const {name: fullName} = person — reads name from the object, stores it as fullName in your scope.'},
 
-{t:'mc',q:'What does <code>Object.entries(obj)</code> return?',
+{t:'mc',q:'What does "Object.entries(obj)" return?',
  o:['An array of keys only','An array of values only','An array of [key, value] pairs','An object with swapped keys and values'],a:2,
  e:'Object.entries() returns [[key1, val1], [key2, val2], ...] — perfect for iterating with for...of and destructuring.'},
 
-{t:'mc',q:'In a class, a <code>static</code> method:',
+{t:'mc',q:'In a class, a "static" method:',
  o:['Can only be called on instances','Is inherited by all subclasses automatically','Is called on the class itself, not on instances','Is the same as a regular method'],a:2,
  e:'Static methods belong to the class itself: Animal.create(). They cannot be called on an instance: new Animal().create() would fail.'},
 
@@ -774,16 +774,16 @@ const Q = [
  o:['const copy = {...obj}','const copy = obj','const copy = structuredClone(obj)','const copy = Object.assign({}, obj)'],a:2,
  e:'structuredClone() creates a true deep copy including nested objects. Spread and Object.assign() only do shallow copies — nested objects are still shared references.'},
 
-{t:'mc',q:'What does <code>obj?.address?.city</code> do?',
+{t:'mc',q:'What does "obj?.address?.city" do?',
  o:['Throws an error if address is undefined','Assigns city a default value','Returns undefined instead of throwing if any step is null or undefined','Creates the address property if it doesn\'t exist'],a:2,
  e:'Optional chaining (?.) short-circuits and returns undefined instead of throwing a TypeError when accessing a property on null or undefined.'},
 
 // ── SECTION 5: DOM (MC 51-60) ──────────────────────────────────────────────
-{t:'mc',q:'What does <code>document.querySelector(".btn")</code> return if no match is found?',
+{t:'mc',q:'What does "document.querySelector(".btn")" return if no match is found?',
  o:['An empty array','An empty NodeList','undefined','null'],a:3,
  e:'querySelector returns the FIRST matching element or null if nothing matches. This is why null-checking before use is important.'},
 
-{t:'mc',q:'What is the difference between <code>innerHTML</code> and <code>textContent</code>?',
+{t:'mc',q:'What is the difference between "innerHTML" and "textContent"?',
  o:['They are identical','innerHTML renders HTML tags; textContent treats everything as plain text','textContent is faster but innerHTML is more compatible','innerHTML only works on div elements'],a:1,
  e:'innerHTML parses and renders HTML. textContent treats input as plain text — safer because it prevents XSS attacks from user-supplied content.'},
 
@@ -791,7 +791,7 @@ const Q = [
  o:['el.style.class = "active"','el.addClass("active")','el.classList.add("active")','el.className += "active"'],a:2,
  e:'classList.add() is the correct method. el.className += works but is error-prone (may add duplicates or break existing classes).'},
 
-{t:'mc',q:'What does <code>classList.toggle("active")</code> do?',
+{t:'mc',q:'What does "classList.toggle("active")" do?',
  o:['Always adds the class','Always removes the class','Adds the class if absent, removes it if present','Checks if the class exists'],a:2,
  e:'toggle() is a convenient flip-flop: adds the class if the element doesn\'t have it, removes it if it does. Returns true if class was added.'},
 
@@ -799,7 +799,7 @@ const Q = [
  o:['document.newElement()','document.createElement("div")','document.makeElement("div")','new Element("div")'],a:1,
  e:'document.createElement(tagName) creates a new element. Remember: you still need to insert it into the DOM with appendChild, prepend, etc.'},
 
-{t:'mc',q:'What is the difference between <code>getElementsByTagName</code> and <code>querySelectorAll</code>?',
+{t:'mc',q:'What is the difference between "getElementsByTagName" and "querySelectorAll"?',
  o:['They return the same type','getElementsByTagName returns a static NodeList; querySelectorAll returns a live one','getElementsByTagName returns a live HTMLCollection; querySelectorAll returns a static NodeList','Only querySelectorAll accepts CSS selectors'],a:2,
  e:'getElementsByTagName returns a LIVE HTMLCollection (auto-updates). querySelectorAll returns a STATIC NodeList (snapshot). Only querySelectorAll accepts full CSS selectors.'},
 
@@ -807,7 +807,7 @@ const Q = [
  o:['el.childNodes','el.parentElement','el.prevElement','el.outerElement'],a:1,
  e:'parentElement returns the nearest parent Element. parentNode returns the nearest parent Node (could be Document or DocumentFragment).'},
 
-{t:'mc',q:'What does <code>el.remove()</code> do?',
+{t:'mc',q:'What does "el.remove()" do?',
  o:['Hides the element with CSS','Removes the element\'s content only','Removes the element from the DOM entirely','Deletes the element variable'],a:2,
  e:'el.remove() removes the element (and its children) from the DOM entirely. The older way was el.parentNode.removeChild(el).'},
 
@@ -815,66 +815,66 @@ const Q = [
  o:['el.nextSibling','el.nextNode','el.nextElementSibling','el.sibling.next'],a:2,
  e:'nextElementSibling skips text and comment nodes and returns the next sibling Element. nextSibling returns any node type.'},
 
-{t:'mc',q:'Why should you avoid setting <code>innerHTML</code> with user-supplied content?',
+{t:'mc',q:'Why should you avoid setting "innerHTML" with user-supplied content?',
  o:['It is slower than textContent','It only works on div elements','It can execute malicious scripts (XSS attacks)','It breaks CSS styling'],a:2,
  e:'Setting innerHTML with unvalidated user input enables Cross-Site Scripting (XSS) — attackers can inject malicious <script> tags that execute in the browser.'},
 
 // ── SECTION 6: TRUE/FALSE (61-80) ─────────────────────────────────────────
-{t:'tf',q:'Arrow functions have their own <code>this</code> binding.',
+{t:'tf',q:'Arrow functions have their own "this" binding.',
  a:false,e:'False. Arrow functions do NOT have their own "this". They inherit "this" lexically from the surrounding scope where they were defined.'},
 
-{t:'tf',q:'<code>const</code> prevents the properties of an object from being changed.',
+{t:'tf',q:'"const" prevents the properties of an object from being changed.',
  a:false,e:'False. const only prevents reassigning the REFERENCE. You can still mutate the object\'s properties: const obj = {}; obj.name = "Alice" works fine.'},
 
-{t:'tf',q:'<code>slice()</code> mutates (changes) the original array.',
+{t:'tf',q:'"slice()" mutates (changes) the original array.',
  a:false,e:'False. slice() returns a NEW array and leaves the original unchanged. splice() is the one that mutates.'},
 
-{t:'tf',q:'<code>forEach()</code> returns a new array with the transformed values.',
+{t:'tf',q:'"forEach()" returns a new array with the transformed values.',
  a:false,e:'False. forEach() always returns undefined — it\'s only for side effects. Use map() if you need a new transformed array.'},
 
 {t:'tf',q:'Template literals are written using backtick characters (``).',
  a:true,e:'True. Template literals use backticks: `Hello ${name}`. They support multi-line strings and expression interpolation with ${}.'},
 
-{t:'tf',q:'<code>===</code> performs type coercion before comparing.',
+{t:'tf',q:'"===" performs type coercion before comparing.',
  a:false,e:'False. === (strict equality) does NOT coerce types. It requires both value and type to match. == (loose equality) coerces types.'},
 
-{t:'tf',q:'<code>querySelectorAll()</code> returns a live HTMLCollection that auto-updates when the DOM changes.',
+{t:'tf',q:'"querySelectorAll()" returns a live HTMLCollection that auto-updates when the DOM changes.',
  a:false,e:'False. querySelectorAll() returns a STATIC NodeList — a snapshot. getElementsByTagName() returns a live HTMLCollection.'},
 
 {t:'tf',q:'A closure allows an inner function to access variables from its outer function even after the outer function has returned.',
  a:true,e:'True. This is the definition of a closure. The inner function "closes over" the variables of the outer scope, keeping them alive.'},
 
-{t:'tf',q:'<code>parseInt("3.9")</code> returns 3.',
+{t:'tf',q:'"parseInt("3.9")" returns 3.',
  a:true,e:'True. parseInt parses only the integer part and discards the decimal. Use parseFloat to preserve decimal values.'},
 
-{t:'tf',q:'Using <code>var</code> inside a block (like an if statement) leaks outside the block.',
+{t:'tf',q:'Using "var" inside a block (like an if statement) leaks outside the block.',
  a:true,e:'True. var is function-scoped, not block-scoped. A var declared inside an if block is accessible outside it (within the same function).'},
 
-{t:'tf',q:'<code>0 == false</code> evaluates to true in JavaScript.',
+{t:'tf',q:'"0 == false" evaluates to true in JavaScript.',
  a:true,e:'True. Loose equality (==) coerces types. 0 is falsy and false coerces to 0, so they are "loosely equal". This is why === is preferred.'},
 
 {t:'tf',q:'The spread operator can be used to merge two objects into a new one.',
  a:true,e:'True. const merged = {...obj1, ...obj2} creates a new object with all properties from both. Right-side properties win on key conflicts.'},
 
-{t:'tf',q:'<code>async</code> functions always return a Promise.',
+{t:'tf',q:'"async" functions always return a Promise.',
  a:true,e:'True. Any function declared with async always returns a Promise, even if you return a plain value — it gets wrapped in Promise.resolve().'},
 
-{t:'tf',q:'<code>map()</code> mutates the original array.',
+{t:'tf',q:'"map()" mutates the original array.',
  a:false,e:'False. map() creates and returns a NEW array. The original array is unchanged.'},
 
 {t:'tf',q:'In a star schema, dimension tables are normalised into multiple related tables.',
  a:false,e:'False — wrong subject! But more importantly for JS: Event listeners added with addEventListener can be removed with removeEventListener — correct.'},
 
-{t:'tf',q:'<code>Promise.all()</code> rejects if ANY of the passed promises reject.',
+{t:'tf',q:'"Promise.all()" rejects if ANY of the passed promises reject.',
  a:true,e:'True. Promise.all() short-circuits on the first rejection. Use Promise.allSettled() if you want to wait for all, regardless of outcome.'},
 
 {t:'tf',q:'Microtasks (Promise callbacks) run before macrotasks (setTimeout callbacks) in the event loop.',
  a:true,e:'True. The microtask queue (Promises, queueMicrotask) has higher priority than the macrotask queue (setTimeout, setInterval, I/O events).'},
 
-{t:'tf',q:'<code>let</code> and <code>const</code> are hoisted to the top of their scope.',
+{t:'tf',q:'"let" and "const" are hoisted to the top of their scope.',
  a:true,e:'True, but they are hoisted WITHOUT being initialised (unlike var which is hoisted as undefined). This creates the Temporal Dead Zone (TDZ).'},
 
-{t:'tf',q:'<code>JSON.stringify()</code> can serialise functions and undefined values.',
+{t:'tf',q:'"JSON.stringify()" can serialise functions and undefined values.',
  a:false,e:'False. JSON.stringify() ignores function properties and undefined values — they are simply omitted from the output.'},
 
 {t:'tf',q:'Event delegation works by attaching one listener to a parent element rather than to each child.',
