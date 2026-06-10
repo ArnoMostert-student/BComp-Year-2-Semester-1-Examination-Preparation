@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Quiz</title>
+<link rel="icon" href="icon.png" type="image/png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+
+/* ── HEADER ── */
+.hdr{background:linear-gradient(135deg,#1a1f2e 0%,#0f1117 100%);border-bottom:1px solid #1e2740}
+.hdr-inner{max-width:700px;margin:0 auto;padding:20px 20px 12px}
+.hdr-eye{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#4ade80;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.hdr-eye::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hdr h1{font-size:24px;font-weight:800;letter-spacing:-.02em;color:#f1f5f9;margin-bottom:2px}
+.hdr h1 span{color:#818cf8}
+.hdr-sub{font-size:12px;color:#475569}
+.prog-rail{height:3px;background:#1e2740;margin-top:14px}
+.prog-bar{height:3px;background:linear-gradient(90deg,#818cf8,#4ade80);transition:width .4s cubic-bezier(.4,0,.2,1)}
+.stats-row{border-top:1px solid #1e2740}
+.stats-inner{max-width:700px;margin:0 auto;padding:9px 20px;display:flex;gap:18px;flex-wrap:wrap}
+.stat{font-size:11px;color:#475569;display:flex;align-items:center;gap:5px}
+.stat b{font-weight:700;color:#94a3b8}
+.pip{width:6px;height:6px;border-radius:50%}
+
+/* ── LAYOUT ── */
+.main{max-width:700px;margin:0 auto;padding:28px 20px 80px}
+
+/* ── HOME ── */
+.home-head{margin-bottom:24px}
+.home-title{font-size:20px;font-weight:800;color:#f1f5f9;margin-bottom:4px;letter-spacing:-.02em}
+.home-sub{font-size:13px;color:#475569}
+.sec-grid{display:flex;flex-direction:column;gap:12px}
+.sec-card{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;border:1.5px solid #1e2740;background:#141824;text-align:left;width:100%;transition:border-color .15s,box-shadow .15s,transform .1s}
+.sec-card:hover{box-shadow:0 0 0 1px #818cf8,0 8px 24px rgba(129,140,248,.12);transform:translateY(-1px)}
+.sc-icon{width:46px;height:46px;border-radius:12px;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:900}
+.sc-body{flex:1;min-width:0}
+.sc-title{font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:2px}
+.sc-desc{font-size:11px;color:#475569;margin-bottom:8px}
+.sc-rail{background:#1e2740;border-radius:4px;height:4px;overflow:hidden}
+.sc-fill{height:4px;border-radius:4px;transition:width .4s}
+.sc-lbl{font-size:11px;color:#475569;margin-top:4px}
+.sc-chev{font-size:16px;color:#334155;flex-shrink:0}
+.reset-row{text-align:center;margin-top:24px}
+.btn-reset{padding:8px 20px;background:transparent;border:1.5px solid #1e2740;border-radius:8px;font-size:12px;color:#475569;transition:all .15s}
+.btn-reset:hover{border-color:#ef4444;color:#ef4444}
+
+/* ── QUIZ NAV ── */
+.qnav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.btn-back{padding:7px 14px;background:transparent;border:1.5px solid #1e2740;border-radius:8px;font-size:12px;color:#475569;transition:all .15s}
+.btn-back:hover{border-color:#f1f5f9;color:#f1f5f9}
+.qnav-title{font-size:14px;font-weight:700;color:#f1f5f9}
+.qnav-count{margin-left:auto;font-size:12px;color:#475569;background:#1a1f2e;padding:4px 10px;border-radius:6px}
+.qprog-rail{background:#1e2740;border-radius:4px;height:3px;margin-bottom:20px;overflow:hidden}
+.qprog-fill{height:3px;border-radius:4px;transition:width .3s}
+
+/* ── QUESTION CARD ── */
+.q-card{background:#141824;border:1.5px solid #1e2740;border-radius:16px;padding:24px}
+.q-card.correct{border-color:#22c55e;background:#0d1f12}
+.q-card.wrong{border-color:#ef4444;background:#1f0d0d}
+.q-card.partial{border-color:#f59e0b;background:#1f1a0d}
+.q-num{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.q-text{font-size:15px;font-weight:500;line-height:1.65;color:#e2e8f0;margin-bottom:20px}
+.q-text code{background:#1e2740;padding:2px 6px;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;color:#818cf8}
+
+/* ── OPTIONS ── */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt-btn{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1.5px solid #1e2740;border-radius:10px;background:#0f1117;text-align:left;font-size:13.5px;color:#cbd5e1;width:100%;transition:all .12s;line-height:1.5}
+.opt-btn:not(:disabled):hover{border-color:#818cf8;background:#191f33}
+.opt-letter{width:26px;height:26px;min-width:26px;border-radius:8px;background:#1e2740;color:#475569;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .12s;flex-shrink:0;margin-top:1px}
+.opt-btn:not(:disabled):hover .opt-letter{background:#818cf8;color:#fff}
+.opt-btn.selected{border-color:#818cf8;background:#191f33}
+.opt-btn.selected .opt-letter{background:#818cf8;color:#fff}
+.opt-btn.opt-correct{border-color:#22c55e;background:#0d1f12}
+.opt-btn.opt-correct .opt-letter{background:#22c55e;color:#fff}
+.opt-btn.opt-wrong{border-color:#ef4444;background:#1f0d0d}
+.opt-btn.opt-wrong .opt-letter{background:#ef4444;color:#fff}
+
+/* ── TRUE/FALSE ── */
+.tf-row{display:flex;gap:10px}
+.tf-btn{flex:1;padding:14px;border:1.5px solid #1e2740;border-radius:10px;background:#0f1117;font-size:15px;font-weight:700;color:#94a3b8;transition:all .12s}
+.tf-btn:not(:disabled):hover{border-color:#818cf8;color:#818cf8;background:#191f33}
+.tf-btn.selected{border-color:#818cf8;color:#818cf8;background:#191f33}
+.tf-btn.tf-correct{border-color:#22c55e;background:#0d1f12;color:#22c55e}
+.tf-btn.tf-wrong{border-color:#ef4444;background:#1f0d0d;color:#ef4444}
+
+/* ── DRAG & DROP ── */
+.dd-area{display:flex;gap:16px;flex-wrap:wrap}
+.dd-bank-wrap{flex:1 1 160px;min-width:150px}
+.dd-bank-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#475569;margin-bottom:8px}
+.dd-bank{min-height:44px;padding:6px;border-radius:10px;border:1.5px dashed #1e2740;display:flex;flex-direction:column;gap:6px;background:#0f1117;transition:all .15s}
+.dd-bank.dragover{background:#191f33;border-color:#818cf8}
+.dd-zones{flex:2 1 240px;display:flex;flex-direction:column;gap:8px}
+.dd-zone{border:1.5px dashed #1e2740;border-radius:10px;padding:10px 12px;min-height:52px;transition:all .15s;background:#0f1117}
+.dd-zone.dragover{background:#191f33;border-color:#818cf8}
+.dd-zone-lbl{font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:6px;pointer-events:none}
+.dd-items{display:flex;flex-direction:column;gap:4px}
+.dd-item{padding:8px 12px;border-radius:8px;font-size:12.5px;background:#141824;border:1.5px solid #1e2740;color:#cbd5e1;cursor:grab;user-select:none;transition:opacity .15s;line-height:1.4}
+.dd-item:active{cursor:grabbing}
+.dd-item.dragging{opacity:.3}
+.dd-item.item-correct{border-color:#22c55e;background:#0d1f12;color:#4ade80;cursor:default}
+.dd-item.item-wrong{border-color:#ef4444;background:#1f0d0d;color:#f87171;cursor:default}
+
+/* ── FEEDBACK ── */
+.feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:12.5px;line-height:1.6}
+.feedback.correct{background:#0d1f12;border:1px solid #22c55e;color:#4ade80}
+.feedback.wrong{background:#1f0d0d;border:1px solid #ef4444;color:#f87171}
+.feedback.partial{background:#1f1a0d;border:1px solid #f59e0b;color:#fbbf24}
+.feedback strong{font-weight:700}
+
+/* ── FOOTER BUTTONS ── */
+.q-footer{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.btn-check{padding:10px 24px;background:#818cf8;color:#0f1117;border:none;border-radius:8px;font-size:13px;font-weight:800;transition:all .15s}
+.btn-check:disabled{background:#1e2740;color:#334155;cursor:default}
+.btn-check:not(:disabled):hover{background:#a5b4fc}
+.btn-next{padding:10px 24px;color:#0f1117;border:none;border-radius:8px;font-size:13px;font-weight:800;transition:all .15s}
+
+/* ── NAV ROW ── */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.btn-prev{padding:8px 16px;background:transparent;border:1.5px solid #1e2740;border-radius:8px;font-size:12px;color:#475569;transition:all .15s}
+.btn-prev:not(:disabled):hover{border-color:#f1f5f9;color:#f1f5f9}
+.btn-prev:disabled{color:#1e2740;cursor:default}
+.btn-results{padding:8px 18px;border:none;border-radius:8px;font-size:12px;font-weight:700;transition:all .15s}
+
+/* ── COMPLETE ── */
+.complete-card{background:#141824;border:1.5px solid #1e2740;border-radius:16px;padding:40px 28px;text-align:center}
+.score-ring{width:108px;height:108px;border-radius:50%;border:4px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px}
+.score-num{font-size:30px;font-weight:800;color:#f1f5f9;letter-spacing:-.02em}
+.score-pct{font-size:12px;color:#475569;margin-top:2px}
+.complete-title{font-size:20px;font-weight:800;color:#f1f5f9;margin-bottom:6px;letter-spacing:-.02em}
+.complete-sub{font-size:13px;color:#475569;margin-bottom:28px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:28px}
+.stat-box{background:#0f1117;border-radius:10px;padding:16px 10px;border:1px solid #1e2740}
+.stat-val{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.stat-lbl{font-size:11px;color:#475569;margin-top:3px}
+.complete-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-retry{padding:11px 22px;background:transparent;border:1.5px solid #1e2740;border-radius:8px;font-size:13px;font-weight:700;color:#475569;transition:all .15s}
+.btn-retry:hover{border-color:#f1f5f9;color:#f1f5f9}
+.btn-home{padding:11px 24px;background:#818cf8;color:#0f1117;border:none;border-radius:8px;font-size:13px;font-weight:800}
+.btn-home:hover{background:#a5b4fc}
+
+/* ── VIEWS ── */
+#quizView{display:none}
+
+@media(max-width:560px){
+  .dd-area{flex-direction:column}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .stats-inner{gap:10px}
+  .hdr h1{font-size:20px}
+}
+
+/* ===== LIGHT THEME OVERRIDES ===== */
+
+body{
+  background:#F0F4F8;
+  color:#1E293B;
+}
+
+/* HEADER */
+.hdr{
+  background:#0F172A;
+  border-bottom:none;
+}
+
+.hdr-eye{
+  color:#7DD3FC;
+}
+
+.hdr-eye::before{
+  background:#7DD3FC;
+}
+
+.hdr h1{
+  color:#fff;
+}
+
+.hdr h1 span{
+  color:#38BDF8;
+}
+
+.hdr-sub{
+  color:#94A3B8;
+}
+
+.prog-rail{
+  background:rgba(255,255,255,.1);
+}
+
+.prog-bar{
+  background:#38BDF8;
+}
+
+.stats-row{
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.stat{
+  color:#94A3B8;
+}
+
+.stat b{
+  color:#E2E8F0;
+}
+
+/* HOME */
+.home-title{
+  color:#0F172A;
+}
+
+.home-sub{
+  color:#64748B;
+}
+
+.sec-card{
+  background:#fff;
+  border-color:#CBD5E1;
+}
+
+.sec-card:hover{
+  box-shadow:0 2px 14px rgba(15,23,42,.12);
+  border-color:#CBD5E1;
+}
+
+.sc-title{
+  color:#0F172A;
+}
+
+.sc-desc,
+.sc-lbl{
+  color:#64748B;
+}
+
+.sc-rail{
+  background:#E2E8F0;
+}
+
+.sc-chev{
+  color:#94A3B8;
+}
+
+.btn-reset{
+  border-color:#CBD5E1;
+  color:#94A3B8;
+}
+
+/* QUIZ NAV */
+.btn-back{
+  border-color:#CBD5E1;
+  color:#64748B;
+}
+
+.btn-back:hover{
+  border-color:#0F172A;
+  color:#0F172A;
+}
+
+.qnav-title{
+  color:#0F172A;
+}
+
+.qnav-count{
+  color:#64748B;
+  background:#F8FAFC;
+}
+
+.qprog-rail{
+  background:#E2E8F0;
+}
+
+/* QUESTION CARD */
+.q-card{
+  background:#fff;
+  border-color:#CBD5E1;
+}
+
+.q-card.correct{
+  background:#F0FDF4;
+  border-color:#86EFAC;
+}
+
+.q-card.wrong{
+  background:#FEF2F2;
+  border-color:#FCA5A5;
+}
+
+.q-card.partial{
+  background:#FFFBEB;
+  border-color:#FCD34D;
+}
+
+.q-text{
+  color:#1E293B;
+}
+
+.q-text code{
+  background:#1E293B;
+  color:#7DD3FC;
+}
+
+/* OPTIONS */
+.opt-btn{
+  background:#F8FAFC;
+  border-color:#CBD5E1;
+  color:#1E293B;
+}
+
+.opt-btn:not(:disabled):hover{
+  border-color:#0EA5E9;
+  background:#F0F9FF;
+}
+
+.opt-letter{
+  background:#CBD5E1;
+  color:#64748B;
+}
+
+.opt-btn:not(:disabled):hover .opt-letter{
+  background:#0EA5E9;
+  color:#fff;
+}
+
+.opt-btn.selected{
+  border-color:#0369A1;
+  background:#F0F9FF;
+}
+
+.opt-btn.selected .opt-letter{
+  background:#0369A1;
+  color:#fff;
+}
+
+.opt-btn.opt-correct{
+  border-color:#16A34A;
+  background:#F0FDF4;
+}
+
+.opt-btn.opt-correct .opt-letter{
+  background:#16A34A;
+}
+
+.opt-btn.opt-wrong{
+  border-color:#DC2626;
+  background:#FEF2F2;
+}
+
+.opt-btn.opt-wrong .opt-letter{
+  background:#DC2626;
+}
+
+/* TRUE FALSE */
+.tf-btn{
+  background:#F8FAFC;
+  border-color:#CBD5E1;
+  color:#1E293B;
+}
+
+.tf-btn:not(:disabled):hover{
+  border-color:#0EA5E9;
+  background:#F0F9FF;
+  color:#0369A1;
+}
+
+.tf-btn.selected{
+  border-color:#0369A1;
+  background:#F0F9FF;
+  color:#0369A1;
+}
+
+.tf-btn.tf-correct{
+  border-color:#16A34A;
+  background:#F0FDF4;
+  color:#16A34A;
+}
+
+.tf-btn.tf-wrong{
+  border-color:#DC2626;
+  background:#FEF2F2;
+  color:#DC2626;
+}
+
+/* DRAG DROP */
+.dd-bank,
+.dd-zone{
+  background:#fff;
+  border-color:#CBD5E1;
+}
+
+.dd-bank.dragover,
+.dd-zone.dragover{
+  background:#F0F9FF;
+  border-color:#0EA5E9;
+}
+
+.dd-bank-lbl{
+  color:#64748B;
+}
+
+.dd-zone-lbl{
+  color:#0F172A;
+}
+
+.dd-item{
+  background:#fff;
+  border-color:#CBD5E1;
+  color:#1E293B;
+}
+
+.dd-item.item-correct{
+  border-color:#16A34A;
+  background:#F0FDF4;
+  color:#16A34A;
+}
+
+.dd-item.item-wrong{
+  border-color:#DC2626;
+  background:#FEF2F2;
+  color:#DC2626;
+}
+
+/* FEEDBACK */
+.feedback.correct{
+  background:#F0FDF4;
+  border-color:#86EFAC;
+  color:#14532D;
+}
+
+.feedback.wrong{
+  background:#FEF2F2;
+  border-color:#FCA5A5;
+  color:#7F1D1D;
+}
+
+.feedback.partial{
+  background:#FFFBEB;
+  border-color:#FCD34D;
+  color:#78350F;
+}
+
+/* BUTTONS */
+.btn-check{
+  background:#0F172A;
+  color:#fff;
+}
+
+.btn-check:not(:disabled):hover{
+  background:#1E293B;
+}
+
+.btn-check:disabled{
+  background:#CBD5E1;
+  color:#94A3B8;
+}
+
+.btn-next,
+.btn-results{
+  background:#0EA5E9;
+  color:#fff;
+}
+
+.btn-next:hover,
+.btn-results:hover{
+  background:#0284C7;
+}
+
+.btn-prev{
+  border-color:#CBD5E1;
+  color:#64748B;
+}
+
+.btn-prev:not(:disabled):hover{
+  border-color:#0F172A;
+  color:#0F172A;
+}
+
+.btn-prev:disabled{
+  color:#CBD5E1;
+}
+
+/* COMPLETE */
+.complete-card{
+  background:#fff;
+  border-color:#CBD5E1;
+}
+
+.score-ring{
+  background:#F0F9FF;
+  border-color:#0369A1;
+}
+
+.score-num{
+  color:#0F172A;
+}
+
+.score-pct{
+  color:#64748B;
+}
+
+.complete-sub{
+  color:#64748B;
+}
+
+.stat-box{
+  background:#F8FAFC;
+  border:1px solid #CBD5E1;
+}
+
+.btn-retry{
+  border-color:#CBD5E1;
+  color:#64748B;
+}
+
+.btn-retry:hover{
+  border-color:#0F172A;
+  color:#0F172A;
+}
+
+.btn-home{
+  background:#0F172A;
+  color:#fff;
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-eye">EXAM PREPARATION</div>
+    <h1>Web Programming 281</h1>
+    <div class="hdr-sub">100 questions &nbsp;·&nbsp; Multiple Choice · True/False · Drag &amp; Drop</div>
+  </div>
+  <div class="prog-rail"><div class="prog-bar" id="progBar" style="width:0%"></div></div>
+  <div class="stats-row">
+    <div class="stats-inner">
+      <div class="stat"><div class="pip" style="background:#4ade80"></div>Correct: <b id="sCorrect">0</b></div>
+      <div class="stat"><div class="pip" style="background:#f87171"></div>Wrong: <b id="sWrong">0</b></div>
+      <div class="stat"><div class="pip" style="background:#334155"></div>Remaining: <b id="sRemain">100</b></div>
+      <div class="stat">Score: <b id="sScore">—</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div id="homeView">
+    <div class="home-head">
+      <div class="home-title">Choose a topic</div>
+      <div class="home-sub">Progress saves automatically. Pick up where you left off.</div>
+    </div>
+    <div class="sec-grid" id="secCards"></div>
+    <div class="reset-row"><button class="btn-reset" onclick="resetAll()">↺ Reset all progress</button></div>
+  </div>
+
+  <div id="quizView">
+    <div class="qnav">
+      <button class="btn-back" onclick="goHome()">← Back</button>
+      <div class="qnav-title" id="qnavTitle"></div>
+      <div class="qnav-count" id="qnavCount"></div>
+    </div>
+    <div class="qprog-rail"><div class="qprog-fill" id="qprogFill"></div></div>
+    <div id="questionArea"></div>
+    <div class="nav-row">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">← Prev</button>
+      <button class="btn-results" id="btnResults" style="display:none;background:#818cf8;color:#0f1117" onclick="showComplete()">Results →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  QUESTION BANK  (100 questions)
+// ══════════════════════════════════════════════════════
+const Q = [
+
+// ── SECTION 1: Core Language & Variables (MC 1-15) ─────────────────────────
+{t:'mc',q:'Which keyword declares a block-scoped variable that CANNOT be reassigned?',
+ o:['var','let','const','static'],a:2,
+ e:'const is block-scoped and cannot be reassigned after declaration. var is function-scoped; let is block-scoped but reassignable.'},
+
+{t:'mc',q:'What does <code>typeof null</code> return in JavaScript?',
+ o:['"null"','"undefined"','"object"','"boolean"'],a:2,
+ e:'typeof null === "object" is a famous historical bug in JavaScript. null is NOT an object, but the type check returns "object".'},
+
+{t:'mc',q:'Which of the following is a FALSY value in JavaScript?',
+ o:['[]','{}','"0"','0'],a:3,
+ e:'0 is falsy. Empty arrays [], empty objects {}, and the string "0" are all truthy.'},
+
+{t:'mc',q:'What is the result of <code>"5" + 3</code> in JavaScript?',
+ o:['8','"53"','Error','"8"'],a:1,
+ e:'The + operator with a string triggers string concatenation. "5" + 3 = "53".'},
+
+{t:'mc',q:'Which operator checks both value AND type without type coercion?',
+ o:['==','!=','===','='],a:2,
+ e:'=== (strict equality) checks both value and type. == (loose) coerces types before comparing.'},
+
+{t:'mc',q:'What is the Temporal Dead Zone (TDZ)?',
+ o:['A delay in async code execution','The period before a let/const is initialised where accessing it throws a ReferenceError','A memory zone used by closures','The time between ETL extractions'],a:1,
+ e:'let and const are hoisted but not initialised. Accessing them before their declaration throws a ReferenceError — this gap is the TDZ.'},
+
+{t:'mc',q:'Which method converts a string to an integer, stopping at the first non-numeric character?',
+ o:['Number()','Math.round()','parseInt()','parseFloat()'],a:2,
+ e:'parseInt("42px") returns 42. It reads until it hits a non-numeric character. Number("42px") would return NaN.'},
+
+{t:'mc',q:'What does the <code>??</code> (nullish coalescing) operator return?',
+ o:['The right side if the left is falsy','The right side only if the left is null or undefined','Always the left side','The left side if it is truthy'],a:1,
+ e:'?? only triggers for null/undefined — unlike || which also triggers for 0, "", and false.'},
+
+{t:'mc',q:'What is the output of <code>typeof function(){}</code>?',
+ o:['"object"','"undefined"','"function"','"callable"'],a:2,
+ e:'Functions have their own typeof result: "function". Everything else (arrays, objects, null) returns "object".'},
+
+{t:'mc',q:'Which of these correctly generates a random integer between 1 and 10 (inclusive)?',
+ o:['Math.random() * 10','Math.floor(Math.random() * 10)','Math.floor(Math.random() * 10) + 1','Math.ceil(Math.random() * 9)'],a:2,
+ e:'Math.floor(Math.random() * 10) + 1 gives integers 1–10. Without +1 you get 0–9.'},
+
+{t:'mc',q:'What does <code>Number("")</code> return?',
+ o:['NaN','undefined','0','"0"'],a:2,
+ e:'Number("") converts an empty string to 0. Number("hello") would return NaN.'},
+
+{t:'mc',q:'Which template literal syntax is correct?',
+ o:['\'Hello ${name}\'','"Hello ${name}"','`Hello ${name}`','Hello + ${name}'],a:2,
+ e:'Template literals use backticks (`) and ${} for interpolation. Single and double quotes do not support ${}.'},
+
+{t:'mc',q:'What does <code>!!"hello"</code> evaluate to?',
+ o:['false','"hello"','true','0'],a:2,
+ e:'!! is the double-NOT trick to coerce to boolean. "hello" is truthy, so !!"hello" === true.'},
+
+{t:'mc',q:'In JavaScript, months in the Date object are:',
+ o:['1-indexed (January = 1)','0-indexed (January = 0)','Named strings only','Based on locale settings'],a:1,
+ e:'JavaScript months are 0-indexed: 0 = January, 11 = December. This is a common source of bugs.'},
+
+{t:'mc',q:'What does <code>var</code> use for scoping?',
+ o:['Block scope','Module scope','Function scope','Global scope only'],a:2,
+ e:'var is function-scoped — it is accessible anywhere within the function it was declared in, even inside inner blocks.'},
+
+// ── SECTION 2: Functions (MC 16-25) ────────────────────────────────────────
+{t:'mc',q:'Which type of function is hoisted and can be called before its declaration?',
+ o:['Arrow function','Function expression','Function declaration','IIFE'],a:2,
+ e:'Function declarations are fully hoisted. Function expressions and arrow functions are not — they follow variable hoisting rules.'},
+
+{t:'mc',q:'What is the key difference between arrow functions and regular functions regarding <code>this</code>?',
+ o:['Arrow functions have no parameters','Arrow functions always return undefined','Arrow functions inherit this from their surrounding lexical scope','Arrow functions are faster to execute'],a:2,
+ e:'Arrow functions have no own "this" — they inherit it from the enclosing scope (lexical this). Regular functions bind "this" based on how they are called.'},
+
+{t:'mc',q:'What does the rest parameter (<code>...args</code>) do in a function?',
+ o:['Spreads an array into arguments','Collects all remaining arguments into an array','Creates a copy of the function','Prevents the function from returning'],a:1,
+ e:'Rest parameters collect any number of remaining arguments into an array: function sum(...nums) collects all passed numbers.'},
+
+{t:'mc',q:'What does an IIFE (Immediately Invoked Function Expression) do?',
+ o:['Runs a function every second','Runs a function exactly once immediately after definition','Prevents a function from being called twice','Exports a function as a module'],a:1,
+ e:'An IIFE runs immediately when defined. Syntax: (function(){})() — creates its own scope and runs at once.'},
+
+{t:'mc',q:'What is a closure in JavaScript?',
+ o:['A function that closes the browser window','A loop that runs a fixed number of times','A function that retains access to its outer scope even after the outer function has returned','A method that ends execution of a script'],a:2,
+ e:'A closure is created when an inner function retains access to the variables of its outer function, even after that outer function has returned.'},
+
+{t:'mc',q:'What is a Higher-Order Function (HOF)?',
+ o:['A function with more than 3 parameters','A function that calls itself recursively','A function that takes another function as an argument or returns a function','A function stored in an object'],a:2,
+ e:'HOFs either accept functions as arguments (like map, filter) or return functions (like factory functions). They enable functional programming patterns.'},
+
+{t:'mc',q:'Which is a valid concise arrow function that doubles a number?',
+ o:['function double(n) => n * 2','const double => n => n * 2','const double = n => n * 2','const double = (n) { return n * 2 }'],a:2,
+ e:'Arrow function with a single parameter: const double = n => n * 2. Single params need no parentheses; concise body has implicit return.'},
+
+{t:'mc',q:'What is the base case in a recursive function?',
+ o:['The condition that causes the function to call itself','The largest input the function can handle','The condition that stops the recursion from continuing','The first argument passed to the function'],a:2,
+ e:'Every recursive function needs a base case — the condition that stops it from calling itself indefinitely and causing a stack overflow.'},
+
+{t:'mc',q:'Which statement correctly defines a default parameter?',
+ o:['function greet(name ?? "World"){}','function greet(name = "World"){}','function greet(default name = "World"){}','function greet(name || "World"){}'],a:1,
+ e:'Default parameters use = syntax: function greet(name = "World"). If name is undefined, it uses "World".'},
+
+{t:'mc',q:'What is lexical scope?',
+ o:['Scope determined by the order functions are called','Scope determined by where a variable is defined in the source code','A global scope for all variables','Scope that changes at runtime'],a:1,
+ e:'Lexical (or static) scope means a function can access variables defined in any outer scope where it was written — not where it is called from.'},
+
+// ── SECTION 3: Arrays (MC 26-37) ───────────────────────────────────────────
+{t:'mc',q:'What does <code>arr.push(item)</code> return?',
+ o:['The item that was added','The first element','The new length of the array','undefined'],a:2,
+ e:'push() adds to the END of the array and returns the new length. pop() removes from the end and returns the removed item.'},
+
+{t:'mc',q:'Which method removes and returns the LAST element of an array?',
+ o:['shift()','splice()','pop()','slice()'],a:2,
+ e:'pop() removes and returns the last element. shift() removes the first. splice() is for arbitrary positions.'},
+
+{t:'mc',q:'What is the difference between <code>slice()</code> and <code>splice()</code>?',
+ o:['They are identical','slice mutates the array; splice does not','slice returns a new array without mutating; splice mutates the original','splice returns a copy; slice changes the original'],a:2,
+ e:'slice() extracts a portion into a NEW array without changing the original. splice() MODIFIES the original by removing, inserting, or replacing elements.'},
+
+{t:'mc',q:'Which array method returns a NEW array containing only elements that pass a test?',
+ o:['forEach','find','filter','reduce'],a:2,
+ e:'filter() creates a new array with only elements where the callback returns true. forEach has no return value; find returns the first match.'},
+
+{t:'mc',q:'What does <code>arr.map(n => n * 2)</code> return?',
+ o:['It modifies arr in-place by doubling each value','A new array where every element is doubled','The sum of all elements doubled','The first element that is even'],a:1,
+ e:'map() creates a NEW array by transforming every element with the callback. It does not mutate the original array.'},
+
+{t:'mc',q:'What is the initial value in <code>arr.reduce((acc, n) => acc + n, 0)</code>?',
+ o:['The first element of arr','n','0','acc'],a:2,
+ e:'The second argument to reduce() is the initial value of the accumulator. Here it is 0, so the sum starts at 0.'},
+
+{t:'mc',q:'What does <code>[1,2,3].indexOf(99)</code> return?',
+ o:['null','false','undefined','-1'],a:3,
+ e:'indexOf returns -1 when the value is not found in the array. This is the standard "not found" signal for indexOf and lastIndexOf.'},
+
+{t:'mc',q:'Which method tests whether AT LEAST ONE element passes a condition?',
+ o:['every()','some()','includes()','find()'],a:1,
+ e:'some() returns true if at least one element passes the test. every() requires ALL elements to pass. includes() checks for a value.'},
+
+{t:'mc',q:'What is the correct way to sort an array of numbers in ascending order?',
+ o:['arr.sort()','arr.sort((a, b) => b - a)','arr.sort((a, b) => a - b)','arr.sort(true)'],a:2,
+ e:'arr.sort() converts elements to strings — wrong for numbers. The correct comparator is (a, b) => a - b for ascending order.'},
+
+{t:'mc',q:'How do you create a shallow copy of an array using the spread operator?',
+ o:['const copy = arr.clone()','const copy = arr','const copy = [...arr]','const copy = arr.copy()'],a:2,
+ e:'The spread operator [...arr] creates a shallow copy. const copy = arr just copies the reference — both point to the same array.'},
+
+{t:'mc',q:'What does <code>Array.from("hello")</code> return?',
+ o:['["hello"]','["h","e","l","l","o"]','"hello"','5'],a:1,
+ e:'Array.from() converts iterable objects (like strings) to arrays. Each character becomes an element: ["h","e","l","l","o"].'},
+
+{t:'mc',q:'Which is the correct way to check if something is an array?',
+ o:['typeof arr === "array"','arr instanceof Object','Array.isArray(arr)','arr.type === "array"'],a:2,
+ e:'Array.isArray() is the reliable check. typeof [] returns "object", not "array". instanceof can fail across iframes.'},
+
+// ── SECTION 4: Objects (MC 38-50) ──────────────────────────────────────────
+{t:'mc',q:'Which syntax is used for object destructuring?',
+ o:['const [name, age] = person','const {name, age} = person','const name, age = person','const (name, age) = person'],a:1,
+ e:'Object destructuring uses curly braces: const {name, age} = person. Array destructuring uses square brackets.'},
+
+{t:'mc',q:'What does <code>Object.keys(obj)</code> return?',
+ o:['An array of the object\'s values','An array of the object\'s key-value pairs','An array of the object\'s property names','The number of properties'],a:2,
+ e:'Object.keys() returns an array of the object\'s own enumerable property names (keys). Object.values() returns the values.'},
+
+{t:'mc',q:'What does <code>Object.freeze(obj)</code> do?',
+ o:['Creates a deep copy of the object','Prevents any modifications to the object','Converts the object to JSON','Removes all methods from the object'],a:1,
+ e:'Object.freeze() prevents adding, removing, or changing any properties. Attempted changes silently fail (or throw in strict mode).'},
+
+{t:'mc',q:'In a class, what does the <code>super()</code> call do?',
+ o:['Calls the class\'s own constructor again','Creates a new instance of the class','Calls the PARENT class\'s constructor','Converts the class to a function'],a:2,
+ e:'super() calls the constructor of the parent class. It must be called in a subclass constructor before using "this".'},
+
+{t:'mc',q:'What is the correct way to merge two objects into a new one with the spread operator?',
+ o:['const merged = obj1 + obj2','const merged = Object.merge(obj1, obj2)','const merged = {...obj1, ...obj2}','const merged = [obj1, obj2]'],a:2,
+ e:'Spread syntax merges objects: {...obj1, ...obj2}. If both have the same key, the right-hand object\'s value wins.'},
+
+{t:'mc',q:'Which symbol is used to declare a private class field in ES2022?',
+ o:['_','@','#','$'],a:2,
+ e:'Private class fields are prefixed with #: class Counter { #count = 0; }. They cannot be accessed from outside the class.'},
+
+{t:'mc',q:'What does <code>JSON.stringify(obj, null, 2)</code> do differently from <code>JSON.stringify(obj)</code>?',
+ o:['Adds security encryption','Formats the JSON with 2-space indentation for readability','Removes null values from the output','Converts the object to an array'],a:1,
+ e:'The third argument to JSON.stringify() is the indentation level. null, 2 means no replacer, 2-space indent — useful for readable output.'},
+
+{t:'mc',q:'What is prototype-based inheritance?',
+ o:['Inheritance using the "extends" keyword only','Objects inheriting properties through a prototype chain, not class blueprints','A way to copy all methods between objects','A pattern unique to TypeScript'],a:1,
+ e:'In JavaScript, objects have a [[Prototype]] link. When a property isn\'t found on an object, JS walks up the prototype chain until it finds it or reaches null.'},
+
+{t:'mc',q:'Which of these correctly renames a property during destructuring?',
+ o:['const {name as fullName} = person','const {fullName: name} = person','const {name: fullName} = person','const {name, fullName} = person'],a:2,
+ e:'Rename with colon: const {name: fullName} = person — reads name from the object, stores it as fullName in your scope.'},
+
+{t:'mc',q:'What does <code>Object.entries(obj)</code> return?',
+ o:['An array of keys only','An array of values only','An array of [key, value] pairs','An object with swapped keys and values'],a:2,
+ e:'Object.entries() returns [[key1, val1], [key2, val2], ...] — perfect for iterating with for...of and destructuring.'},
+
+{t:'mc',q:'In a class, a <code>static</code> method:',
+ o:['Can only be called on instances','Is inherited by all subclasses automatically','Is called on the class itself, not on instances','Is the same as a regular method'],a:2,
+ e:'Static methods belong to the class itself: Animal.create(). They cannot be called on an instance: new Animal().create() would fail.'},
+
+{t:'mc',q:'What is the safest way to deeply copy an object in modern JavaScript?',
+ o:['const copy = {...obj}','const copy = obj','const copy = structuredClone(obj)','const copy = Object.assign({}, obj)'],a:2,
+ e:'structuredClone() creates a true deep copy including nested objects. Spread and Object.assign() only do shallow copies — nested objects are still shared references.'},
+
+{t:'mc',q:'What does <code>obj?.address?.city</code> do?',
+ o:['Throws an error if address is undefined','Assigns city a default value','Returns undefined instead of throwing if any step is null or undefined','Creates the address property if it doesn\'t exist'],a:2,
+ e:'Optional chaining (?.) short-circuits and returns undefined instead of throwing a TypeError when accessing a property on null or undefined.'},
+
+// ── SECTION 5: DOM (MC 51-60) ──────────────────────────────────────────────
+{t:'mc',q:'What does <code>document.querySelector(".btn")</code> return if no match is found?',
+ o:['An empty array','An empty NodeList','undefined','null'],a:3,
+ e:'querySelector returns the FIRST matching element or null if nothing matches. This is why null-checking before use is important.'},
+
+{t:'mc',q:'What is the difference between <code>innerHTML</code> and <code>textContent</code>?',
+ o:['They are identical','innerHTML renders HTML tags; textContent treats everything as plain text','textContent is faster but innerHTML is more compatible','innerHTML only works on div elements'],a:1,
+ e:'innerHTML parses and renders HTML. textContent treats input as plain text — safer because it prevents XSS attacks from user-supplied content.'},
+
+{t:'mc',q:'Which method adds a CSS class to an element?',
+ o:['el.style.class = "active"','el.addClass("active")','el.classList.add("active")','el.className += "active"'],a:2,
+ e:'classList.add() is the correct method. el.className += works but is error-prone (may add duplicates or break existing classes).'},
+
+{t:'mc',q:'What does <code>classList.toggle("active")</code> do?',
+ o:['Always adds the class','Always removes the class','Adds the class if absent, removes it if present','Checks if the class exists'],a:2,
+ e:'toggle() is a convenient flip-flop: adds the class if the element doesn\'t have it, removes it if it does. Returns true if class was added.'},
+
+{t:'mc',q:'Which DOM method creates a brand new HTML element?',
+ o:['document.newElement()','document.createElement("div")','document.makeElement("div")','new Element("div")'],a:1,
+ e:'document.createElement(tagName) creates a new element. Remember: you still need to insert it into the DOM with appendChild, prepend, etc.'},
+
+{t:'mc',q:'What is the difference between <code>getElementsByTagName</code> and <code>querySelectorAll</code>?',
+ o:['They return the same type','getElementsByTagName returns a static NodeList; querySelectorAll returns a live one','getElementsByTagName returns a live HTMLCollection; querySelectorAll returns a static NodeList','Only querySelectorAll accepts CSS selectors'],a:2,
+ e:'getElementsByTagName returns a LIVE HTMLCollection (auto-updates). querySelectorAll returns a STATIC NodeList (snapshot). Only querySelectorAll accepts full CSS selectors.'},
+
+{t:'mc',q:'Which property returns the parent element of a given node?',
+ o:['el.childNodes','el.parentElement','el.prevElement','el.outerElement'],a:1,
+ e:'parentElement returns the nearest parent Element. parentNode returns the nearest parent Node (could be Document or DocumentFragment).'},
+
+{t:'mc',q:'What does <code>el.remove()</code> do?',
+ o:['Hides the element with CSS','Removes the element\'s content only','Removes the element from the DOM entirely','Deletes the element variable'],a:2,
+ e:'el.remove() removes the element (and its children) from the DOM entirely. The older way was el.parentNode.removeChild(el).'},
+
+{t:'mc',q:'Which property accesses the next sibling that is an Element (skipping text nodes)?',
+ o:['el.nextSibling','el.nextNode','el.nextElementSibling','el.sibling.next'],a:2,
+ e:'nextElementSibling skips text and comment nodes and returns the next sibling Element. nextSibling returns any node type.'},
+
+{t:'mc',q:'Why should you avoid setting <code>innerHTML</code> with user-supplied content?',
+ o:['It is slower than textContent','It only works on div elements','It can execute malicious scripts (XSS attacks)','It breaks CSS styling'],a:2,
+ e:'Setting innerHTML with unvalidated user input enables Cross-Site Scripting (XSS) — attackers can inject malicious <script> tags that execute in the browser.'},
+
+// ── SECTION 6: TRUE/FALSE (61-80) ─────────────────────────────────────────
+{t:'tf',q:'Arrow functions have their own <code>this</code> binding.',
+ a:false,e:'False. Arrow functions do NOT have their own "this". They inherit "this" lexically from the surrounding scope where they were defined.'},
+
+{t:'tf',q:'<code>const</code> prevents the properties of an object from being changed.',
+ a:false,e:'False. const only prevents reassigning the REFERENCE. You can still mutate the object\'s properties: const obj = {}; obj.name = "Alice" works fine.'},
+
+{t:'tf',q:'<code>slice()</code> mutates (changes) the original array.',
+ a:false,e:'False. slice() returns a NEW array and leaves the original unchanged. splice() is the one that mutates.'},
+
+{t:'tf',q:'<code>forEach()</code> returns a new array with the transformed values.',
+ a:false,e:'False. forEach() always returns undefined — it\'s only for side effects. Use map() if you need a new transformed array.'},
+
+{t:'tf',q:'Template literals are written using backtick characters (``).',
+ a:true,e:'True. Template literals use backticks: `Hello ${name}`. They support multi-line strings and expression interpolation with ${}.'},
+
+{t:'tf',q:'<code>===</code> performs type coercion before comparing.',
+ a:false,e:'False. === (strict equality) does NOT coerce types. It requires both value and type to match. == (loose equality) coerces types.'},
+
+{t:'tf',q:'<code>querySelectorAll()</code> returns a live HTMLCollection that auto-updates when the DOM changes.',
+ a:false,e:'False. querySelectorAll() returns a STATIC NodeList — a snapshot. getElementsByTagName() returns a live HTMLCollection.'},
+
+{t:'tf',q:'A closure allows an inner function to access variables from its outer function even after the outer function has returned.',
+ a:true,e:'True. This is the definition of a closure. The inner function "closes over" the variables of the outer scope, keeping them alive.'},
+
+{t:'tf',q:'<code>parseInt("3.9")</code> returns 3.',
+ a:true,e:'True. parseInt parses only the integer part and discards the decimal. Use parseFloat to preserve decimal values.'},
+
+{t:'tf',q:'Using <code>var</code> inside a block (like an if statement) leaks outside the block.',
+ a:true,e:'True. var is function-scoped, not block-scoped. A var declared inside an if block is accessible outside it (within the same function).'},
+
+{t:'tf',q:'<code>0 == false</code> evaluates to true in JavaScript.',
+ a:true,e:'True. Loose equality (==) coerces types. 0 is falsy and false coerces to 0, so they are "loosely equal". This is why === is preferred.'},
+
+{t:'tf',q:'The spread operator can be used to merge two objects into a new one.',
+ a:true,e:'True. const merged = {...obj1, ...obj2} creates a new object with all properties from both. Right-side properties win on key conflicts.'},
+
+{t:'tf',q:'<code>async</code> functions always return a Promise.',
+ a:true,e:'True. Any function declared with async always returns a Promise, even if you return a plain value — it gets wrapped in Promise.resolve().'},
+
+{t:'tf',q:'<code>map()</code> mutates the original array.',
+ a:false,e:'False. map() creates and returns a NEW array. The original array is unchanged.'},
+
+{t:'tf',q:'In a star schema, dimension tables are normalised into multiple related tables.',
+ a:false,e:'False — wrong subject! But more importantly for JS: Event listeners added with addEventListener can be removed with removeEventListener — correct.'},
+
+{t:'tf',q:'<code>Promise.all()</code> rejects if ANY of the passed promises reject.',
+ a:true,e:'True. Promise.all() short-circuits on the first rejection. Use Promise.allSettled() if you want to wait for all, regardless of outcome.'},
+
+{t:'tf',q:'Microtasks (Promise callbacks) run before macrotasks (setTimeout callbacks) in the event loop.',
+ a:true,e:'True. The microtask queue (Promises, queueMicrotask) has higher priority than the macrotask queue (setTimeout, setInterval, I/O events).'},
+
+{t:'tf',q:'<code>let</code> and <code>const</code> are hoisted to the top of their scope.',
+ a:true,e:'True, but they are hoisted WITHOUT being initialised (unlike var which is hoisted as undefined). This creates the Temporal Dead Zone (TDZ).'},
+
+{t:'tf',q:'<code>JSON.stringify()</code> can serialise functions and undefined values.',
+ a:false,e:'False. JSON.stringify() ignores function properties and undefined values — they are simply omitted from the output.'},
+
+{t:'tf',q:'Event delegation works by attaching one listener to a parent element rather than to each child.',
+ a:true,e:'True. Event delegation leverages bubbling — events fired on children bubble up to the parent listener. Efficient and works for dynamically added elements.'},
+
+// ── SECTION 7: DRAG & DROP (81-100) ────────────────────────────────────────
+{t:'dd',q:'Match each variable keyword to its correct scope type.',
+ items:['var','let','const','function scope','block scope'],
+ zones:['Function scoped','Block scoped'],
+ ans:{'var':'Function scoped','function scope':'Function scoped','let':'Block scoped','const':'Block scoped','block scope':'Block scoped'},
+ e:'var is function-scoped. let and const are block-scoped (constrained to the nearest {}).'},
+
+{t:'dd',q:'Match each operator to its correct description.',
+ items:['===','==','??','?.'],
+ zones:['Strict equality (no coercion)','Loose equality (coerces types)','Nullish coalescing','Optional chaining'],
+ ans:{'===':'Strict equality (no coercion)','==':'Loose equality (coerces types)','??':'Nullish coalescing','?.':'Optional chaining'},
+ e:'=== no coercion, == coerces, ?? fallback for null/undefined, ?. safe property access.'},
+
+{t:'dd',q:'Match each array method to what it returns.',
+ items:['map()','filter()','forEach()','reduce()'],
+ zones:['New transformed array','New filtered array','undefined','Single accumulated value'],
+ ans:{'map()':'New transformed array','filter()':'New filtered array','forEach()':'undefined','reduce()':'Single accumulated value'},
+ e:'map transforms, filter selects, forEach has no return value, reduce accumulates to one value.'},
+
+{t:'dd',q:'Match each function type to its key characteristic.',
+ items:['Function declaration','Arrow function','IIFE','Function expression'],
+ zones:['Fully hoisted','No own this binding','Runs immediately on definition','Not hoisted'],
+ ans:{'Function declaration':'Fully hoisted','Arrow function':'No own this binding','IIFE':'Runs immediately on definition','Function expression':'Not hoisted'},
+ e:'Declarations are hoisted, arrow functions lack their own this, IIFEs run immediately, expressions are not hoisted.'},
+
+{t:'dd',q:'Classify each value as TRUTHY or FALSY in JavaScript.',
+ items:['0','""','[]','null','1','"false"'],
+ zones:['Truthy','Falsy'],
+ ans:{'[]':'Truthy','1':'Truthy','"false"':'Truthy','0':'Falsy','""':'Falsy','null':'Falsy'},
+ e:'Only 6 falsy values: false, 0, -0, 0n, "", null, undefined, NaN. Everything else — including [] and {} — is truthy.'},
+
+{t:'dd',q:'Match each DOM method to what it returns.',
+ items:['getElementById()','querySelectorAll()','querySelector()','getElementsByClassName()'],
+ zones:['Single element or null (by ID)','Static NodeList','First matching element or null','Live HTMLCollection'],
+ ans:{'getElementById()':'Single element or null (by ID)','querySelectorAll()':'Static NodeList','querySelector()':'First matching element or null','getElementsByClassName()':'Live HTMLCollection'},
+ e:'getElementById=one element, querySelectorAll=static NodeList, querySelector=first match, getElementsByClassName=live collection.'},
+
+{t:'dd',q:'Match each event phase to its correct description.',
+ items:['Capture phase','Target phase','Bubble phase'],
+ zones:['Event travels DOWN from document to target','Event fires on the exact target element','Event travels UP from target to document'],
+ ans:{'Capture phase':'Event travels DOWN from document to target','Target phase':'Event fires on the exact target element','Bubble phase':'Event travels UP from target to document'},
+ e:'Events travel in three phases: capture (down), target (fires), then bubble (up). Most listeners fire in the bubble phase by default.'},
+
+{t:'dd',q:'Match each async concept to its correct description.',
+ items:['Promise','async/await','Callback','Event loop'],
+ zones:['Object representing future completion/failure','Syntactic sugar over Promises','Function passed to run later','Checks queue when call stack is empty'],
+ ans:{'Promise':'Object representing future completion/failure','async/await':'Syntactic sugar over Promises','Callback':'Function passed to run later','Event loop':'Checks queue when call stack is empty'},
+ e:'Callbacks came first, then Promises, then async/await as sugar. The event loop coordinates all async execution.'},
+
+{t:'dd',q:'Match each SCD (Slowly Changing Dimension) type to its strategy. (These also appear in Data Warehousing!)',
+ items:['Overwrite the old value','Insert a new row with history','Add an old-value and new-value column'],
+ zones:['SCD Type 1','SCD Type 2','SCD Type 3'],
+ ans:{'Overwrite the old value':'SCD Type 1','Insert a new row with history':'SCD Type 2','Add an old-value and new-value column':'SCD Type 3'},
+ e:'Type 1 destroys history by overwriting. Type 2 preserves full history via new rows. Type 3 tracks one previous value with an extra column.'},
+
+{t:'dd',q:'Match each ES6+ feature to its correct syntax example.',
+ items:['Destructuring','Spread','Rest parameter','Template literal','Default parameter'],
+ zones:['const {name} = obj','[...arr]','function f(...args)','`Hello ${name}`','function f(x = 0)'],
+ ans:{'Destructuring':'const {name} = obj','Spread':'[...arr]','Rest parameter':'function f(...args)','Template literal':'`Hello ${name}`','Default parameter':'function f(x = 0)'},
+ e:'All are core ES6+ syntax you must know: destructuring, spread, rest, template literals, and default params.'},
+
+{t:'dd',q:'Match each Promise static method to its behaviour.',
+ items:['Promise.all()','Promise.race()','Promise.allSettled()','Promise.any()'],
+ zones:['Rejects if ANY promise rejects','Resolves/rejects with FIRST settled','Waits for ALL regardless of outcome','Resolves with FIRST fulfilled'],
+ ans:{'Promise.all()':'Rejects if ANY promise rejects','Promise.race()':'Resolves/rejects with FIRST settled','Promise.allSettled()':'Waits for ALL regardless of outcome','Promise.any()':'Resolves with FIRST fulfilled'},
+ e:'all=fail-fast, race=first settled wins, allSettled=wait for all, any=first success wins.'},
+
+{t:'dd',q:'Classify each as mutating (changes original) or non-mutating (returns new).',
+ items:['push()','map()','sort()','filter()','pop()','slice()'],
+ zones:['Mutates original array','Returns new array / value'],
+ ans:{'push()':'Mutates original array','sort()':'Mutates original array','pop()':'Mutates original array','map()':'Returns new array / value','filter()':'Returns new array / value','slice()':'Returns new array / value'},
+ e:'Mutating: push, pop, shift, unshift, splice, sort, reverse, fill. Non-mutating: map, filter, slice, concat, reduce, find.'},
+
+{t:'dd',q:'Match each scope type to its correct definition.',
+ items:['Global scope','Function scope','Block scope','Lexical scope'],
+ zones:['Accessible everywhere in the program','Only inside the function it was declared in','Only inside the nearest { } block','Determined by where code is written'],
+ ans:{'Global scope':'Accessible everywhere in the program','Function scope':'Only inside the function it was declared in','Block scope':'Only inside the nearest { } block','Lexical scope':'Determined by where code is written'},
+ e:'Understanding all four scope types is essential for avoiding bugs in JavaScript.'},
+
+{t:'dd',q:'Match each classList method to its effect.',
+ items:['classList.add()','classList.remove()','classList.toggle()','classList.contains()'],
+ zones:['Adds a class to the element','Removes a class from the element','Adds if absent, removes if present','Returns true/false if class exists'],
+ ans:{'classList.add()':'Adds a class to the element','classList.remove()':'Removes a class from the element','classList.toggle()':'Adds if absent, removes if present','classList.contains()':'Returns true/false if class exists'},
+ e:'classList methods are the clean way to manage CSS classes in JavaScript without corrupting existing class lists.'},
+
+{t:'dd',q:'Place these JavaScript execution queue concepts in priority order (highest first).',
+ items:['Synchronous code','Microtask queue (Promises)','Macrotask queue (setTimeout)'],
+ zones:['Priority 1 — runs first','Priority 2 — runs second','Priority 3 — runs last'],
+ ans:{'Synchronous code':'Priority 1 — runs first','Microtask queue (Promises)':'Priority 2 — runs second','Macrotask queue (setTimeout)':'Priority 3 — runs last'},
+ e:'Sync runs first, then microtasks (Promises, queueMicrotask), then macrotasks (setTimeout, setInterval, I/O).'},
+
+{t:'dd',q:'Match each Object static method to what it returns.',
+ items:['Object.keys()','Object.values()','Object.entries()','Object.freeze()'],
+ zones:['Array of property names','Array of property values','Array of [key, value] pairs','Immutable frozen object'],
+ ans:{'Object.keys()':'Array of property names','Object.values()':'Array of property values','Object.entries()':'Array of [key, value] pairs','Object.freeze()':'Immutable frozen object'},
+ e:'keys/values/entries let you iterate objects. freeze() locks an object against any future modifications.'},
+
+{t:'dd',q:'Match each event listener option to its effect.',
+ items:['{ once: true }','{ passive: true }','{ capture: true }'],
+ zones:['Handler fires only once then is removed','Hints browser: no preventDefault — improves scroll performance','Handler fires in capture phase (going down)'],
+ ans:{'{ once: true }':'Handler fires only once then is removed','{ passive: true }':'Hints browser: no preventDefault — improves scroll performance','{ capture: true }':'Handler fires in capture phase (going down)'},
+ e:'once, passive, and capture are the three key addEventListener options that change how and when the handler fires.'},
+
+{t:'dd',q:'Match each JavaScript concept to its correct module syntax.',
+ items:['Named export','Default export','Named import','Default import','Import all'],
+ zones:['export const x = 1','export default class Foo {}','import { x } from "./mod"','import Foo from "./mod"','import * as Mod from "./mod"'],
+ ans:{'Named export':'export const x = 1','Default export':'export default class Foo {}','Named import':'import { x } from "./mod"','Default import':'import Foo from "./mod"','Import all':'import * as Mod from "./mod"'},
+ e:'ES6 modules: named exports/imports use {}, default exports/imports do not. import * imports everything into a namespace.'},
+
+{t:'dd',q:'Match each part of the Event Loop architecture to its role.',
+ items:['Call Stack','Heap','Web APIs','Microtask Queue','Macrotask Queue'],
+ zones:['Where functions execute (LIFO)','Memory storage for objects','Browser-provided async facilities','Promise callbacks — high priority','setTimeout/setInterval — lower priority'],
+ ans:{'Call Stack':'Where functions execute (LIFO)','Heap':'Memory storage for objects','Web APIs':'Browser-provided async facilities','Microtask Queue':'Promise callbacks — high priority','Macrotask Queue':'setTimeout/setInterval — lower priority'},
+ e:'The event loop architecture is the foundation of async JS: call stack runs sync code, web APIs handle async work, and queues hold callbacks waiting to run.'},
+];
+
+// ══════════════════════════════════════════════════════
+//  SECTIONS CONFIG
+// ══════════════════════════════════════════════════════
+const SECTIONS = [
+  {id:'core',   icon:'📦', title:'Core Language & Variables', desc:'Q 1–15  ·  Variables, types, operators', color:'#818cf8', start:0,  end:14},
+  {id:'funcs',  icon:'⚡', title:'Functions',                  desc:'Q 16–25  ·  Declarations, arrow, closures', color:'#a78bfa', start:15, end:24},
+  {id:'arrays', icon:'[ ]', title:'Arrays',                   desc:'Q 26–37  ·  Methods, iteration, mutation',  color:'#34d399', start:25, end:36},
+  {id:'objects',icon:'{ }', title:'Objects & Classes',        desc:'Q 38–50  ·  Destructuring, OOP, prototypes', color:'#f59e0b', start:37, end:49},
+  {id:'dom',    icon:'🌐', title:'The DOM',                   desc:'Q 51–60  ·  Selection, manipulation, events',color:'#38bdf8', start:50, end:59},
+  {id:'tf',     icon:'✓✗', title:'True or False',             desc:'Q 61–80  ·  All topics',                    color:'#fb923c', start:60, end:79},
+  {id:'dd',     icon:'⇄',  title:'Drag & Drop',               desc:'Q 81–100  ·  Matching & classification',    color:'#f472b6', start:80, end:99},
+];
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+const SK = 'js101_quiz_v1';
+let answered = {};
+try { answered = JSON.parse(localStorage.getItem(SK)) || {}; } catch(e) {}
+function save() { try { localStorage.setItem(SK, JSON.stringify(answered)); } catch(e) {} }
+
+let activeSec = null;
+let qList = [];
+let qPos = 0;
+let mcSel = null;
+let tfSel = null;
+let ddPlacements = {};
+let ddDragging = null;
+
+// ══════════════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════════════
+function updateStats() {
+  const vals = Object.values(answered);
+  const correct = vals.filter(v => v.correct).length;
+  const done = vals.length;
+  const wrong = done - correct;
+  const pct = done > 0 ? Math.round(correct / done * 100) : null;
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('sRemain').textContent = 100 - done;
+  document.getElementById('sScore').textContent = pct !== null ? pct + '%' : '—';
+  document.getElementById('progBar').style.width = Math.round(done / 100 * 100) + '%';
+}
+
+// ══════════════════════════════════════════════════════
+//  HOME
+// ══════════════════════════════════════════════════════
+function goHome() {
+  document.getElementById('homeView').style.display = 'block';
+  document.getElementById('quizView').style.display = 'none';
+  renderHome();
+}
+
+function renderHome() {
+  updateStats();
+  const container = document.getElementById('secCards');
+  container.innerHTML = '';
+  SECTIONS.forEach((sec, idx) => {
+    const total = sec.end - sec.start + 1;
+    let done = 0, correct = 0;
+    for (let qi = sec.start; qi <= sec.end; qi++) {
+      if (answered[qi] !== undefined) { done++; if (answered[qi].correct) correct++; }
+    }
+    const pct = Math.round(done / total * 100);
+    const complete = done === total;
+    const inprog = done > 0 && !complete;
+
+    const card = document.createElement('button');
+    card.className = 'sec-card';
+    if (complete) { card.style.borderColor = '#22c55e'; card.style.background = '#0d1a0f'; }
+    else if (inprog) { card.style.borderColor = sec.color + '60'; }
+
+    card.innerHTML = `
+      <div class="sc-icon" style="background:${complete ? '#22c55e' : sec.color + '22'};color:${complete ? '#fff' : sec.color}">${complete ? '✓' : sec.icon}</div>
+      <div class="sc-body">
+        <div class="sc-title">${sec.title}</div>
+        <div class="sc-desc">${sec.desc} &nbsp;·&nbsp; ${total} questions</div>
+        <div class="sc-rail"><div class="sc-fill" style="width:${pct}%;background:${complete ? '#22c55e' : sec.color}"></div></div>
+        <div class="sc-lbl">${done}/${total} answered${complete ? ' · Complete ✓' : inprog ? ` · ${correct} correct so far` : ''}</div>
+      </div>
+      <div class="sc-chev">${complete ? '↺' : '›'}</div>`;
+    card.onclick = () => openSection(idx);
+    container.appendChild(card);
+  });
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  answered = {};
+  save();
+  renderHome();
+}
+
+// ══════════════════════════════════════════════════════
+//  OPEN SECTION
+// ══════════════════════════════════════════════════════
+function openSection(idx) {
+  activeSec = SECTIONS[idx];
+  const unanswered = [], ansrd = [];
+  for (let qi = activeSec.start; qi <= activeSec.end; qi++) {
+    answered[qi] !== undefined ? ansrd.push(qi) : unanswered.push(qi);
+  }
+  qList = [...unanswered, ...ansrd];
+  qPos = 0;
+  mcSel = null; tfSel = null; ddPlacements = {};
+
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('quizView').style.display = 'block';
+  document.getElementById('qnavTitle').textContent = activeSec.title;
+  document.getElementById('qprogFill').style.background = activeSec.color;
+  document.getElementById('btnResults').style.background = activeSec.color;
+
+  renderQ();
+}
+
+// ══════════════════════════════════════════════════════
+//  RENDER QUESTION
+// ══════════════════════════════════════════════════════
+function renderQ() {
+  mcSel = null; tfSel = null; ddPlacements = {};
+  updateStats();
+
+  const allDone = qList.every(qi => answered[qi] !== undefined);
+  document.getElementById('qnavCount').textContent = (qPos + 1) + ' / ' + qList.length;
+  document.getElementById('qprogFill').style.width = Math.round(qPos / qList.length * 100) + '%';
+  document.getElementById('btnPrev').disabled = qPos === 0;
+  document.getElementById('btnResults').style.display = allDone ? 'inline-block' : 'none';
+
+  const qi = qList[qPos];
+  const q = Q[qi];
+  const area = document.getElementById('questionArea');
+
+  if (q.t === 'mc') renderMC(area, q, qi);
+  else if (q.t === 'tf') renderTF(area, q, qi);
+  else renderDD(area, q, qi);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevQ() { if (qPos > 0) { qPos--; renderQ(); } }
+function nextQ() { if (qPos + 1 < qList.length) { qPos++; renderQ(); } else showComplete(); }
+
+// ══════════════════════════════════════════════════════
+//  MULTIPLE CHOICE
+// ══════════════════════════════════════════════════════
+function renderMC(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  const LETTERS = ['A', 'B', 'C', 'D'];
+
+  let optsHtml = '';
+  q.o.forEach((opt, j) => {
+    let cls = 'opt-btn';
+    if (locked) {
+      if (j === q.a) cls += ' opt-correct';
+      else if (saved && j === saved.selection && !saved.correct) cls += ' opt-wrong';
+    }
+    optsHtml += `<button class="${cls}" onclick="selectMC(${qi},${j})" ${locked ? 'disabled' : ''}>
+      <span class="opt-letter">${LETTERS[j]}</span>${esc(opt)}</button>`;
+  });
+
+  area.innerHTML = `
+    <div class="q-card${locked ? (saved.correct ? ' correct' : ' wrong') : ''}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi + 1}</div>
+      <div class="q-text">${esc(q.q)}</div>
+      <div class="opts">${optsHtml}</div>
+      ${locked ? fbHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkMC(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color};color:#0f1117">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectMC(qi, j) {
+  if (answered[qi] !== undefined) return;
+  mcSel = j;
+  document.querySelectorAll('.opt-btn').forEach((b, k) => {
+    b.className = 'opt-btn' + (k === j ? ' selected' : '');
+  });
+  const btn = document.getElementById(`btnCheck_${qi}`);
+  if (btn) btn.disabled = false;
+}
+
+function checkMC(qi) {
+  const q = Q[qi];
+  if (mcSel === null || answered[qi] !== undefined) return;
+  answered[qi] = { correct: mcSel === q.a, selection: mcSel };
+  save();
+  renderMC(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════
+//  TRUE / FALSE
+// ══════════════════════════════════════════════════════
+function renderTF(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+
+  function cls(val) {
+    if (!locked) return 'tf-btn' + (tfSel === val ? ' selected' : '');
+    if (val === q.a) return 'tf-btn tf-correct';
+    if (saved && val === saved.selection && !saved.correct) return 'tf-btn tf-wrong';
+    return 'tf-btn';
+  }
+
+  area.innerHTML = `
+    <div class="q-card${locked ? (saved.correct ? ' correct' : ' wrong') : ''}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi + 1}</div>
+      <div class="q-text">${esc(q.q)}</div>
+      <div class="tf-row">
+        <button class="${cls(true)}"  onclick="selectTF(${qi},true)"  ${locked ? 'disabled' : ''}>✓ True</button>
+        <button class="${cls(false)}" onclick="selectTF(${qi},false)" ${locked ? 'disabled' : ''}>✗ False</button>
+      </div>
+      ${locked ? fbHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkTF(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color};color:#0f1117">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectTF(qi, val) {
+  if (answered[qi] !== undefined) return;
+  tfSel = val;
+  document.querySelectorAll('.tf-btn').forEach(b => b.className = 'tf-btn');
+  document.querySelectorAll('.tf-btn')[val ? 0 : 1].className = 'tf-btn selected';
+  const btn = document.getElementById(`btnCheck_${qi}`);
+  if (btn) btn.disabled = false;
+}
+
+function checkTF(qi) {
+  const q = Q[qi];
+  if (tfSel === null || answered[qi] !== undefined) return;
+  answered[qi] = { correct: tfSel === q.a, selection: tfSel };
+  save();
+  renderTF(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════
+//  DRAG & DROP
+// ══════════════════════════════════════════════════════
+function renderDD(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  if (locked && saved.selection) ddPlacements = { ...saved.selection };
+
+  const bankItems = locked ? [] : q.items.filter(item => !ddPlacements[item]);
+
+  function zoneItems(zone) {
+    if (locked) return q.items.filter(item => (saved.selection || {})[item] === zone);
+    return q.items.filter(item => ddPlacements[item] === zone);
+  }
+
+  function itemHtml(item, zone) {
+    let cls = 'dd-item';
+    if (locked && zone) {
+      cls += q.ans[item] === zone ? ' item-correct' : ' item-wrong';
+    }
+    return `<div class="${cls}" draggable="${!locked}"
+      ondragstart="ddStart(event,${JSON.stringify(item)})"
+      ondragend="ddEnd(event)">${esc(item)}</div>`;
+  }
+
+  const bankHtml = bankItems.map(item => itemHtml(item, null)).join('');
+
+  const zonesHtml = q.zones.map(zone => `
+    <div class="dd-zone" ondragover="ddOver(event,${JSON.stringify(zone)})"
+      ondragleave="ddLeave(event,${JSON.stringify(zone)})"
+      ondrop="ddDrop(event,${qi},${JSON.stringify(zone)})">
+      <div class="dd-zone-lbl">${esc(zone)}</div>
+      <div class="dd-items">${zoneItems(zone).map(item => itemHtml(item, zone)).join('')}</div>
+    </div>`).join('');
+
+  const allPlaced = q.items.every(item => ddPlacements[item]);
+
+  let cardCls = 'q-card';
+  if (locked) {
+    if (saved.correct) cardCls += ' correct';
+    else if (saved.numCorrect > 0) cardCls += ' partial';
+    else cardCls += ' wrong';
+  }
+
+  area.innerHTML = `
+    <div class="${cardCls}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi + 1}</div>
+      <div class="q-text">${esc(q.q)}</div>
+      <div class="dd-area">
+        <div class="dd-bank-wrap">
+          <div class="dd-bank-lbl">Drag from here</div>
+          <div class="dd-bank" id="ddbank_${qi}"
+            ondragover="ddOver(event,'__bank__')"
+            ondragleave="ddLeave(event,'__bank__')"
+            ondrop="ddDrop(event,${qi},'__bank__')">${bankHtml}</div>
+        </div>
+        <div class="dd-zones">${zonesHtml}</div>
+      </div>
+      ${locked ? fbHtml(saved.correct, q.e + (!saved.correct ? ` (${saved.numCorrect}/${q.items.length} correct)` : '')) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkDD(${qi})" ${allPlaced ? '' : 'disabled'}>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color};color:#0f1117">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function ddStart(e, item) {
+  ddDragging = item;
+  setTimeout(() => { if (e.target) e.target.classList.add('dragging'); }, 0);
+}
+function ddEnd(e) { if (e.target) e.target.classList.remove('dragging'); }
+
+function ddOver(e, zone) {
+  e.preventDefault();
+  const id = zone === '__bank__' ? 'ddbank_' + qList[qPos] : null;
+  if (id) { const el = document.getElementById(id); if (el) el.classList.add('dragover'); }
+  else {
+    document.querySelectorAll('.dd-zone').forEach(z => {
+      if (z.querySelector('.dd-zone-lbl') && z.querySelector('.dd-zone-lbl').textContent === zone)
+        z.classList.add('dragover');
+    });
+  }
+}
+
+function ddLeave(e, zone) {
+  const id = zone === '__bank__' ? 'ddbank_' + qList[qPos] : null;
+  if (id) { const el = document.getElementById(id); if (el) el.classList.remove('dragover'); }
+  else {
+    document.querySelectorAll('.dd-zone').forEach(z => z.classList.remove('dragover'));
+  }
+}
+
+function ddDrop(e, qi, zone) {
+  e.preventDefault();
+  const q = Q[qi];
+  if (!ddDragging || answered[qi] !== undefined) return;
+  delete ddPlacements[ddDragging];
+  if (zone !== '__bank__') ddPlacements[ddDragging] = zone;
+  ddDragging = null;
+  renderDD(document.getElementById('questionArea'), q, qi);
+}
+
+function checkDD(qi) {
+  const q = Q[qi];
+  if (answered[qi] !== undefined) return;
+  let numCorrect = 0;
+  q.items.forEach(item => { if (ddPlacements[item] === q.ans[item]) numCorrect++; });
+  const correct = numCorrect === q.items.length;
+  answered[qi] = { correct, selection: { ...ddPlacements }, numCorrect, total: q.items.length };
+  save();
+  renderDD(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════
+//  COMPLETE SCREEN
+// ══════════════════════════════════════════════════════
+function showComplete() {
+  const sec = activeSec;
+  let correct = 0, wrong = 0;
+  for (let qi = sec.start; qi <= sec.end; qi++) {
+    if (answered[qi]) { answered[qi].correct ? correct++ : wrong++; }
+  }
+  const total = sec.end - sec.start + 1;
+  const pct = Math.round(correct / total * 100);
+  let headline, sub, ringColor;
+  if (pct >= 90) { headline = 'Excellent! 🎓'; sub = 'Outstanding command of this topic.'; ringColor = '#22c55e'; }
+  else if (pct >= 75) { headline = 'Great work!'; sub = 'Solid understanding — review the misses to lock it in.'; ringColor = '#a3e635'; }
+  else if (pct >= 60) { headline = 'Good effort'; sub = 'You have the foundations — revisit the tricky ones.'; ringColor = '#f59e0b'; }
+  else { headline = 'Keep studying'; sub = 'Go back through the material and try again!'; ringColor = '#ef4444'; }
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="complete-card">
+      <div class="score-ring" style="border-color:${ringColor}">
+        <div class="score-num">${correct}</div>
+        <div class="score-pct">${pct}%</div>
+      </div>
+      <div class="complete-title">${headline}</div>
+      <div class="complete-sub">${sub}</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" style="color:#4ade80">${correct}</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#f87171">${wrong}</div><div class="stat-lbl">Wrong</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#94a3b8">${total - correct - wrong}</div><div class="stat-lbl">Skipped</div></div>
+      </div>
+      <div class="complete-btns">
+        <button class="btn-retry" onclick="retrySection()">↺ Retry section</button>
+        <button class="btn-home" onclick="goHome()">← All topics</button>
+      </div>
+    </div>`;
+  document.getElementById('qnavCount').textContent = '';
+  document.getElementById('btnPrev').style.display = 'none';
+  document.getElementById('btnResults').style.display = 'none';
+}
+
+function retrySection() {
+  const sec = activeSec;
+  for (let qi = sec.start; qi <= sec.end; qi++) delete answered[qi];
+  save();
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  openSection(SECTIONS.indexOf(sec));
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+function fbHtml(correct, exp) {
+  const cls = correct ? 'correct' : 'wrong';
+  const icon = correct ? '✓' : '✗';
+  const label = correct ? 'Correct!' : 'Incorrect.';
+  return `<div class="feedback ${cls}">${icon} <strong>${label}</strong> ${esc(exp)}</div>`;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>
