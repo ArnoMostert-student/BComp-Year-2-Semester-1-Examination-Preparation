@@ -501,131 +501,131 @@ const Q = [
 
 // ── SECTION 7: DRAG & DROP (81-100) ────────────────────────────────────────
 {t:'dd',q:'Match each variable keyword to its correct scope type.',
- items:['var','let','const','function scope','block scope'],
- zones:['Function scoped','Block scoped'],
- ans:{'var':'Function scoped','function scope':'Function scoped','let':'Block scoped','const':'Block scoped','block scope':'Block scoped'},
- e:'var is function-scoped. let and const are block-scoped (constrained to the nearest {}).'},
+items:['const','var','function scope','block scope','let'],
+zones:['Function scoped','Block scoped'],
+ans:{'var':'Function scoped','function scope':'Function scoped','let':'Block scoped','const':'Block scoped','block scope':'Block scoped'},
+e:'var is function-scoped. let and const are block-scoped (constrained to the nearest {}).'},
 
 {t:'dd',q:'Match each operator to its correct description.',
- items:['===','==','??','?.'],
- zones:['Strict equality (no coercion)','Loose equality (coerces types)','Nullish coalescing','Optional chaining'],
- ans:{'===':'Strict equality (no coercion)','==':'Loose equality (coerces types)','??':'Nullish coalescing','?.':'Optional chaining'},
- e:'=== no coercion, == coerces, ?? fallback for null/undefined, ?. safe property access.'},
+items:['?.','==','??','==='],
+zones:['Strict equality (no coercion)','Loose equality (coerces types)','Nullish coalescing','Optional chaining'],
+ans:{'===':'Strict equality (no coercion)','==':'Loose equality (coerces types)','??':'Nullish coalescing','?.':'Optional chaining'},
+e:'=== no coercion, == coerces, ?? fallback for null/undefined, ?. safe property access.'},
 
 {t:'dd',q:'Match each array method to what it returns.',
- items:['map()','filter()','forEach()','reduce()'],
- zones:['New transformed array','New filtered array','undefined','Single accumulated value'],
- ans:{'map()':'New transformed array','filter()':'New filtered array','forEach()':'undefined','reduce()':'Single accumulated value'},
- e:'map transforms, filter selects, forEach has no return value, reduce accumulates to one value.'},
+items:['forEach()','map()','reduce()','filter()'],
+zones:['New transformed array','New filtered array','undefined','Single accumulated value'],
+ans:{'map()':'New transformed array','filter()':'New filtered array','forEach()':'undefined','reduce()':'Single accumulated value'},
+e:'map transforms, filter selects, forEach has no return value, reduce accumulates to one value.'},
 
 {t:'dd',q:'Match each function type to its key characteristic.',
- items:['Function declaration','Arrow function','IIFE','Function expression'],
- zones:['Fully hoisted','No own this binding','Runs immediately on definition','Not hoisted'],
- ans:{'Function declaration':'Fully hoisted','Arrow function':'No own this binding','IIFE':'Runs immediately on definition','Function expression':'Not hoisted'},
- e:'Declarations are hoisted, arrow functions lack their own this, IIFEs run immediately, expressions are not hoisted.'},
+items:['IIFE','Function declaration','Arrow function','Function expression'],
+zones:['Fully hoisted','No own this binding','Runs immediately on definition','Not hoisted'],
+ans:{'Function declaration':'Fully hoisted','Arrow function':'No own this binding','IIFE':'Runs immediately on definition','Function expression':'Not hoisted'},
+e:'Declarations are hoisted, arrow functions lack their own this, IIFEs run immediately, expressions are not hoisted.'},
 
 {t:'dd',q:'Classify each value as TRUTHY or FALSY in JavaScript.',
- items:['0','""','[]','null','1','"false"'],
- zones:['Truthy','Falsy'],
- ans:{'[]':'Truthy','1':'Truthy','"false"':'Truthy','0':'Falsy','""':'Falsy','null':'Falsy'},
- e:'Only 6 falsy values: false, 0, -0, 0n, "", null, undefined, NaN. Everything else — including [] and {} — is truthy.'},
+items:['"false"','null','""','0','[]','1'],
+zones:['Truthy','Falsy'],
+ans:{'[]':'Truthy','1':'Truthy','"false"':'Truthy','0':'Falsy','""':'Falsy','null':'Falsy'},
+e:'Only 6 falsy values: false, 0, -0, 0n, "", null, undefined, NaN. Everything else — including [] and {} — is truthy.'},
 
 {t:'dd',q:'Match each DOM method to what it returns.',
- items:['getElementById()','querySelectorAll()','querySelector()','getElementsByClassName()'],
- zones:['Single element or null (by ID)','Static NodeList','First matching element or null','Live HTMLCollection'],
- ans:{'getElementById()':'Single element or null (by ID)','querySelectorAll()':'Static NodeList','querySelector()':'First matching element or null','getElementsByClassName()':'Live HTMLCollection'},
- e:'getElementById=one element, querySelectorAll=static NodeList, querySelector=first match, getElementsByClassName=live collection.'},
+items:['querySelector()','getElementById()','getElementsByClassName()','querySelectorAll()'],
+zones:['Single element or null (by ID)','Static NodeList','First matching element or null','Live HTMLCollection'],
+ans:{'getElementById()':'Single element or null (by ID)','querySelectorAll()':'Static NodeList','querySelector()':'First matching element or null','getElementsByClassName()':'Live HTMLCollection'},
+e:'getElementById=one element, querySelectorAll=static NodeList, querySelector=first match, getElementsByClassName=live collection.'},
 
 {t:'dd',q:'Match each event phase to its correct description.',
- items:['Capture phase','Target phase','Bubble phase'],
- zones:['Event travels DOWN from document to target','Event fires on the exact target element','Event travels UP from target to document'],
- ans:{'Capture phase':'Event travels DOWN from document to target','Target phase':'Event fires on the exact target element','Bubble phase':'Event travels UP from target to document'},
- e:'Events travel in three phases: capture (down), target (fires), then bubble (up). Most listeners fire in the bubble phase by default.'},
+items:['Target phase','Capture phase','Bubble phase'],
+zones:['Event travels DOWN from document to target','Event fires on the exact target element','Event travels UP from target to document'],
+ans:{'Capture phase':'Event travels DOWN from document to target','Target phase':'Event fires on the exact target element','Bubble phase':'Event travels UP from target to document'},
+e:'Events travel in three phases: capture (down), target (fires), then bubble (up). Most listeners fire in the bubble phase by default.'},
 
 {t:'dd',q:'Match each async concept to its correct description.',
- items:['Promise','async/await','Callback','Event loop'],
- zones:['Object representing future completion/failure','Syntactic sugar over Promises','Function passed to run later','Checks queue when call stack is empty'],
- ans:{'Promise':'Object representing future completion/failure','async/await':'Syntactic sugar over Promises','Callback':'Function passed to run later','Event loop':'Checks queue when call stack is empty'},
- e:'Callbacks came first, then Promises, then async/await as sugar. The event loop coordinates all async execution.'},
+items:['Callback','Promise','Event loop','async/await'],
+zones:['Object representing future completion/failure','Syntactic sugar over Promises','Function passed to run later','Checks queue when call stack is empty'],
+ans:{'Promise':'Object representing future completion/failure','async/await':'Syntactic sugar over Promises','Callback':'Function passed to run later','Event loop':'Checks queue when call stack is empty'},
+e:'Callbacks came first, then Promises, then async/await as sugar. The event loop coordinates all async execution.'},
 
 {t:'dd',q:'Match each SCD (Slowly Changing Dimension) type to its strategy. (These also appear in Data Warehousing!)',
- items:['Overwrite the old value','Insert a new row with history','Add an old-value and new-value column'],
- zones:['SCD Type 1','SCD Type 2','SCD Type 3'],
- ans:{'Overwrite the old value':'SCD Type 1','Insert a new row with history':'SCD Type 2','Add an old-value and new-value column':'SCD Type 3'},
- e:'Type 1 destroys history by overwriting. Type 2 preserves full history via new rows. Type 3 tracks one previous value with an extra column.'},
+items:['Add old-value and new-value column','Overwrite the old value','Insert a new row with history'],
+zones:['SCD Type 1','SCD Type 2','SCD Type 3'],
+ans:{'Overwrite the old value':'SCD Type 1','Insert a new row with history':'SCD Type 2','Add old and new value columns':'SCD Type 3'},
+e:'Type 1 destroys history by overwriting. Type 2 preserves full history via new rows. Type 3 tracks one previous value with an extra column.'},
 
 {t:'dd',q:'Match each ES6+ feature to its correct syntax example.',
- items:['Destructuring','Spread','Rest parameter','Template literal','Default parameter'],
- zones:['const {name} = obj','[...arr]','function f(...args)','`Hello ${name}`','function f(x = 0)'],
- ans:{'Destructuring':'const {name} = obj','Spread':'[...arr]','Rest parameter':'function f(...args)','Template literal':'`Hello ${name}`','Default parameter':'function f(x = 0)'},
- e:'All are core ES6+ syntax you must know: destructuring, spread, rest, template literals, and default params.'},
+items:['Template literal','Destructuring','Default parameter','Spread','Rest parameter'],
+zones:['const {name} = obj','[...arr]','function f(...args)','Hello ${name}','function f(x = 0)'],
+ans:{'Destructuring':'const {name} = obj','Spread':'[...arr]','Rest parameter':'function f(...args)','Template literal':'Hello ${name}','Default parameter':'function f(x = 0)'},
+e:'All are core ES6+ syntax you must know: destructuring, spread, rest, template literals, and default params.'},
 
 {t:'dd',q:'Match each Promise static method to its behaviour.',
- items:['Promise.all()','Promise.race()','Promise.allSettled()','Promise.any()'],
- zones:['Rejects if ANY promise rejects','Resolves/rejects with FIRST settled','Waits for ALL regardless of outcome','Resolves with FIRST fulfilled'],
- ans:{'Promise.all()':'Rejects if ANY promise rejects','Promise.race()':'Resolves/rejects with FIRST settled','Promise.allSettled()':'Waits for ALL regardless of outcome','Promise.any()':'Resolves with FIRST fulfilled'},
- e:'all=fail-fast, race=first settled wins, allSettled=wait for all, any=first success wins.'},
+items:['Promise.any()','Promise.allSettled()','Promise.race()','Promise.all()'],
+zones:['Rejects if ANY promise rejects','Resolves/rejects with FIRST settled','Waits for ALL regardless of outcome','Resolves with FIRST fulfilled'],
+ans:{'Promise.all()':'Rejects if ANY promise rejects','Promise.race()':'Resolves/rejects with FIRST settled','Promise.allSettled()':'Waits for ALL regardless of outcome','Promise.any()':'Resolves with FIRST fulfilled'},
+e:'all=fail-fast, race=first settled wins, allSettled=wait for all, any=first success wins.'},
 
 {t:'dd',q:'Classify each as mutating (changes original) or non-mutating (returns new).',
- items:['push()','map()','sort()','filter()','pop()','slice()'],
- zones:['Mutates original array','Returns new array / value'],
- ans:{'push()':'Mutates original array','sort()':'Mutates original array','pop()':'Mutates original array','map()':'Returns new array / value','filter()':'Returns new array / value','slice()':'Returns new array / value'},
- e:'Mutating: push, pop, shift, unshift, splice, sort, reverse, fill. Non-mutating: map, filter, slice, concat, reduce, find.'},
+items:['pop()','sort()','push()','slice()','map()','filter()'],
+zones:['Mutates original array','Returns new array / value'],
+ans:{'push()':'Mutates original array','sort()':'Mutates original array','pop()':'Mutates original array','map()':'Returns new array / value','filter()':'Returns new array / value','slice()':'Returns new array / value'},
+e:'Mutating: push, pop, shift, unshift, splice, sort, reverse, fill. Non-mutating: map, filter, slice, concat, reduce, find.'},
 
 {t:'dd',q:'Match each scope type to its correct definition.',
- items:['Global scope','Function scope','Block scope','Lexical scope'],
- zones:['Accessible everywhere in the program','Only inside the function it was declared in','Only inside the nearest { } block','Determined by where code is written'],
- ans:{'Global scope':'Accessible everywhere in the program','Function scope':'Only inside the function it was declared in','Block scope':'Only inside the nearest { } block','Lexical scope':'Determined by where code is written'},
- e:'Understanding all four scope types is essential for avoiding bugs in JavaScript.'},
+items:['Lexical scope','Global scope','Function scope','Block scope'],
+zones:['Accessible everywhere in the program','Only inside the function it was declared in','Only inside the nearest { } block','Determined by where code is written'],
+ans:{'Global scope':'Accessible everywhere in the program','Function scope':'Only inside the function it was declared in','Block scope':'Only inside the nearest { } block','Lexical scope':'Determined by where code is written'},
+e:'Understanding all four scope types is essential for avoiding bugs in JavaScript.'},
 
 {t:'dd',q:'Match each classList method to its effect.',
- items:['classList.add()','classList.remove()','classList.toggle()','classList.contains()'],
- zones:['Adds a class to the element','Removes a class from the element','Adds if absent, removes if present','Returns true/false if class exists'],
- ans:{'classList.add()':'Adds a class to the element','classList.remove()':'Removes a class from the element','classList.toggle()':'Adds if absent, removes if present','classList.contains()':'Returns true/false if class exists'},
- e:'classList methods are the clean way to manage CSS classes in JavaScript without corrupting existing class lists.'},
+items:['classList.remove()','classList.contains()','classList.add()','classList.toggle()'],
+zones:['Adds a class to the element','Removes a class from the element','Adds if absent, removes if present','Returns true/false if class exists'],
+ans:{'classList.add()':'Adds a class to the element','classList.remove()':'Removes a class from the element','classList.toggle()':'Adds if absent, removes if present','classList.contains()':'Returns true/false if class exists'},
+e:'classList methods are the clean way to manage CSS classes in JavaScript without corrupting existing class lists.'},
 
 {t:'dd',q:'Place these JavaScript execution queue concepts in priority order (highest first).',
- items:['Synchronous code','Microtask queue (Promises)','Macrotask queue (setTimeout)'],
- zones:['Priority 1 — runs first','Priority 2 — runs second','Priority 3 — runs last'],
- ans:{'Synchronous code':'Priority 1 — runs first','Microtask queue (Promises)':'Priority 2 — runs second','Macrotask queue (setTimeout)':'Priority 3 — runs last'},
- e:'Sync runs first, then microtasks (Promises, queueMicrotask), then macrotasks (setTimeout, setInterval, I/O).'},
+items:['Macrotask queue (setTimeout)','Microtask queue (Promises)','Synchronous code'],
+zones:['Priority 1 — runs first','Priority 2 — runs second','Priority 3 — runs last'],
+ans:{'Synchronous code':'Priority 1 — runs first','Microtask queue (Promises)':'Priority 2 — runs second','Macrotask queue (setTimeout)':'Priority 3 — runs last'},
+e:'Sync runs first, then microtasks (Promises, queueMicrotask), then macrotasks (setTimeout, setInterval, I/O).'},
 
 {t:'dd',q:'Match each Object static method to what it returns.',
- items:['Object.keys()','Object.values()','Object.entries()','Object.freeze()'],
- zones:['Array of property names','Array of property values','Array of [key, value] pairs','Immutable frozen object'],
- ans:{'Object.keys()':'Array of property names','Object.values()':'Array of property values','Object.entries()':'Array of [key, value] pairs','Object.freeze()':'Immutable frozen object'},
- e:'keys/values/entries let you iterate objects. freeze() locks an object against any future modifications.'},
+items:['Object.values()','Object.keys()','Object.entries()','Object.freeze()'],
+zones:['Array of property names','Array of property values','Array of [key, value] pairs','Immutable frozen object'],
+ans:{'Object.keys()':'Array of property names','Object.values()':'Array of property values','Object.entries()':'Array of [key, value] pairs','Object.freeze()':'Immutable frozen object'},
+e:'keys/values/entries let you iterate objects. freeze() locks an object against any future modifications.'},
 
 {t:'dd',q:'Match each event listener option to its effect.',
- items:['{ once: true }','{ passive: true }','{ capture: true }'],
- zones:['Handler fires only once then is removed','Hints browser: no preventDefault — improves scroll performance','Handler fires in capture phase (going down)'],
- ans:{'{ once: true }':'Handler fires only once then is removed','{ passive: true }':'Hints browser: no preventDefault — improves scroll performance','{ capture: true }':'Handler fires in capture phase (going down)'},
- e:'once, passive, and capture are the three key addEventListener options that change how and when the handler fires.'},
+items:['{ capture: true }','{ once: true }','{ passive: true }'],
+zones:['Handler fires only once then is removed','Hints browser: no preventDefault — improves scroll performance','Handler fires in capture phase (going down)'],
+ans:{'{ once: true }':'Handler fires only once then is removed','{ passive: true }':'Hints browser: no preventDefault — improves scroll performance','{ capture: true }':'Handler fires in capture phase (going down)'},
+e:'once, passive, and capture are the three key addEventListener options that change how and when the handler fires.'},
 
 {t:'dd',q:'Match each JavaScript concept to its correct module syntax.',
- items:['Named export','Default export','Named import','Default import','Import all'],
- zones:['export const x = 1','export default class Foo {}','import { x } from "./mod"','import Foo from "./mod"','import * as Mod from "./mod"'],
- ans:{'Named export':'export const x = 1','Default export':'export default class Foo {}','Named import':'import { x } from "./mod"','Default import':'import Foo from "./mod"','Import all':'import * as Mod from "./mod"'},
- e:'ES6 modules: named exports/imports use {}, default exports/imports do not. import * imports everything into a namespace.'},
+items:['Named import','Default import','Named export','Import all','Default export'],
+zones:['export const x = 1','export default class Foo {}','import { x } from "./mod"','import Foo from "./mod"','import * as Mod from "./mod"'],
+ans:{'Named export':'export const x = 1','Default export':'export default class Foo {}','Named import':'import { x } from "./mod"','Default import':'import Foo from "./mod"','Import all':'import * as Mod from "./mod"'},
+e:'ES6 modules: named exports/imports use {}, default exports/imports do not. import * imports everything into a namespace.'},
 
 {t:'dd',q:'Match each part of the Event Loop architecture to its role.',
- items:['Call Stack','Heap','Web APIs','Microtask Queue','Macrotask Queue'],
- zones:['Where functions execute (LIFO)','Memory storage for objects','Browser-provided async facilities','Promise callbacks — high priority','setTimeout/setInterval — lower priority'],
- ans:{'Call Stack':'Where functions execute (LIFO)','Heap':'Memory storage for objects','Web APIs':'Browser-provided async facilities','Microtask Queue':'Promise callbacks — high priority','Macrotask Queue':'setTimeout/setInterval — lower priority'},
- e:'The event loop architecture is the foundation of async JS: call stack runs sync code, web APIs handle async work, and queues hold callbacks waiting to run.'},
-];
+items:['Heap','Call Stack','Microtask Queue','Web APIs','Macrotask Queue'],
+zones:['Where functions execute (LIFO)','Memory storage for objects','Browser-provided async facilities','Promise callbacks — high priority','setTimeout/setInterval — lower priority'],
+ans:{'Call Stack':'Where functions execute (LIFO)','Heap':'Memory storage for objects','Web APIs':'Browser-provided async facilities','Microtask Queue':'Promise callbacks — high priority','Macrotask Queue':'setTimeout/setInterval — lower priority'},
+e:'The event loop architecture is the foundation of async JS: call stack runs sync code, web APIs handle async work, and queues hold callbacks waiting to run.'}
+]
 
 // ══════════════════════════════════════════════════════
 //  SECTIONS CONFIG
 // ══════════════════════════════════════════════════════
 const SECTIONS = [
-  {id:'core',   icon:'📦', title:'Core Language & Variables', desc:'Q 1–15  ·  Variables, types, operators', color:'#818cf8', start:0,  end:14},
-  {id:'funcs',  icon:'⚡', title:'Functions',                  desc:'Q 16–25  ·  Declarations, arrow, closures', color:'#a78bfa', start:15, end:24},
-  {id:'arrays', icon:'[ ]', title:'Arrays',                   desc:'Q 26–37  ·  Methods, iteration, mutation',  color:'#34d399', start:25, end:36},
-  {id:'objects',icon:'{ }', title:'Objects & Classes',        desc:'Q 38–50  ·  Destructuring, OOP, prototypes', color:'#f59e0b', start:37, end:49},
-  {id:'dom',    icon:'🌐', title:'The DOM',                   desc:'Q 51–60  ·  Selection, manipulation, events',color:'#38bdf8', start:50, end:59},
-  {id:'tf',     icon:'✓✗', title:'True or False',             desc:'Q 61–80  ·  All topics',                    color:'#fb923c', start:60, end:79},
-  {id:'dd',     icon:'⇄',  title:'Drag & Drop',               desc:'Q 81–100  ·  Matching & classification',    color:'#f472b6', start:80, end:99},
+  {name:'Core Language & Variables', icon:'📦', color:'#818cf8', start:0,  end:14, desc:'Variables, types, operators'},
+  {name:'Functions',                 icon:'⚡', color:'#a78bfa', start:15, end:24, desc:'Declarations, arrow functions, closures'},
+  {name:'Arrays',                    icon:'[ ]', color:'#34d399', start:25, end:36, desc:'Methods, iteration, mutation'},
+  {name:'Objects & Classes',         icon:'{ }', color:'#f59e0b', start:37, end:49, desc:'Destructuring, OOP, prototypes'},
+  {name:'The DOM',                   icon:'🌐', color:'#38bdf8', start:50, end:59, desc:'Selection, manipulation, events'},
+  {name:'True or False',             icon:'✓✗', color:'#fb923c', start:60, end:79, desc:'All topics'},
+  {name:'Drag & Drop',               icon:'⇄', color:'#f472b6', start:80, end:99, desc:'Matching & classification'}
 ];
 
 // ══════════════════════════════════════════════════════
@@ -644,197 +644,197 @@ let tfSel = null;
 let ddPlacements = {};
 let ddDragging = null;
 
-// ══════════════════════════════════════════════════════
-//  STATS
-// ══════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// STATS
+// ════════════════════════════════════════════════════════════════
 function updateStats() {
-  const vals = Object.values(answered);
-  const correct = vals.filter(v => v.correct).length;
-  const done = vals.length;
-  const wrong = done - correct;
-  const pct = done > 0 ? Math.round(correct / done * 100) : null;
+  let correct = 0, wrong = 0;
+  Object.values(answered).forEach(a => a.correct ? correct++ : wrong++);
+  const total = Q.length;
+  const answered_count = correct + wrong;
   document.getElementById('sCorrect').textContent = correct;
   document.getElementById('sWrong').textContent = wrong;
-  document.getElementById('sRemain').textContent = 100 - done;
-  document.getElementById('sScore').textContent = pct !== null ? pct + '%' : '0%';
-  document.getElementById('progBar').style.width = Math.round(done / 100 * 100) + '%';
+  document.getElementById('sRemain').textContent = total - answered_count;
+  document.getElementById('sScore').textContent = answered_count > 0 ? Math.round(correct/answered_count*100)+'%' : '0%';
+  document.getElementById('progBar').style.width = (answered_count/total*100)+'%';
 }
+updateStats();
 
-// ══════════════════════════════════════════════════════
-//  HOME
-// ══════════════════════════════════════════════════════
-function goHome() {
+// ════════════════════════════════════════════════════════════════
+// HOME
+// ════════════════════════════════════════════════════════════════
+function renderHome() {
   document.getElementById('homeView').style.display = 'block';
   document.getElementById('quizView').style.display = 'none';
-  renderHome();
-}
-
-function renderHome() {
-  updateStats();
-  const container = document.getElementById('secCards');
-  container.innerHTML = '';
+  const cont = document.getElementById('secCards');
+  cont.innerHTML = '';
   SECTIONS.forEach((sec, idx) => {
     const total = sec.end - sec.start + 1;
-    let done = 0, correct = 0;
-    for (let qi = sec.start; qi <= sec.end; qi++) {
-      if (answered[qi] !== undefined) { done++; if (answered[qi].correct) correct++; }
+    let correct = 0, attempted = 0;
+    for (let i = sec.start; i <= sec.end; i++) {
+      if (answered[i] !== undefined) { attempted++; if (answered[i].correct) correct++; }
     }
-    const pct = Math.round(done / total * 100);
-    const complete = done === total;
-    const inprog = done > 0 && !complete;
-
+    const pct = total > 0 ? Math.round(attempted/total*100) : 0;
     const card = document.createElement('button');
     card.className = 'sec-card';
-    if (complete) { card.style.borderColor = '#22c55e'; card.style.background = '#0d1a0f'; }
-    else if (inprog) { card.style.borderColor = sec.color + '60'; }
-
-    card.innerHTML = `
-      <div class="sc-icon" style="background:${complete ? '#22c55e' : sec.color + '22'};color:${complete ? '#fff' : sec.color}">${complete ? '✓' : sec.icon}</div>
-      <div class="sc-body">
-        <div class="sc-title">${sec.title}</div>
-        <div class="sc-desc">${sec.desc} &nbsp;·&nbsp; ${total} questions</div>
-        <div class="sc-rail"><div class="sc-fill" style="width:${pct}%;background:${complete ? '#22c55e' : sec.color}"></div></div>
-        <div class="sc-lbl">${done}/${total} answered${complete ? ' · Complete ✓' : inprog ? ` · ${correct} correct so far` : ''}</div>
-      </div>
-      <div class="sc-chev">${complete ? '↺' : '›'}</div>`;
     card.onclick = () => openSection(idx);
-    container.appendChild(card);
+    card.innerHTML = `
+      <div class="sc-icon" style="background:${sec.color}">${sec.icon}</div>
+      <div class="sc-body">
+        <div class="sc-title">${sec.name}</div>
+        <div class="sc-desc">${sec.desc}</div>
+        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${pct}%;background:${sec.color}"></div></div>
+        <div class="sc-label">${attempted}/${total} attempted &nbsp;·&nbsp; ${correct} correct</div>
+      </div>
+      <div class="sc-arrow">›</div>`;
+    cont.appendChild(card);
   });
+  updateStats();
 }
 
 function resetAll() {
-  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
   answered = {};
   save();
   renderHome();
+  updateStats();
 }
 
-// ══════════════════════════════════════════════════════
-//  OPEN SECTION
-// ══════════════════════════════════════════════════════
+function goHome() { renderHome(); }
+
+// ════════════════════════════════════════════════════════════════
+// OPEN SECTION
+// ════════════════════════════════════════════════════════════════
 function openSection(idx) {
   activeSec = SECTIONS[idx];
-  const unanswered = [], ansrd = [];
-  for (let qi = activeSec.start; qi <= activeSec.end; qi++) {
-    answered[qi] !== undefined ? ansrd.push(qi) : unanswered.push(qi);
-  }
-  qList = [...unanswered, ...ansrd];
+  qList = [];
+  for (let i = activeSec.start; i <= activeSec.end; i++) qList.push(i);
   qPos = 0;
   mcSel = null; tfSel = null; ddPlacements = {};
-
   document.getElementById('homeView').style.display = 'none';
   document.getElementById('quizView').style.display = 'block';
-  document.getElementById('qnavTitle').textContent = activeSec.title;
+  document.getElementById('qnavTitle').textContent = activeSec.name;
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  document.getElementById('btnResults').style.display = 'none';
   document.getElementById('qprogFill').style.background = activeSec.color;
-  document.getElementById('btnResults').style.background = activeSec.color;
-
   renderQ();
 }
 
-// ══════════════════════════════════════════════════════
-//  RENDER QUESTION
-// ══════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// RENDER QUESTION
+// ════════════════════════════════════════════════════════════════
 function renderQ() {
-  mcSel = null; tfSel = null; ddPlacements = {};
-  updateStats();
-
-  const allDone = qList.every(qi => answered[qi] !== undefined);
-  document.getElementById('qnavCount').textContent = (qPos + 1) + ' / ' + qList.length;
-  document.getElementById('qprogFill').style.width = Math.round(qPos / qList.length * 100) + '%';
-  document.getElementById('btnPrev').disabled = qPos === 0;
-  document.getElementById('btnResults').style.display = allDone ? 'inline-block' : 'none';
-
   const qi = qList[qPos];
   const q = Q[qi];
-  const area = document.getElementById('questionArea');
+  mcSel = null; tfSel = null; ddPlacements = {};
 
+  const total = qList.length;
+  document.getElementById('qnavCount').textContent = `${qPos+1} / ${total}`;
+  document.getElementById('qprogFill').style.width = ((qPos+1)/total*100)+'%';
+
+  const isLast = qPos === total - 1;
+  document.getElementById('btnPrev').disabled = qPos === 0;
+  document.getElementById('btnResults').style.display = isLast ? 'inline-block' : 'none';
+  if (isLast) document.getElementById('btnResults').style.background = activeSec.color;
+
+  const area = document.getElementById('questionArea');
   if (q.t === 'mc') renderMC(area, q, qi);
   else if (q.t === 'tf') renderTF(area, q, qi);
-  else renderDD(area, q, qi);
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  else if (q.t === 'dd') renderDD(area, q, qi);
 }
 
 function prevQ() { if (qPos > 0) { qPos--; renderQ(); } }
-function nextQ() { if (qPos + 1 < qList.length) { qPos++; renderQ(); } else showComplete(); }
 
-// ══════════════════════════════════════════════════════
-//  MULTIPLE CHOICE
-// ══════════════════════════════════════════════════════
+function nextQ() {
+  if (qPos + 1 < qList.length) { qPos++; renderQ(); }
+  else showComplete();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MC
+// ════════════════════════════════════════════════════════════════
 function renderMC(area, q, qi) {
   const locked = answered[qi] !== undefined;
   const saved = answered[qi];
-  const LETTERS = ['A', 'B', 'C', 'D'];
+  const letters = ['A','B','C','D'];
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : ' wrong';
 
-  let optsHtml = '';
-  q.o.forEach((opt, j) => {
+  const codeBlock = q.code ? `<div class="q-code">${escHtml(q.code)}</div>` : '';
+
+  const optsHtml = q.o.map((opt,i) => {
     let cls = 'opt-btn';
     if (locked) {
-      if (j === q.a) cls += ' opt-correct';
-      else if (saved && j === saved.selection && !saved.correct) cls += ' opt-wrong';
-    }
-    optsHtml += `<button class="${cls}" onclick="selectMC(${qi},${j})" ${locked ? 'disabled' : ''}>
-      <span class="opt-letter">${LETTERS[j]}</span>${esc(opt)}</button>`;
-  });
+      if (i === q.a) cls += ' opt-correct';
+      else if (i === saved.selection && i !== q.a) cls += ' opt-wrong';
+    } else if (mcSel === i) cls += ' selected';
+    return `<button class="${cls}" onclick="selectMC(${qi},${i})" ${locked?'disabled':''}>
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${escHtml(opt)}</span>
+    </button>`;
+  }).join('');
 
   area.innerHTML = `
-    <div class="q-card${locked ? (saved.correct ? ' correct' : ' wrong') : ''}">
-      <div class="q-num" style="color:${activeSec.color}">Q${qi + 1}</div>
-      <div class="q-text">${esc(q.q)}</div>
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; Multiple Choice</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      ${codeBlock}
       <div class="opts">${optsHtml}</div>
-      ${locked ? fbHtml(saved.correct, q.e) : ''}
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
       <div class="q-footer">
         ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkMC(${qi})" disabled>Check answer</button>` : ''}
-        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color};color:#0f1117">Next →</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
       </div>
     </div>`;
 }
 
-function selectMC(qi, j) {
+function selectMC(qi, i) {
   if (answered[qi] !== undefined) return;
-  mcSel = j;
-  document.querySelectorAll('.opt-btn').forEach((b, k) => {
-    b.className = 'opt-btn' + (k === j ? ' selected' : '');
-  });
-  const btn = document.getElementById(`btnCheck_${qi}`);
-  if (btn) btn.disabled = false;
+  mcSel = i;
+  renderMC(document.getElementById('questionArea'), Q[qi], qi);
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
 }
 
 function checkMC(qi) {
   const q = Q[qi];
   if (mcSel === null || answered[qi] !== undefined) return;
-  answered[qi] = { correct: mcSel === q.a, selection: mcSel };
+  const correct = mcSel === q.a;
+  answered[qi] = {correct, selection: mcSel};
   save();
   renderMC(document.getElementById('questionArea'), q, qi);
   updateStats();
 }
 
-// ══════════════════════════════════════════════════════
-//  TRUE / FALSE
-// ══════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// TF
+// ════════════════════════════════════════════════════════════════
 function renderTF(area, q, qi) {
   const locked = answered[qi] !== undefined;
   const saved = answered[qi];
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : ' wrong';
 
-  function cls(val) {
-    if (!locked) return 'tf-btn' + (tfSel === val ? ' selected' : '');
-    if (val === q.a) return 'tf-btn tf-correct';
-    if (saved && val === saved.selection && !saved.correct) return 'tf-btn tf-wrong';
-    return 'tf-btn';
+  function tfCls(val) {
+    let c = 'tf-btn';
+    if (locked) {
+      if (val === q.a) c += ' tf-correct';
+      else if (val === saved.selection && val !== q.a) c += ' tf-wrong';
+    } else if (tfSel === val) c += ' selected';
+    return c;
   }
 
   area.innerHTML = `
-    <div class="q-card${locked ? (saved.correct ? ' correct' : ' wrong') : ''}">
-      <div class="q-num" style="color:${activeSec.color}">Q${qi + 1}</div>
-      <div class="q-text">${esc(q.q)}</div>
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; True / False</div>
+      <div class="q-text">${escHtml(q.q)}</div>
       <div class="tf-row">
-        <button class="${cls(true)}"  onclick="selectTF(${qi},true)"  ${locked ? 'disabled' : ''}>✓ True</button>
-        <button class="${cls(false)}" onclick="selectTF(${qi},false)" ${locked ? 'disabled' : ''}>✗ False</button>
+        <button id="tf_${qi}_true"  class="${tfCls(true)}"  onclick="selectTF(${qi},true)"  ${locked?'disabled':''}>✓ True</button>
+        <button id="tf_${qi}_false" class="${tfCls(false)}" onclick="selectTF(${qi},false)" ${locked?'disabled':''}>✗ False</button>
       </div>
-      ${locked ? fbHtml(saved.correct, q.e) : ''}
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
       <div class="q-footer">
         ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkTF(${qi})" disabled>Check answer</button>` : ''}
-        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color};color:#0f1117">Next →</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
       </div>
     </div>`;
 }
@@ -842,72 +842,66 @@ function renderTF(area, q, qi) {
 function selectTF(qi, val) {
   if (answered[qi] !== undefined) return;
   tfSel = val;
-  document.querySelectorAll('.tf-btn').forEach(b => b.className = 'tf-btn');
-  document.querySelectorAll('.tf-btn')[val ? 0 : 1].className = 'tf-btn selected';
-  const btn = document.getElementById(`btnCheck_${qi}`);
-  if (btn) btn.disabled = false;
+  document.getElementById(`tf_${qi}_true`).className  = 'tf-btn' + (val === true  ? ' selected' : '');
+  document.getElementById(`tf_${qi}_false`).className = 'tf-btn' + (val === false ? ' selected' : '');
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
 }
 
 function checkTF(qi) {
   const q = Q[qi];
   if (tfSel === null || answered[qi] !== undefined) return;
-  answered[qi] = { correct: tfSel === q.a, selection: tfSel };
+  const correct = tfSel === q.a;
+  answered[qi] = {correct, selection: tfSel};
   save();
   renderTF(document.getElementById('questionArea'), q, qi);
   updateStats();
 }
 
-// ══════════════════════════════════════════════════════
-//  DRAG & DROP
-// ══════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// DRAG & DROP
+// ════════════════════════════════════════════════════════════════
 function renderDD(area, q, qi) {
   const locked = answered[qi] !== undefined;
   const saved = answered[qi];
-  if (locked && saved.selection) ddPlacements = { ...saved.selection };
+  if (locked && saved.selection) ddPlacements = {...saved.selection};
 
   const bankItems = locked ? [] : q.items.filter(item => !ddPlacements[item]);
 
   function zoneItems(zone) {
-    if (locked) return q.items.filter(item => (saved.selection || {})[item] === zone);
+    if (locked) return q.items.filter(item => (saved.selection||{})[item] === zone);
     return q.items.filter(item => ddPlacements[item] === zone);
   }
 
   function itemHtml(item, zone) {
     let cls = 'dd-item';
-    if (locked && zone) {
-      cls += q.ans[item] === zone ? ' item-correct' : ' item-wrong';
+    if (locked) {
+      cls += (q.ans[item] === zone) ? ' item-correct' : ' item-wrong';
     }
     return `<div class="${cls}" draggable="${!locked}"
-      ondragstart="ddStart(event,${JSON.stringify(item)})"
-      ondragend="ddEnd(event)">${esc(item)}</div>`;
+      ondragstart="ddStart(event,'${esc(item)}')"
+      ondragend="ddEnd(event)">${escHtml(item)}</div>`;
   }
 
   const bankHtml = bankItems.map(item => itemHtml(item, null)).join('');
-
   const zonesHtml = q.zones.map(zone => `
-    <div class="dd-zone" ondragover="ddOver(event,${JSON.stringify(zone)})"
-      ondragleave="ddLeave(event,${JSON.stringify(zone)})"
-      ondrop="ddDrop(event,${qi},${JSON.stringify(zone)})">
-      <div class="dd-zone-lbl">${esc(zone)}</div>
-      <div class="dd-items">${zoneItems(zone).map(item => itemHtml(item, zone)).join('')}</div>
+    <div class="dd-zone" id="ddz_${qi}_${esc(zone)}"
+      ondragover="ddOver(event,'${esc(zone)}')"
+      ondragleave="ddLeave(event,'${esc(zone)}')"
+      ondrop="ddDrop(event,${qi},'${esc(zone)}')">
+      <div class="dd-zone-label">${escHtml(zone)}</div>
+      <div class="dd-items" id="ddi_${qi}_${esc(zone)}">${zoneItems(zone).map(item=>itemHtml(item,zone)).join('')}</div>
     </div>`).join('');
 
-  const allPlaced = q.items.every(item => ddPlacements[item]);
-
-  let cardCls = 'q-card';
-  if (locked) {
-    if (saved.correct) cardCls += ' correct';
-    else if (saved.numCorrect > 0) cardCls += ' partial';
-    else cardCls += ' wrong';
-  }
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : (saved.numCorrect>0?' partial':' wrong');
 
   area.innerHTML = `
-    <div class="${cardCls}">
-      <div class="q-num" style="color:${activeSec.color}">Q${qi + 1}</div>
-      <div class="q-text">${esc(q.q)}</div>
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; Drag &amp; Drop</div>
+      <div class="q-text">${escHtml(q.q)}</div>
       <div class="dd-area">
         <div class="dd-bank-wrap">
-          <div class="dd-bank-lbl">Drag from here</div>
+          <div class="dd-bank-label">Items to place</div>
           <div class="dd-bank" id="ddbank_${qi}"
             ondragover="ddOver(event,'__bank__')"
             ondragleave="ddLeave(event,'__bank__')"
@@ -915,48 +909,43 @@ function renderDD(area, q, qi) {
         </div>
         <div class="dd-zones">${zonesHtml}</div>
       </div>
-      ${locked ? fbHtml(saved.correct, q.e + (!saved.correct ? ` (${saved.numCorrect}/${q.items.length} correct)` : '')) : ''}
+      ${locked ? feedbackHtml(saved.correct, q.e + (saved.correct?'':` (${saved.numCorrect}/${q.items.length} correct)`)) : ''}
       <div class="q-footer">
-        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkDD(${qi})" ${allPlaced ? '' : 'disabled'}>Check answer</button>` : ''}
-        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color};color:#0f1117">Next →</button>` : ''}
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkDD(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
       </div>
     </div>`;
 }
 
 function ddStart(e, item) {
-  ddDragging = item;
-  setTimeout(() => { if (e.target) e.target.classList.add('dragging'); }, 0);
+  ddDraggingItem = item;
+  setTimeout(() => { const el = e.target; if (el) el.classList.add('dragging'); }, 0);
 }
-function ddEnd(e) { if (e.target) e.target.classList.remove('dragging'); }
+function ddEnd(e) { e.target.classList.remove('dragging'); }
 
 function ddOver(e, zone) {
   e.preventDefault();
-  const id = zone === '__bank__' ? 'ddbank_' + qList[qPos] : null;
-  if (id) { const el = document.getElementById(id); if (el) el.classList.add('dragover'); }
-  else {
-    document.querySelectorAll('.dd-zone').forEach(z => {
-      if (z.querySelector('.dd-zone-lbl') && z.querySelector('.dd-zone-lbl').textContent === zone)
-        z.classList.add('dragover');
-    });
-  }
+  const id = zone === '__bank__' ? 'ddbank_'+qList[qPos] : 'ddz_'+qList[qPos]+'_'+zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.add('dragover');
 }
 
 function ddLeave(e, zone) {
-  const id = zone === '__bank__' ? 'ddbank_' + qList[qPos] : null;
-  if (id) { const el = document.getElementById(id); if (el) el.classList.remove('dragover'); }
-  else {
-    document.querySelectorAll('.dd-zone').forEach(z => z.classList.remove('dragover'));
-  }
+  const id = zone === '__bank__' ? 'ddbank_'+qList[qPos] : 'ddz_'+qList[qPos]+'_'+zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('dragover');
 }
 
 function ddDrop(e, qi, zone) {
   e.preventDefault();
-  const q = Q[qi];
-  if (!ddDragging || answered[qi] !== undefined) return;
-  delete ddPlacements[ddDragging];
-  if (zone !== '__bank__') ddPlacements[ddDragging] = zone;
-  ddDragging = null;
-  renderDD(document.getElementById('questionArea'), q, qi);
+  if (!ddDraggingItem || answered[qi] !== undefined) return;
+  delete ddPlacements[ddDraggingItem];
+  if (zone !== '__bank__') ddPlacements[ddDraggingItem] = zone;
+  const allPlaced = Q[qi].items.every(item => ddPlacements[item]);
+  renderDD(document.getElementById('questionArea'), Q[qi], qi);
+  const btn = document.getElementById(`btnCheck_${qi}`);
+  if (btn) btn.disabled = !allPlaced;
+  ddDraggingItem = null;
 }
 
 function checkDD(qi) {
@@ -965,45 +954,45 @@ function checkDD(qi) {
   let numCorrect = 0;
   q.items.forEach(item => { if (ddPlacements[item] === q.ans[item]) numCorrect++; });
   const correct = numCorrect === q.items.length;
-  answered[qi] = { correct, selection: { ...ddPlacements }, numCorrect, total: q.items.length };
+  answered[qi] = {correct, selection:{...ddPlacements}, numCorrect, total:q.items.length};
   save();
   renderDD(document.getElementById('questionArea'), q, qi);
   updateStats();
 }
 
-// ══════════════════════════════════════════════════════
-//  COMPLETE SCREEN
-// ══════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// COMPLETE SCREEN
+// ════════════════════════════════════════════════════════════════
 function showComplete() {
   const sec = activeSec;
   let correct = 0, wrong = 0;
   for (let qi = sec.start; qi <= sec.end; qi++) {
-    if (answered[qi]) { answered[qi].correct ? correct++ : wrong++; }
+    if (answered[qi] !== undefined) { answered[qi].correct ? correct++ : wrong++; }
   }
   const total = sec.end - sec.start + 1;
-  const pct = Math.round(correct / total * 100);
-  let headline, sub, ringColor;
-  if (pct >= 90) { headline = 'Excellent! 🎓'; sub = 'Outstanding command of this topic.'; ringColor = '#22c55e'; }
-  else if (pct >= 75) { headline = 'Great work!'; sub = 'Solid understanding — review the misses to lock it in.'; ringColor = '#a3e635'; }
-  else if (pct >= 60) { headline = 'Good effort'; sub = 'You have the foundations — revisit the tricky ones.'; ringColor = '#f59e0b'; }
-  else { headline = 'Keep studying'; sub = 'Go back through the material and try again!'; ringColor = '#ef4444'; }
+  const pct = Math.round(correct/total*100);
+  let headline, sub;
+  if (pct>=90) { headline='Outstanding! 🎓'; sub='Excellent command of this topic!'; }
+  else if (pct>=75) { headline='Great work! 💪'; sub='Solid. Review missed questions to lock it in.'; }
+  else if (pct>=60) { headline='Good effort 👍'; sub='You have the foundations — revisit the tricky ones.'; }
+  else { headline='Keep studying 📖'; sub='Go back through the material and try again!'; }
 
   document.getElementById('questionArea').innerHTML = `
     <div class="complete-card">
-      <div class="score-ring" style="border-color:${ringColor}">
+      <div class="score-ring">
         <div class="score-num">${correct}</div>
         <div class="score-pct">${pct}%</div>
       </div>
       <div class="complete-title">${headline}</div>
       <div class="complete-sub">${sub}</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-val" style="color:#4ade80">${correct}</div><div class="stat-lbl">Correct</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:#f87171">${wrong}</div><div class="stat-lbl">Wrong</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:#94a3b8">${total - correct - wrong}</div><div class="stat-lbl">Skipped</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#16A34A">${correct}</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#DC2626">${wrong}</div><div class="stat-lbl">Wrong</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#0369A1">${total-correct-wrong}</div><div class="stat-lbl">Skipped</div></div>
       </div>
       <div class="complete-btns">
         <button class="btn-retry" onclick="retrySection()">↺ Retry section</button>
-        <button class="btn-home" onclick="goHome()">← All topics</button>
+        <button class="btn-home" onclick="goHome()">← All sections</button>
       </div>
     </div>`;
   document.getElementById('qnavCount').textContent = '';
@@ -1019,27 +1008,26 @@ function retrySection() {
   openSection(SECTIONS.indexOf(sec));
 }
 
-// ══════════════════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════════════════
-function fbHtml(correct, exp) {
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+function feedbackHtml(correct, exp) {
   const cls = correct ? 'correct' : 'wrong';
   const icon = correct ? '✓' : '✗';
   const label = correct ? 'Correct!' : 'Incorrect.';
-  return `<div class="feedback ${cls}">${icon} <strong>${label}</strong> ${esc(exp)}</div>`;
+  return `<div class="feedback ${cls}">${icon} <strong>${label}</strong> ${escHtml(exp)}</div>`;
 }
 
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function esc(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 }
 
-// ══════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
 renderHome();
 </script>
 </body>
