@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BC Prep</title>
+<link rel="icon" href="images\icon.png" type="image/png">
+<link rel="stylesheet" href="css\home_page_style.css">
+
+<body>
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-eye">BC STUDY PORTAL</div>
+    <h1>Bachelor of Computing</h1>
+    <div class="hdr-sub">
+      Semester 1 Revision Hub • Practice Quizzes • Progress Tracking
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <div class="dash-card">
+        <div class="dash-number">4</div>
+        <div class="dash-label">Modules</div>
+    </div>
+
+    <div class="dash-card">
+        <div class="dash-number">400+</div>
+        <div class="dash-label">Questions</div>
+    </div>
+
+    <div class="dash-card">
+        <div class="dash-number">∞</div>
+        <div class="dash-label">Practice Attempts</div>
+    </div>
+
+    </div>
+   </div>
+
+  </div>
+</div>
+
+<div class="main">
+  <!-- HOME -->
+  <div id="homeView">
+    <div class="home-title">Choose a section</div>
+    <div class="sec-cards" id="secCards"></div>
+
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quizView">
+    <div class="quiz-nav">
+      <button class="btn-back" onclick="goHome()">← Back</button>
+      <div class="qnav-title" id="qnavTitle"></div>
+      <div class="qnav-count" id="qnavCount"></div>
+    </div>
+    <div class="qprog-track"><div class="qprog-fill" id="qprogFill" style="width:0%"></div></div>
+    <div id="questionArea"></div>
+    <div class="nav-row">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">← Previous</button>
+      <button class="btn-results" id="btnResults" style="display:none" onclick="showComplete()">See results →</button>
+    </div>
+  </div>
+</div>
+
+<div class="sec-cards" id="secCards">
+
+  <button class="sec-card"
+          onclick="window.location.href='pages/DHW281.html'"    
+          style="border-color: rgb(203, 213, 225); background: rgb(255, 255, 255);">
+    <div class="sc-icon" style="background:#2563EB">📊</div>
+    <div class="sc-body">
+      <div class="sc-title">Data Warehousing 281</div>
+    </div>
+    <div class="sc-arrow">›</div>
+  </button>
+
+  <button class="sec-card"
+          onclick="window.location.href='pages/DBD281.html'"
+          style="border-color: rgb(203, 213, 225); background: rgb(255, 255, 255);">
+    <div class="sc-icon" style="background:#7C3AED">🛢️</div>
+    <div class="sc-body">
+      <div class="sc-title">Database Design 281</div>
+    </div>
+    <div class="sc-arrow">›</div>
+  </button>
+
+  <button class="sec-card"
+          onclick="window.location.href='pages/WPR281.html'"
+          style="border-color: rgb(203, 213, 225); background: rgb(255, 255, 255);">
+    <div class="sc-icon" style="background:#0EA5E9">🌐</div>
+    <div class="sc-body">
+      <div class="sc-title">Web Programming 281</div>
+    </div>
+    <div class="sc-arrow">›</div>
+  </button>
+
+    <button class="sec-card"
+          onclick="window.location.href='pages/PMM281.html'"
+          style="border-color: rgb(203, 213, 225); background: rgb(255, 255, 255);">
+    <div class="sc-icon" style="background:#F59E0B">📅</div>
+    <div class="sc-body">
+      <div class="sc-title">Project Management 281</div>
+    </div>
+    <div class="sc-arrow">›</div>
+  </button>
+
+</div>
+</body>
+</html>

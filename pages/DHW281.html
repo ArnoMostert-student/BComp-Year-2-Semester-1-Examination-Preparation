@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Warehousing Quiz</title>
+<link rel="icon" href="../images/icon.png" type="image/png">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-eye">EXAM PREPARATION</div>
+    <h1>Data Warehousing 281</h1>
+    <div class="hdr-sub">100 questions &nbsp;·&nbsp; Multiple choice, True/False, Drag &amp; Drop</div>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat"><div class="dot" style="background:#4ADE80"></div>Correct: <b id="sCorrect">0</b></div>
+      <div class="stat"><div class="dot" style="background:#F87171"></div>Wrong: <b id="sWrong">0</b></div>
+      <div class="stat"><div class="dot" style="background:#94A3B8"></div>Remaining: <b id="sRemain">100</b></div>
+      <div class="stat">Score: <b id="sScore">0%</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- HOME -->
+  <div id="homeView">
+    <div class="home-title">Choose a section</div>
+    <div class="home-sub">Progress saves automatically — pick up where you left off.</div>
+    <div class="sec-cards" id="secCards"></div>
+    <div class="reset-wrap">
+      <button class="btn-reset" onclick="resetAll()">↺ Reset all progress</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quizView">
+    <div class="quiz-nav">
+      <button class="btn-back" onclick="goHome()">← Back</button>
+      <div class="qnav-title" id="qnavTitle"></div>
+      <div class="qnav-count" id="qnavCount"></div>
+    </div>
+    <div class="qprog-track"><div class="qprog-fill" id="qprogFill" style="width:0%"></div></div>
+    <div id="questionArea"></div>
+    <div class="nav-row">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">← Previous</button>
+      <button class="btn-results" id="btnResults" style="display:none" onclick="showComplete()">See results →</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+const Q = [
+  // MC 1-60
+  {t:'mc',q:'What is the primary purpose of a data warehouse?',o:['To process day-to-day transactions','To support strategic analysis and decision-making','To store employee payroll data','To manage inventory in real time'],a:1,e:'Data warehouses are informational systems designed for strategic analysis, not daily transaction processing.'},
+  {t:'mc',q:'Which term describes the inability of organisations to access strategic information despite having large amounts of operational data?',o:['Data overload','Information crisis','Storage bottleneck','Query latency'],a:1,e:'The "information crisis" describes having lots of data but lacking the ability to derive strategic insights from it.'},
+  {t:'mc',q:'Which characteristic of strategic information means that every business factor has ONE and only one value across the enterprise?',o:['Integrated','Accessible','Credible','Timely'],a:2,e:'Credibility ensures a single consistent value for every business factor enterprise-wide.'},
+  {t:'mc',q:'Which of the following is an example of an OPERATIONAL system?',o:['Executive dashboard','Customer loyalty analytics','Order processing system','Market trend analysis tool'],a:2,e:'Order processing is a routine operational transaction system, not an analytical one.'},
+  {t:'mc',q:'What does "Time Variant" mean in the context of a data warehouse?',o:['Data expires after 30 days','The warehouse includes both current and historical data','Queries must be run during business hours','Data is updated every minute'],a:1,e:'Time variant means the warehouse stores data across time periods — both current and historical.'},
+  {t:'mc',q:'Ralph Kimball recommends implementing a data warehouse as:',o:['One large enterprise-wide system built top-down','A series of carefully architected Supermarts, one at a time','A single flat file extracted from the mainframe','Independent data marts with no shared dimensions'],a:1,e:"Kimball's bottom-up approach implements the warehouse as a series of Supermarts (coordinated data marts)."},
+  {t:'mc',q:'Which of these best describes a "dependent data mart"?',o:['A mart that operates independently with its own ETL','A mart sourced directly from the central data warehouse','A mart used only by the marketing department','A mart that does not use dimensional modeling'],a:1,e:'Dependent data marts derive their data from the central warehouse, ensuring consistency.'},
+  {t:'mc',q:"What is the first step in Ralph Kimball's four-step implementation approach?",o:['Conform and standardise all data','Build the ETL pipeline','Plan and define requirements at the corporate level','Implement the first data mart'],a:2,e:"Kimball's first step is planning and defining requirements at the overall corporate level."},
+  {t:'mc',q:'Which industry uses data warehousing primarily for route profitability and yield management?',o:['Retail','Financial','Airlines','Manufacturing'],a:2,e:'Airlines use data warehousing to analyse route profitability and optimise yield management.'},
+  {t:'mc',q:'What does ETL stand for?',o:['Enter, Test, Launch','Extract, Transform, Load','Evaluate, Track, Log','Export, Transfer, Link'],a:1,e:'ETL = Extract (pull from sources), Transform (cleanse/standardise), Load (insert into the warehouse).'},
+  {t:'mc',q:'Which user tier typically uses Executive Information Systems (EIS)?',o:['Junior analysts','Database administrators','Senior executives and managers','IT support staff'],a:2,e:'EIS provides high-level strategic information specifically for senior executives and managers.'},
+  {t:'mc',q:'Which schema type uses a central fact table surrounded by NON-normalised dimension tables?',o:['Snowflake schema','Galaxy schema','Star schema','Flat schema'],a:2,e:'The star schema has a central fact table surrounded by denormalised dimension tables — simple and fast.'},
+  {t:'mc',q:'In the Snowflake schema, dimension tables are:',o:['Denormalised into one flat table','Normalised into multiple related tables','Replaced by fact tables','Stored in a separate database'],a:1,e:'Snowflake extends the star by normalising (splitting out) dimension tables into multiple related tables.'},
+  {t:'mc',q:'What is stored in a FACT table?',o:['Descriptive attributes like product name','Measurable, quantitative metrics','Employee contact details','System configuration settings'],a:1,e:'Fact tables store quantitative measures — e.g., sales amount, quantity sold, revenue.'},
+  {t:'mc',q:'What is stored in a DIMENSION table?',o:['Financial totals and KPIs','Aggregated monthly summaries','Descriptive context such as product, date, or customer','Raw transaction logs'],a:2,e:'Dimension tables hold the descriptive attributes (context) used to slice and filter facts.'},
+  {t:'mc',q:'A "conformed dimension" is one that is:',o:['Specific to a single data mart','Shared and identically defined across multiple data marts','Updated in real time from operational systems','Encrypted for security compliance'],a:1,e:'Conformed dimensions are standardised and shared across multiple data marts, enabling cross-mart analysis.'},
+  {t:'mc',q:'Which ETL stage is responsible for cleansing, validating, and standardising data?',o:['Extract','Transform','Load','Index'],a:1,e:'The Transform stage cleanses data, applies business rules, and standardises it before loading.'},
+  {t:'mc',q:'Which OLAP delivery method is best suited for novice or casual users?',o:['Data mining','Statistical analysis','Ad hoc reports','Multidimensional analysis'],a:2,e:'Predefined ad hoc reports are designed for novice and casual users who need quick answers.'},
+  {t:'mc',q:'What does OLAP stand for?',o:['Online Linear Analysis Processing','Operational Load and Processing','Online Analytical Processing','Organised Large Array Processing'],a:2,e:'OLAP = Online Analytical Processing — technology for fast multidimensional data analysis.'},
+  {t:'mc',q:'Which of the following is NOT a feature of a data warehouse?',o:['Read-intensive','Time variant','Real-time continuous updates','Online access'],a:2,e:'Data warehouses are updated periodically in batches, not with real-time continuous updates like operational systems.'},
+  {t:'mc',q:'The "back room" of the data warehouse refers to which process?',o:['Report delivery','User authentication','The ETL process','Security management'],a:2,e:'Kimball coined the term "back room" for the ETL process — data preparation behind the scenes.'},
+  {t:'mc',q:'Which of the following best describes Business Intelligence (BI)?',o:['Software for automating invoices','Using data to study the past, assess the present, and predict the future','A type of database used for OLTP','A programming language for data analysis'],a:1,e:'BI is the enterprise ability to study history, understand the current situation, and predict/change future outcomes.'},
+  {t:'mc',q:'What does "Integrated" mean as a characteristic of strategic information?',o:['The system is connected to the internet','Data provides a single, enterprise-wide view','All databases are linked in real time','IT manages all data access centrally'],a:1,e:'"Integrated" means the warehouse provides a unified, enterprise-wide view of data from all sources.'},
+  {t:'mc',q:'In data warehousing, "Accessible" information means:',o:['Data can only be accessed by IT staff','Data is available via encrypted API only','Data is reachable through intuitive paths and responsive to analysis','Data access requires formal request forms'],a:2,e:'"Accessible" means users can reach data through intuitive paths and the system responds quickly to queries.'},
+  {t:'mc',q:'Which architecture approach builds a mammoth enterprise-wide warehouse first?',o:['Bottom-up approach','Kimball approach','Top-down approach','Supermart approach'],a:2,e:'Top-down (Inmon) approach builds the central enterprise warehouse first before creating data marts.'},
+  {t:'mc',q:'Which retail data warehousing activity focuses on building lasting customer relationships?',o:['Yield management','Customer loyalty programs','Route profitability analysis','Asset management'],a:1,e:'Retail data warehousing focuses on customer loyalty — tracking behaviour and personalising offers.'},
+  {t:'mc',q:'Data mining is used primarily to:',o:['Clean data during ETL','Generate predefined monthly reports','Discover hidden patterns in warehouse data','Manage database user permissions'],a:2,e:'Data mining uses specialised algorithms to find hidden patterns and relationships in warehouse data.'},
+  {t:'mc',q:'Which characteristic ensures information is available within the required decision timeframe?',o:['Integrated','Credible','Accessible','Timely'],a:3,e:'"Timely" means information is available within the stipulated timeframe needed for making the decision.'},
+  {t:'mc',q:'A data warehouse is described as "read-intensive" because:',o:['Users can only read, not write, to any system','It is optimised for querying data rather than frequent updates','All writes require administrator approval','Data is stored in read-only format permanently'],a:1,e:'Warehouses are optimised for SELECT queries (reads/analytics) rather than frequent INSERT/UPDATE operations.'},
+  {t:'mc',q:'What is the role of "User Independence" in a data warehouse?',o:['Users manage their own servers','IT no longer exists in the organisation','Users can interact directly with data without needing IT assistance',"Users are isolated from each other's queries"],a:2,e:'User independence means business users can query and explore data directly, without requiring IT to run reports for them.'},
+  {t:'mc',q:'Which delivery method would a power user use for complex multi-dimensional queries?',o:['Ad hoc reports','Executive Information Systems','Multidimensional (MD) analysis','Basic table exports'],a:2,e:'Multidimensional analysis is designed for power users and analysts who need to slice data across multiple dimensions.'},
+  {t:'mc',q:'The financial services industry uses data warehousing primarily for:',o:['Inventory tracking and logistics','Route profitability and yield management','Risk management and fraud detection','Manpower planning and cost control'],a:2,e:'Financial services warehousing focuses on risk management and detecting fraudulent transactions.'},
+  {t:'mc',q:'What does "Data Integrity" mean in the context of data quality?',o:['Data is backed up in multiple locations','All information conforms to established business rules and is accurate','Data is encrypted using AES-256','The database has zero downtime'],a:1,e:'Data integrity means all information conforms to business rules, is accurate, and free from corruption.'},
+  {t:'mc',q:"Ralph Kimball's third step in warehouse implementation is:",o:['Plan and define corporate requirements','Implement data marts one at a time','Conform and standardise all data content','Create a surrounding architecture'],a:2,e:'Step 3 is conforming and standardising all data content across the enterprise.'},
+  {t:'mc',q:'Manufacturing companies use data warehousing primarily for:',o:['Customer loyalty and market planning','Route profitability analysis','Cost reduction and logistics management','Fraud detection and risk management'],a:2,e:'Manufacturing focuses on cost reduction, supply chain optimisation, and logistics management.'},
+  {t:'mc',q:'Which of the following is a key question in deciding between a data warehouse and a data mart?',o:['Which has more storage capacity?','Which should be established first?','Which requires less security?','Which is cheaper to license?'],a:1,e:'A core architectural decision is whether to build the central warehouse or a focused data mart first.'},
+  {t:'mc',q:'A Slowly Changing Dimension (SCD) Type 2 strategy:',o:['Overwrites old values with new ones','Creates a new row to preserve the history of changes','Stores old and new values in the same row','Deletes changed records immediately'],a:1,e:'SCD Type 2 creates a new row for each change, preserving the full history of dimension data over time.'},
+  {t:'mc',q:'Aggregate tables in a data warehouse are used to:',o:['Store raw transaction logs','Pre-summarise data to speed up common queries','Encrypt sensitive financial data','Archive old data for compliance'],a:1,e:"Aggregate tables store pre-computed summaries so frequent queries don't have to re-scan millions of detail rows."},
+  {t:'mc',q:'Government agencies use data warehousing primarily for:',o:['Yield management and route profitability','Customer loyalty and churn prevention','Manpower planning and cost control','Fraud detection and insurance claims'],a:2,e:'Government data warehousing focuses on manpower planning, resource allocation, and cost control.'},
+  {t:'mc',q:'A "Family of Stars" in dimensional modeling refers to:',o:['Multiple fact tables with different granularity','Multiple related star schemas sharing conformed dimensions','A set of snowflake schemas in one database','A collection of flat files used for reporting'],a:1,e:'A family of stars is a set of related star schemas that share conformed dimensions, enabling integrated cross-subject analysis.'},
+  {t:'mc',q:'Which of the following best describes "web-enabled warehousing"?',o:['Storing warehouse data on public cloud servers','Using web technologies to allow remote online access to warehouse data','Replacing all databases with web-based APIs','Exposing raw SQL to end users via a website'],a:1,e:'Web-enabled warehousing uses web technologies so users can query and report from any remote location.'},
+  {t:'mc',q:"In Kimball's approach, what is a \"Supermart\"?",o:['A very large, enterprise-wide data warehouse','A carefully architected data mart built as part of a broader warehouse plan','An independent mart with its own ETL pipeline','A data mart used only by senior management'],a:1,e:"A Supermart is Kimball's term for a carefully designed data mart that is part of an overall enterprise architecture."},
+  {t:'mc',q:'Which of these is NOT one of the five characteristics of strategic information?',o:['Integrated','Scalable','Credible','Timely'],a:1,e:'The five characteristics are: Integrated, Data Integrity, Accessible, Credible, and Timely. "Scalable" is not one of them.'},
+  {t:'mc',q:'Statistical analysis in a data warehouse is typically performed by:',o:['Casual users reading dashboards','Novice users running predefined reports','Power users performing advanced data processing','Junior staff doing data entry'],a:2,e:'Statistical analysis is an advanced method for power users — it goes beyond simple reports into quantitative techniques.'},
+  {t:'mc',q:'In which industry would "asset and resource management" be a primary warehousing goal?',o:['Retail','Airlines','Utilities','Government'],a:2,e:'Utilities companies use data warehousing to manage physical assets (power lines, meters) and optimise resources.'},
+  {t:'mc',q:'Which step of ETL pulls raw data from source operational systems?',o:['Transform','Load','Extract','Aggregate'],a:2,e:'The Extract step pulls raw data from multiple source systems such as OLTP databases, flat files, and APIs.'},
+  {t:'mc',q:'A data warehouse differs from a traditional OLTP database because it is:',o:['Faster at processing individual transactions','Designed for analytical queries and historical data','Updated in real time from all connected systems','Smaller in size to improve query speed'],a:1,e:'Unlike OLTP systems, warehouses are designed for analytical queries, not individual transaction speed.'},
+  {t:'mc',q:'What is the main benefit of a star schema over a snowflake schema?',o:['Requires less storage space','More normalised and easier to update','Simpler structure and faster query performance','Better for capturing slowly changing dimensions'],a:2,e:'Star schemas are simpler (denormalised) and allow faster query performance since fewer joins are needed.'},
+  {t:'mc',q:'Which of the following ensures that the whole enterprise uses the same definition of "Customer"?',o:['Row-level security','A conformed dimension','An aggregate table','A separate OLTP database'],a:1,e:'A conformed customer dimension ensures all subject areas (sales, marketing, etc.) use an identical definition.'},
+  {t:'mc',q:'The Load phase of ETL writes data into:',o:['The source operational system','A temporary staging file','The target data warehouse or data mart',"The user's local spreadsheet"],a:2,e:'The Load step inserts the prepared, transformed data into the target warehouse or data mart.'},
+  {t:'mc',q:'Which modeling technique is used to handle changes in dimension data over time?',o:['Star schema','Aggregate table','Slowly Changing Dimension (SCD)','Family of Stars'],a:2,e:'SCDs (Slowly Changing Dimensions) are strategies for managing how dimension attributes change over time.'},
+  {t:'mc',q:'What type of data warehouse architecture question relates to how many distinct subject areas are covered?',o:['Top-down vs. bottom-up','Independent vs. dependent marts','Data Warehouse vs. Data Mart','ETL frequency'],a:2,e:'The warehouse vs. data mart question is about scope — a full warehouse covers many subjects while a mart is focused.'},
+  {t:'mc',q:'The requirements definition phase of a data warehouse begins with:',o:['Designing the ETL pipeline','Selecting database vendor software','Planning at the corporate level','Training end users'],a:2,e:'Requirements definition starts at the corporate level to ensure the warehouse aligns with enterprise-wide strategic goals.'},
+  {t:'mc',q:'Data warehouses support "long, interactive sessions" because:',o:['They have faster hardware than OLTP systems','Analytical queries are complex and need time to explore data','Users prefer slow systems','They store uncompressed data files'],a:1,e:'Analytical work involves exploring, drilling down, and slicing data — which requires long interactive sessions.'},
+  {t:'mc',q:'An independent data mart differs from a dependent data mart in that it:',o:['Feeds data to the central warehouse','Sources its own data directly rather than from a central warehouse','Contains no dimension tables','Uses only real-time streaming data'],a:1,e:'Independent data marts have their own ETL from source systems, whereas dependent marts get data from the central warehouse.'},
+  {t:'mc',q:'Why did early attempts to provide strategic information from operational systems fail?',o:['Operational systems were too new','Operational systems lacked enough storage','Operational systems are not designed for analytical purposes','IT staff were not trained in analytics'],a:2,e:"Operational systems are optimised for transaction processing, not analytical queries — they simply weren't designed for that purpose."},
+  {t:'mc',q:'A data warehouse is described as "Stable" because:',o:['It never needs maintenance','Content is updated periodically and remains stable between updates','It uses immutable storage technology','User access is tightly restricted'],a:1,e:'Between batch load cycles, the warehouse content is stable — users get consistent results, unlike constantly-changing OLTP systems.'},
+  {t:'mc',q:'Which of these industries focuses on fraud detection as a core warehousing benefit?',o:['Airlines','Manufacturing','Retail','Financial services'],a:3,e:'Financial services companies leverage data warehouses to detect fraudulent patterns in transactions.'},
+  {t:'mc',q:'What is the purpose of the "information delivery" component of a data warehouse?',o:['To manage physical server infrastructure','To deliver insights to different user tiers through various analytical methods','To archive data for regulatory compliance','To synchronise data between operational systems'],a:1,e:'Information delivery is the front room of the warehouse — it delivers the right insights to the right users via reports, OLAP, dashboards, and data mining.'},
+  {t:'mc',q:'Data Integrity as a data quality indicator means:',o:['Data is backed up offsite','All data values conform to business rules','The database is accessible 24/7','Data queries return within 2 seconds'],a:1,e:'Data integrity ensures all values conform to established business rules — accurate, valid, and consistent.'},
+  // TF 61-80
+  {t:'tf',q:'A data warehouse is designed primarily for day-to-day transaction processing.',a:false,e:'False. Data warehouses are designed for analytical and strategic purposes, not day-to-day transactions.'},
+  {t:'tf',q:'The ETL process ensures that data is conformed and standardised before being loaded into the warehouse.',a:true,e:'True. ETL transforms raw source data — cleansing, validating, and standardising it — before loading.'},
+  {t:'tf',q:'In a star schema, dimension tables are normalised into multiple related tables.',a:false,e:'False. That describes a snowflake schema. In a star schema, dimension tables are denormalised.'},
+  {t:'tf',q:'A conformed dimension can be shared across multiple data marts.',a:true,e:'True. Conformed dimensions are standardised and reused across multiple marts, enabling consistent cross-mart analysis.'},
+  {t:'tf',q:'Data warehouses are updated continuously in real time, just like OLTP systems.',a:false,e:'False. Warehouses are updated periodically in batch loads, not continuously in real time.'},
+  {t:'tf',q:'The "credibility" characteristic means every business factor has exactly one consistent value across the enterprise.',a:true,e:'True. Credibility means there is one authoritative value for every business metric — no conflicting figures.'},
+  {t:'tf',q:'An independent data mart sources its data from the central enterprise data warehouse.',a:false,e:'False. An independent mart has its own ETL from source systems. A dependent mart sources from the warehouse.'},
+  {t:'tf',q:'Business Intelligence allows an enterprise to study past behaviours, assess the current situation, and predict future outcomes.',a:true,e:'True. BI encompasses historical analysis, current-state assessment, and predictive capabilities.'},
+  {t:'tf',q:'Ralph Kimball advocates for a top-down approach where the full enterprise warehouse is built before any data marts.',a:false,e:"False. Kimball advocates a bottom-up Supermart-by-Supermart approach, not top-down."},
+  {t:'tf',q:'Fact tables store descriptive attributes such as product names and customer addresses.',a:false,e:'False. Fact tables store quantitative measures. Descriptive attributes belong in dimension tables.'},
+  {t:'tf',q:'The "Timely" characteristic of strategic information means data must be available within the required decision timeframe.',a:true,e:'True. Timely means the information arrives in time to be useful for the decision at hand.'},
+  {t:'tf',q:'Aggregate tables are pre-summarised and stored to speed up common queries.',a:true,e:'True. Aggregates pre-compute summaries so queries avoid scanning millions of detail rows every time.'},
+  {t:'tf',q:'Data mining is the same as running predefined reports for casual users.',a:false,e:'False. Data mining uses algorithms to discover hidden patterns — far more sophisticated than predefined reports.'},
+  {t:'tf',q:'The "integrated" characteristic means the warehouse provides a single enterprise-wide view of data.',a:true,e:'True. Integration means data from all source systems is consolidated into one unified, consistent view.'},
+  {t:'tf',q:'A snowflake schema is generally faster for querying than a star schema.',a:false,e:"False. The star schema is typically faster because it requires fewer joins. Snowflake's normalisation adds complexity."},
+  {t:'tf',q:'In data warehousing, "user independence" means business users can access and query data without requiring IT assistance.',a:true,e:'True. A key feature of data warehouses is enabling direct self-service access by business users.'},
+  {t:'tf',q:'The Transform step in ETL is where data is physically pulled from source operational systems.',a:false,e:'False. Pulling data from sources is the Extract step. Transform cleanses and standardises the extracted data.'},
+  {t:'tf',q:'A Slowly Changing Dimension (SCD) Type 1 overwrites old values with new ones, losing the history.',a:true,e:'True. SCD Type 1 simply overwrites — convenient but it destroys the history of the change.'},
+  {t:'tf',q:'The "Family of Stars" concept refers to multiple related star schemas that share conformed dimensions.',a:true,e:'True. A family of stars links subject-area star schemas through shared conformed dimensions.'},
+  {t:'tf',q:'Operational systems are better suited than data warehouses for analysing long-term customer purchase trends.',a:false,e:'False. Operational systems are not designed for analytical work. Data warehouses are the appropriate environment.'},
+  // DD 81-100
+  {t:'dd',q:'Match each item to its correct category: Fact table or Dimension table.',items:['Customer city','Revenue total','Product name','Sales amount','Date description','Quantity sold'],zones:['Fact table','Dimension table'],ans:{'Sales amount':'Fact table','Quantity sold':'Fact table','Revenue total':'Fact table','Product name':'Dimension table','Customer city':'Dimension table','Date description':'Dimension table'},e:'Fact tables hold measurable quantities (sales amount, quantity, revenue). Dimension tables hold descriptive attributes (product name, city, date descriptions).'},
+
+  {t:'dd',q:'Match each activity to the correct ETL stage: Extract, Transform, or Load.',items:['Query source OLTP database','Write data to warehouse','Pull data from CRM','Remove duplicate records','Validate against business rules','Standardise date formats'],zones:['Extract','Transform','Load'],ans:{'Pull data from CRM':'Extract','Query source OLTP database':'Extract','Remove duplicate records':'Transform','Standardise date formats':'Transform','Validate against business rules':'Transform','Write data to warehouse':'Load'},e:'Extract = pulling from sources. Transform = cleansing/standardising. Load = writing into the warehouse.'},
+  {t:'dd',q:'Match each industry to its primary warehousing benefit.',items:['Cost reduction','Manpower planning','Fraud detection','Customer loyalty','Asset management','Route profitability'],zones:['Retail','Financial','Airlines','Manufacturing','Utilities','Government'],ans:{'Customer loyalty':'Retail','Fraud detection':'Financial','Route profitability':'Airlines','Cost reduction':'Manufacturing','Asset management':'Utilities','Manpower planning':'Government'},e:'Each industry has a signature use case: Retail=loyalty, Financial=fraud, Airlines=routes, Manufacturing=cost, Utilities=assets, Government=manpower.'},
+  {t:'dd',q:'Classify each as either an Operational system or an Informational system.',items:['Route profitability report','Order processing','Customer trend analysis','Inventory tracking','Payroll processing','Executive dashboard'],zones:['Operational system','Informational system'],ans:{'Order processing':'Operational system','Payroll processing':'Operational system','Inventory tracking':'Operational system','Customer trend analysis':'Informational system','Executive dashboard':'Informational system','Route profitability report':'Informational system'},e:'Operational systems handle routine transactions. Informational systems support analysis and decision-making.'},
+  {t:'dd',q:'Match each OLAP delivery method to its target audience.',items:['Data mining','Statistical analysis','Executive Information Systems','Multidimensional analysis','Ad hoc reports'],zones:['Novice users','Business analysts','Power users','Senior executives','Data scientists'],ans:{'Ad hoc reports':'Novice users','Multidimensional analysis':'Business analysts','Statistical analysis':'Power users','Executive Information Systems':'Senior executives','Data mining':'Data scientists'},e:'Each delivery method is designed for a specific user tier based on their analytical sophistication.'},
+  {t:'dd',q:'Match each characteristic to its correct definition.',items:['Data Integrity','Accessible','Integrated','Credible','Timely'],zones:['Single enterprise-wide view','One value per business factor','Intuitive paths to data','Available when needed','Conforms to business rules'],ans:{'Integrated':'Single enterprise-wide view','Credible':'One value per business factor','Accessible':'Intuitive paths to data','Timely':'Available when needed','Data Integrity':'Conforms to business rules'},e:'These are the five characteristics of effective strategic information.'},
+  {t:'dd',q:"Place each step into Kimball's correct sequence (first to last).",items:['Create surrounding architecture','Implement Supermarts one at a time','Conform and standardise data','Plan corporate requirements'],zones:['Step 1','Step 2','Step 3','Step 4'],ans:{'Plan corporate requirements':'Step 1','Create surrounding architecture':'Step 2','Conform and standardise data':'Step 3','Implement Supermarts one at a time':'Step 4'},e:"Kimball's four steps: plan then architect then conform data then implement mart by mart."},
+  {t:'dd',q:'Match each schema element to either Star schema or Snowflake schema.',items:['Fewer joins needed','Multiple dimension tables','Denormalised dimensions','Simpler query structure','Normalised dimensions','More storage efficient'],zones:['Star schema','Snowflake schema'],ans:{'Denormalised dimensions':'Star schema','Fewer joins needed':'Star schema','Simpler query structure':'Star schema','Normalised dimensions':'Snowflake schema','More storage efficient':'Snowflake schema','Multiple dimension tables':'Snowflake schema'},e:'Star uses denormalised dimensions (simpler/faster). Snowflake normalises dimensions (more complex but saves storage).'},
+  {t:'dd',q:'Match each SCD type to its strategy.',items:['Add old and new value columns','Add new row with history','Overwrite old value'],zones:['SCD Type 1','SCD Type 2','SCD Type 3'],ans:{'Overwrite old value':'SCD Type 1','Add new row with history':'SCD Type 2','Add old and new value columns':'SCD Type 3'},e:'SCD Type 1 overwrites, Type 2 inserts a new row (full history), Type 3 adds a column (limited history).'},
+  {t:'dd',q:'Classify each as belonging to the warehouse back room (ETL) or front room (delivery).',items:['OLAP cube','Data mining application','Extracting from CRM','Standardising date formats','Executive dashboard','Cleansing duplicate records'],zones:['Back room ETL','Front room delivery'],ans:{'Cleansing duplicate records':'Back room ETL','Standardising date formats':'Back room ETL','Extracting from CRM':'Back room ETL','Executive dashboard':'Front room delivery','OLAP cube':'Front room delivery','Data mining application':'Front room delivery'},e:'The back room is all ETL work. The front room is everything users see — reports, dashboards, OLAP, mining.'},
+  {t:'dd',q:'Match each architectural decision to its description.',items:['Dependent data mart','Top-down approach','Bottom-up approach','Independent data mart'],zones:['Enterprise warehouse built first','Supermarts built incrementally','Sourced from central warehouse','Has own direct ETL'],ans:{'Top-down approach':'Enterprise warehouse built first','Bottom-up approach':'Supermarts built incrementally','Dependent data mart':'Sourced from central warehouse','Independent data mart':'Has own direct ETL'},e:'These are the core architectural options organisations must choose between when planning a data warehouse.'},
+  {t:'dd',q:'Match each data quality dimension to its description.',items:['Completeness','Data Integrity','Credibility','Accuracy','Timeliness'],zones:['Correctly represents reality','No missing critical elements','Refreshed within decision window','One value per business factor','Conforms to business rules'],ans:{'Accuracy':'Correctly represents reality','Completeness':'No missing critical elements','Timeliness':'Refreshed within decision window','Credibility':'One value per business factor','Data Integrity':'Conforms to business rules'},e:'Good data quality requires accuracy, completeness, timeliness, credibility, and integrity.'},
+  {t:'dd',q:'Match each warehouse feature to its meaning.',items:['Time Variant','Analytical Design','User Independence','Data Integration'],zones:['Built for analysis not transactions','Consolidates from multiple sources','No IT help needed for queries','Holds current and historical data'],ans:{'Analytical Design':'Built for analysis not transactions','Data Integration':'Consolidates from multiple sources','User Independence':'No IT help needed for queries','Time Variant':'Holds current and historical data'},e:'These are core features that distinguish a data warehouse from a traditional operational database.'},
+  {t:'dd',q:'Classify each BI activity as historical, current-state, or predictive.',items:['Monitoring todays orders','Forecasting next quarter revenue','Analysing last years sales','Predicting fraud risk','Reviewing past customer churn','Viewing current inventory'],zones:['Historical analysis','Current-state assessment','Predictive analysis'],ans:{'Analysing last years sales':'Historical analysis','Reviewing past customer churn':'Historical analysis','Viewing current inventory':'Current-state assessment','Monitoring todays orders':'Current-state assessment','Forecasting next quarter revenue':'Predictive analysis','Predicting fraud risk':'Predictive analysis'},e:'BI covers three time horizons: studying the past, assessing the present, and predicting the future.'},
+  {t:'dd',q:'Match each user type to the most appropriate analytical tool.',items:['IT developer','Senior executive','Casual user','Data scientist','Business analyst'],zones:['Ad hoc reports','OLAP analysis','Executive dashboard','Data mining','ETL pipeline'],ans:{'Casual user':'Ad hoc reports','Business analyst':'OLAP analysis','Senior executive':'Executive dashboard','Data scientist':'Data mining','IT developer':'ETL pipeline'},e:'Different user types need different tools matched to their technical skill and information needs.'},
+  {t:'dd',q:'Match each item to either the warehouse planning phase or the implementation phase.',items:['Deploy ETL pipelines','Define corporate requirements','Build the first Supermart','Conform all data content','Create information packages','Plan surrounding architecture'],zones:['Planning phase','Implementation phase'],ans:{'Define corporate requirements':'Planning phase','Plan surrounding architecture':'Planning phase','Create information packages':'Planning phase','Conform all data content':'Implementation phase','Build the first Supermart':'Implementation phase','Deploy ETL pipelines':'Implementation phase'},e:'Planning covers requirements and architecture. Implementation covers building ETL, conforming data, and deploying marts.'},
+  {t:'dd',q:'Match each dimensional modeling term to its definition.',items:['Conformed dimension','Aggregate table','Dimension table','Star schema','Fact table','Snowflake schema'],zones:['Stores quantitative measures','Stores descriptive attributes','Central fact and flat dimensions','Central fact and normalised dimensions','Shared across multiple marts','Pre-summarised for speed'],ans:{'Fact table':'Stores quantitative measures','Dimension table':'Stores descriptive attributes','Star schema':'Central fact and flat dimensions','Snowflake schema':'Central fact and normalised dimensions','Conformed dimension':'Shared across multiple marts','Aggregate table':'Pre-summarised for speed'},e:'These are the core dimensional modeling building blocks every data warehouse professional must know.'},
+  {t:'dd',q:'Classify each as a data warehouse advantage or a limitation of operational systems.',items:['Enables direct user access','Fails for analytical queries','Optimised for transactions','Includes historical data','Provides enterprise-wide view','Cannot integrate source data easily'],zones:['DW advantage','Operational limitation'],ans:{'Provides enterprise-wide view':'DW advantage','Includes historical data':'DW advantage','Enables direct user access':'DW advantage','Optimised for transactions':'Operational limitation','Fails for analytical queries':'Operational limitation','Cannot integrate source data easily':'Operational limitation'},e:'Understanding why operational systems fail for analytics explains exactly what data warehouses are designed to fix.'},
+  {t:'dd',q:'Match each web-enabled warehousing capability to its benefit.',items:['Shared dashboards','Remote query access','Self-service reports','Scheduled report delivery'],zones:['Access from any location','No IT involvement needed','Team collaboration on data','Automated information push'],ans:{'Remote query access':'Access from any location','Self-service reports':'No IT involvement needed','Shared dashboards':'Team collaboration on data','Scheduled report delivery':'Automated information push'},e:'Web-enabled warehousing extends traditional warehouse benefits by making data accessible anywhere.'},
+  {t:'dd',q:'Place these data warehouse concepts in order from most basic to most advanced.',items:['OLAP analysis','Data mining','ETL process','Star schema','Operational data source'],zones:['Layer 1 source','Layer 2 preparation','Layer 3 storage','Layer 4 access','Layer 5 advanced analytics'],ans:{'Operational data source':'Layer 1 source','ETL process':'Layer 2 preparation','Star schema':'Layer 3 storage','OLAP analysis':'Layer 4 access','Data mining':'Layer 5 advanced analytics'},e:'Data flows from source systems through ETL into dimensional models and then out to analytical tools.'}
+];
+
+const SECTIONS = [
+  {id:'mc', icon:'📊', title:'Multiple Choice', desc:'Questions 1–60', color:'#2563EB', start:0,  end:59},
+  {id:'tf', icon:'✓✗', title:'True or False',  desc:'Questions 61–80', color:'#7C3AED', start:60, end:79},
+  {id:'dd', icon:'⇄',  title:'Drag & Drop',   desc:'Questions 81–100',color:'#0891B2', start:80, end:99},
+];
+
+// ═══════════════════════════════════════════════
+// STATE & STORAGE
+// ═══════════════════════════════════════════════
+const SK = 'dhw181_v3';
+let answered = {};
+try { answered = JSON.parse(localStorage.getItem(SK)) || {}; } catch(e) {}
+function save() { try { localStorage.setItem(SK, JSON.stringify(answered)); } catch(e) {} }
+
+// Active quiz state
+let activeSec = null;   // section object
+let qList = [];         // array of qi indices
+let qPos = 0;           // current index into qList
+let mcSel = null;
+let tfSel = null;
+let ddPlacements = {};  // item -> zone
+let ddDraggingItem = null;
+
+// ═══════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════
+function updateStats() {
+  const vals = Object.values(answered);
+  const correct = vals.filter(v=>v.correct).length;
+  const done = vals.length;
+  const wrong = done - correct;
+  const pct = done > 0 ? Math.round(correct/done*100) : 0;
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('sRemain').textContent = 100 - done;
+  document.getElementById('sScore').textContent = pct + '%';
+  document.getElementById('progBar').style.width = Math.round(done/100*100) + '%';
+}
+
+// ═══════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════
+function goHome() {
+  document.getElementById('homeView').style.display = 'block';
+  document.getElementById('quizView').style.display = 'none';
+  renderHome();
+}
+
+function renderHome() {
+  updateStats();
+  const container = document.getElementById('secCards');
+  container.innerHTML = '';
+  SECTIONS.forEach((sec, idx) => {
+    const total = sec.end - sec.start + 1;
+    let done = 0, correct = 0;
+    for (let qi = sec.start; qi <= sec.end; qi++) {
+      if (answered[qi] !== undefined) { done++; if (answered[qi].correct) correct++; }
+    }
+    const pct = Math.round(done/total*100);
+    const complete = done === total;
+    const inprog = done > 0 && !complete;
+
+    const card = document.createElement('button');
+    card.className = 'sec-card';
+    card.style.borderColor = complete ? '#86EFAC' : inprog ? sec.color : '#CBD5E1';
+    card.style.background = complete ? '#F0FDF4' : inprog ? '#F8FAFF' : '#fff';
+
+    card.innerHTML = `
+      <div class="sc-icon" style="background:${complete?'#16A34A':sec.color}">${complete?'✓':sec.icon}</div>
+      <div class="sc-body">
+        <div class="sc-title">${sec.title}</div>
+        <div class="sc-desc">${sec.desc} &nbsp;·&nbsp; ${total} questions</div>
+        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${pct}%;background:${complete?'#16A34A':sec.color}"></div></div>
+        <div class="sc-label">${done}/${total} answered${complete?' · Complete ✓':inprog?` · ${correct} correct so far`:''}</div>
+      </div>
+      <div class="sc-arrow">${complete?'↺':'›'}</div>`;
+    card.onclick = () => openSection(idx);
+    container.appendChild(card);
+  });
+}
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  answered = {};
+  save();
+  renderHome();
+}
+
+// ═══════════════════════════════════════════════
+// OPEN SECTION
+// ═══════════════════════════════════════════════
+function openSection(idx) {
+  activeSec = SECTIONS[idx];
+  const unanswered = [], ansrd = [];
+  for (let qi = activeSec.start; qi <= activeSec.end; qi++) {
+    answered[qi] !== undefined ? ansrd.push(qi) : unanswered.push(qi);
+  }
+  qList = [...unanswered, ...ansrd];
+  qPos = 0;
+  mcSel = null; tfSel = null; ddPlacements = {};
+
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('quizView').style.display = 'block';
+  document.getElementById('qnavTitle').textContent = activeSec.title;
+  document.getElementById('qprogFill').style.background = activeSec.color;
+  document.getElementById('btnResults').style.background = activeSec.color;
+  document.getElementById('btnNext') && (document.getElementById('btnNext').style.background = activeSec.color);
+
+  renderQ();
+}
+
+// ═══════════════════════════════════════════════
+// RENDER QUESTION
+// ═══════════════════════════════════════════════
+function renderQ() {
+  mcSel = null; tfSel = null; ddPlacements = {};
+  updateStats();
+
+  const allDone = qList.every(qi => answered[qi] !== undefined);
+
+  document.getElementById('qnavCount').textContent = (qPos+1) + ' / ' + qList.length;
+  document.getElementById('qprogFill').style.width = Math.round(qPos/qList.length*100) + '%';
+  document.getElementById('btnPrev').disabled = qPos === 0;
+  document.getElementById('btnResults').style.display = allDone ? 'inline-block' : 'none';
+
+  const qi = qList[qPos];
+  const q = Q[qi];
+  const area = document.getElementById('questionArea');
+
+  if (q.t === 'mc') renderMC(area, q, qi);
+  else if (q.t === 'tf') renderTF(area, q, qi);
+  else renderDD(area, q, qi);
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function prevQ() {
+  if (qPos > 0) { qPos--; renderQ(); }
+}
+
+// ═══════════════════════════════════════════════
+// MC
+// ═══════════════════════════════════════════════
+function renderMC(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  const LETTERS = ['A','B','C','D'];
+
+  let optsHtml = '';
+  q.o.forEach((opt, j) => {
+    let cls = 'opt-btn';
+    if (locked) {
+      if (j === q.a) cls += ' opt-correct';
+      else if (j === (saved && saved.selection) && !saved.correct) cls += ' opt-wrong';
+    }
+    optsHtml += `<button class="${cls}" id="opt_${qi}_${j}" onclick="selectMC(${qi},${j})" ${locked?'disabled':''}>`
+      + `<span class="opt-letter">${LETTERS[j]}</span>${escHtml(opt)}</button>`;
+  });
+
+  area.innerHTML = `
+    <div class="q-card${locked?(saved.correct?' correct':' wrong'):''}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} of ${Q.length}</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="opts">${optsHtml}</div>
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkMC(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" id="btnNext" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectMC(qi, j) {
+  if (answered[qi] !== undefined) return;
+  mcSel = j;
+  document.querySelectorAll(`[id^="opt_${qi}_"]`).forEach((b, k) => {
+    b.className = 'opt-btn' + (k === j ? ' selected' : '');
+  });
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
+}
+
+function checkMC(qi) {
+  const q = Q[qi];
+  if (mcSel === null || answered[qi] !== undefined) return;
+  const correct = mcSel === q.a;
+  answered[qi] = {correct, selection: mcSel};
+  save();
+  renderMC(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ═══════════════════════════════════════════════
+// TF
+// ═══════════════════════════════════════════════
+function renderTF(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+
+  function tfCls(val) {
+    if (!locked) return 'tf-btn' + (tfSel === val ? ' selected' : '');
+    if (val === q.a) return 'tf-btn tf-correct';
+    if (val === (saved && saved.selection) && !saved.correct) return 'tf-btn tf-wrong';
+    return 'tf-btn';
+  }
+
+  area.innerHTML = `
+    <div class="q-card${locked?(saved.correct?' correct':' wrong'):''}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} of ${Q.length}</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="tf-row">
+        <button class="${tfCls(true)}" id="tf_${qi}_true" onclick="selectTF(${qi},true)" ${locked?'disabled':''}>✓ True</button>
+        <button class="${tfCls(false)}" id="tf_${qi}_false" onclick="selectTF(${qi},false)" ${locked?'disabled':''}>✗ False</button>
+      </div>
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkTF(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" id="btnNext" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectTF(qi, val) {
+  if (answered[qi] !== undefined) return;
+  tfSel = val;
+  document.getElementById(`tf_${qi}_true`).className = 'tf-btn' + (val === true ? ' selected' : '');
+  document.getElementById(`tf_${qi}_false`).className = 'tf-btn' + (val === false ? ' selected' : '');
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
+}
+
+function checkTF(qi) {
+  const q = Q[qi];
+  if (tfSel === null || answered[qi] !== undefined) return;
+  const correct = tfSel === q.a;
+  answered[qi] = {correct, selection: tfSel};
+  save();
+  renderTF(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ═══════════════════════════════════════════════
+// DRAG & DROP
+// ═══════════════════════════════════════════════
+function renderDD(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  // Restore placements if revisiting
+  if (locked && saved.selection) ddPlacements = {...saved.selection};
+
+  // Build bank items (not yet placed)
+  const bankItems = locked
+    ? [] // all are in zones when locked
+    : q.items.filter(item => !ddPlacements[item]);
+
+  // Items per zone
+  function zoneItems(zone) {
+    if (locked) return q.items.filter(item => (saved.selection||{})[item] === zone);
+    return q.items.filter(item => ddPlacements[item] === zone);
+  }
+
+  function itemHtml(item, zone) {
+    let cls = 'dd-item';
+    if (locked) {
+      const correct = q.ans[item] === zone;
+      cls += correct ? ' item-correct' : ' item-wrong';
+    }
+    return `<div class="${cls}" draggable="${!locked}"
+      ondragstart="ddStart(event,'${esc(item)}')"
+      ondragend="ddEnd(event)">${escHtml(item)}</div>`;
+  }
+
+  const bankHtml = bankItems.map(item => itemHtml(item, null)).join('');
+
+  const zonesHtml = q.zones.map(zone => `
+    <div class="dd-zone" id="ddz_${qi}_${esc(zone)}"
+      ondragover="ddOver(event,'${esc(zone)}')"
+      ondragleave="ddLeave(event,'${esc(zone)}')"
+      ondrop="ddDrop(event,${qi},'${esc(zone)}')">
+      <div class="dd-zone-label">${escHtml(zone)}</div>
+      <div class="dd-items" id="ddi_${qi}_${esc(zone)}">${zoneItems(zone).map(item=>itemHtml(item,zone)).join('')}</div>
+    </div>`).join('');
+
+  let resultCls = '';
+  if (locked) {
+    resultCls = saved.correct ? ' correct' : (saved.numCorrect > 0 ? ' partial' : ' wrong');
+  }
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} of ${Q.length}</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="dd-area">
+        <div class="dd-bank-wrap">
+          <div class="dd-bank-label">Items to place</div>
+          <div class="dd-bank" id="ddbank_${qi}"
+            ondragover="ddOver(event,'__bank__')"
+            ondragleave="ddLeave(event,'__bank__')"
+            ondrop="ddDrop(event,${qi},'__bank__')">${bankHtml}</div>
+        </div>
+        <div class="dd-zones">${zonesHtml}</div>
+      </div>
+      ${locked ? feedbackHtml(saved.correct, q.e + (saved.correct?'':` (${saved.numCorrect}/${q.items.length} correct)`)) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkDD(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" id="btnNext" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function ddStart(e, item) {
+  ddDraggingItem = item;
+  setTimeout(() => {
+    const el = e.target;
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+function ddEnd(e) { e.target.classList.remove('dragging'); }
+
+function ddOver(e, zone) {
+  e.preventDefault();
+  const id = zone === '__bank__' ? 'ddbank_' + qList[qPos] : 'ddz_' + qList[qPos] + '_' + zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.add('dragover');
+}
+
+function ddLeave(e, zone) {
+  const id = zone === '__bank__' ? 'ddbank_' + qList[qPos] : 'ddz_' + qList[qPos] + '_' + zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('dragover');
+}
+
+function ddDrop(e, qi, zone) {
+  e.preventDefault();
+  const q = Q[qi];
+  if (!ddDraggingItem || answered[qi] !== undefined) return;
+
+  // Remove from current placement
+  delete ddPlacements[ddDraggingItem];
+
+  // Assign new placement (if not bank)
+  if (zone !== '__bank__') ddPlacements[ddDraggingItem] = zone;
+
+  // Check if all placed to enable button
+  const allPlaced = q.items.every(item => ddPlacements[item]);
+
+  // Re-render the DD question preserving placements
+  renderDD(document.getElementById('questionArea'), q, qi);
+  const btn = document.getElementById(`btnCheck_${qi}`);
+  if (btn) btn.disabled = !allPlaced;
+  ddDraggingItem = null;
+}
+
+function checkDD(qi) {
+  const q = Q[qi];
+  if (answered[qi] !== undefined) return;
+  let numCorrect = 0;
+  q.items.forEach(item => { if (ddPlacements[item] === q.ans[item]) numCorrect++; });
+  const correct = numCorrect === q.items.length;
+  answered[qi] = {correct, selection: {...ddPlacements}, numCorrect, total: q.items.length};
+  save();
+  renderDD(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ═══════════════════════════════════════════════
+// NEXT / COMPLETE
+// ═══════════════════════════════════════════════
+function nextQ() {
+  if (qPos + 1 < qList.length) {
+    qPos++;
+    renderQ();
+  } else {
+    showComplete();
+  }
+}
+
+function showComplete() {
+  const sec = activeSec;
+  let correct = 0, wrong = 0;
+  for (let qi = sec.start; qi <= sec.end; qi++) {
+    if (answered[qi] !== undefined) { answered[qi].correct ? correct++ : wrong++; }
+  }
+  const total = sec.end - sec.start + 1;
+  const pct = Math.round(correct/total*100);
+
+  let headline, sub;
+  if (pct>=90) { headline='Outstanding! 🎓'; sub='Excellent command of this section.'; }
+  else if (pct>=75) { headline='Great work!'; sub='Solid — review the ones you missed to lock it in.'; }
+  else if (pct>=60) { headline='Good effort'; sub='You have the foundations. Revisit the tricky ones.'; }
+  else { headline='Keep studying'; sub='Go back through the material and try again!'; }
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="complete-card">
+      <div class="score-ring">
+        <div class="score-num">${correct}</div>
+        <div class="score-pct">${pct}%</div>
+      </div>
+      <div class="complete-title">${headline}</div>
+      <div class="complete-sub">${sub}</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" style="color:#16A34A">${correct}</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#DC2626">${wrong}</div><div class="stat-lbl">Wrong</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#2563EB">${total-correct-wrong}</div><div class="stat-lbl">Skipped</div></div>
+      </div>
+      <div class="complete-btns">
+        <button class="btn-retry" onclick="retrySection()">↺ Retry section</button>
+        <button class="btn-home" onclick="goHome()">← All sections</button>
+      </div>
+    </div>`;
+  document.getElementById('qnavCount').textContent = '';
+  document.getElementById('btnPrev').style.display = 'none';
+  document.getElementById('btnResults').style.display = 'none';
+}
+
+function retrySection() {
+  const sec = activeSec;
+  for (let qi = sec.start; qi <= sec.end; qi++) delete answered[qi];
+  save();
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  openSection(SECTIONS.indexOf(sec));
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function feedbackHtml(correct, exp) {
+  const cls = correct ? 'correct' : 'wrong';
+  const icon = correct ? '✓' : '✗';
+  const label = correct ? 'Correct!' : 'Incorrect.';
+  return `<div class="feedback ${cls}">${icon} <strong>${label}</strong> ${escHtml(exp)}</div>`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Safe attribute-value escape (no quotes or special chars that break inline handlers)
+function esc(s) {
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>

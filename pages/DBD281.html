@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T-SQL & Database Design Quiz</title>
+<link rel="icon" href="../images/icon.png" type="image/png">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-eye">Exam Preparation</div>
+    <h1>Database Design 281</h1>
+    <div class="hdr-sub">100 questions &nbsp;·&nbsp; Multiple choice, True/False, Drag &amp; Drop &nbsp;·&nbsp; 17 categories</div>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat"><div class="dot" style="background:#4ADE80"></div>Correct: <b id="sCorrect">0</b></div>
+      <div class="stat"><div class="dot" style="background:#F87171"></div>Wrong: <b id="sWrong">0</b></div>
+      <div class="stat"><div class="dot" style="background:#94A3B8"></div>Remaining: <b id="sRemain">100</b></div>
+      <div class="stat">Score: <b id="sScore">0%</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div id="homeView">
+    <div class="home-title">Choose a section to study</div>
+    <div class="home-sub">Progress saves automatically — pick up where you left off.</div>
+    <div class="sec-cards" id="secCards"></div>
+    <div class="reset-wrap">
+      <button class="btn-reset" onclick="resetAll()">↺ Reset all progress</button>
+    </div>
+  </div>
+
+  <div id="quizView">
+    <div class="quiz-nav">
+      <button class="btn-back" onclick="goHome()">← Back</button>
+      <div class="qnav-title" id="qnavTitle"></div>
+      <div class="qnav-count" id="qnavCount"></div>
+    </div>
+    <div class="qprog-track"><div class="qprog-fill" id="qprogFill" style="width:0%"></div></div>
+    <div id="questionArea"></div>
+    <div class="nav-row">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">← Previous</button>
+      <button class="btn-results" id="btnResults" style="display:none" onclick="showComplete()">See results →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// QUESTION DATA  (100 questions across 17 sections)
+// ═══════════════════════════════════════════════════════════════
+const Q = [
+
+// ── SECTION 1: Database Design (Q0–Q5) ──────────────────────────
+{t:'mc',q:'Which Normal Form eliminates partial dependencies — where a non-key attribute depends on only PART of a composite primary key?',
+ o:['First Normal Form (1NF)','Second Normal Form (2NF)','Third Normal Form (3NF)','Boyce-Codd Normal Form (BCNF)'],
+ a:1,e:'2NF removes partial dependencies. Every non-key column must depend on the WHOLE primary key.'},
+
+{t:'mc',q:'A table has columns: OrderID, ProductID, ProductName, Quantity. OrderID+ProductID is the PK. ProductName depends only on ProductID. Which NF is violated?',
+ o:['1NF','2NF','3NF','BCNF'],
+ a:1,e:'ProductName depends only on ProductID (part of the composite key) — this is a partial dependency, violating 2NF.'},
+
+{t:'tf',q:'A FOREIGN KEY constraint guarantees referential integrity by preventing orphaned records in the child table.',
+ a:true,e:'Correct. A FK ensures every value in the child column exists in the referenced parent column.'},
+
+{t:'mc',q:'Which cardinality relationship requires a junction (bridge) table to be properly implemented in a relational database?',
+ o:['One-to-One','One-to-Many','Many-to-Many','Self-referencing'],
+ a:2,e:'Many-to-Many relationships cannot be represented with a single FK — they require a junction table with FKs to both sides.'},
+
+{t:'mc',q:'A SURROGATE KEY is best described as:',
+ o:['A key derived from real-world business data such as a national ID number',
+    'A system-generated identifier with no business meaning, used as the PK',
+    'A key that is shared across multiple tables to link them',
+    'A composite key made from two or more columns'],
+ a:1,e:'A surrogate key (e.g. IDENTITY column) is artificially generated and has no meaning outside the database.'},
+
+{t:'mc',q:'Which constraint ensures that a column\'s value satisfies a specific logical condition before being inserted or updated?',
+ o:['DEFAULT','UNIQUE','CHECK','NOT NULL'],
+ a:2,e:'A CHECK constraint validates column data against a logical expression (e.g. Salary > 0).'},
+
+// ── SECTION 2: Creating SQL Databases (Q6–Q11) ─────────────────
+{t:'mc',q:'Which file extension is used for the PRIMARY data file in a SQL Server database?',
+ o:['.ldf','.ndf','.mdf','.bdf'],
+ a:2,e:'.mdf = Master Data File (primary). .ndf = secondary data file. .ldf = log file.'},
+
+{t:'mc',q:'What is the purpose of the FILEGROWTH property in a CREATE DATABASE statement?',
+ o:['Sets the maximum size the file can reach',
+    'Defines the increment by which the file automatically grows when full',
+    'Specifies the initial size of the database file',
+    'Determines how many files the filegroup can hold'],
+ a:1,e:'FILEGROWTH sets the auto-growth increment — how much the file expands each time it runs out of space.'},
+
+{t:'tf',q:'The physical folder path specified in FILENAME must exist on the server BEFORE executing CREATE DATABASE.',
+ a:true,e:'SQL Server does not create directories automatically. The folder must exist or the statement will fail.'},
+
+{t:'mc',q:'In a CREATE DATABASE statement, which option allows you to store data files on separate disks for performance optimisation?',
+ o:['LOG ON','WITH FILESTREAM','FILEGROUP','COLLATE'],
+ a:2,e:'FILEGROUP lets you organise data files into groups — useful for distributing I/O load across multiple disks.'},
+
+{t:'mc',q:'What is the minimum allowed SIZE for a database file in SQL Server?',
+ o:['64 KB','256 KB','512 KB','1 MB'],
+ a:2,e:'The minimum file size SQL Server accepts is 512 KB.'},
+
+{t:'mc',q:'Which statement correctly MODIFIES an existing database to change the auto-growth increment of a data file?',
+ o:['CREATE DATABASE ... MODIFY FILE','ALTER DATABASE ... MODIFY FILE','UPDATE DATABASE ... SET FILE','CHANGE DATABASE ... FILE'],
+ a:1,e:'ALTER DATABASE with MODIFY FILE is the correct syntax to change properties of an existing database file.'},
+
+// ── SECTION 3: Indexing (Q12–Q17) ──────────────────────────────
+{t:'mc',q:'How many CLUSTERED indexes can exist on a single SQL Server table?',
+ o:['Unlimited','Up to 10','Exactly 1','Up to 999'],
+ a:2,e:'A table can have only ONE clustered index because it physically sorts the data rows.'},
+
+{t:'mc',q:'A COVERING index is created using which keyword to add non-key columns to the leaf level of the index?',
+ o:['WITH','COVERING','INCLUDE','ADD'],
+ a:2,e:'The INCLUDE clause adds columns to the index leaf level without including them in the key — covering the query without widening the key.'},
+
+{t:'tf',q:'A NON-CLUSTERED index physically reorders the rows of the table according to its key columns.',
+ a:false,e:'False. Only a CLUSTERED index physically sorts rows. A non-clustered index is a separate structure that points to the data.'},
+
+{t:'mc',q:'Which index maintenance operation is LESS intensive and can be performed online without heavy locking?',
+ o:['REBUILD','REORGANIZE','DROP and RECREATE','UPDATE STATISTICS'],
+ a:1,e:'REORGANIZE defragments pages in-place and is less resource-intensive than REBUILD, which drops and recreates the entire index.'},
+
+{t:'mc',q:'A FILTERED index is most useful when:',
+ o:['You need to index all rows in a very large table',
+    'You want to index only a subset of rows matching a WHERE condition',
+    'You need a clustered index with multiple columns',
+    'You want to speed up INSERT operations'],
+ a:1,e:'Filtered indexes index only rows satisfying a WHERE predicate — smaller, faster for selective queries.'},
+
+{t:'mc',q:'Which columns are BEST suited for indexing?',
+ o:['BIT columns used as boolean flags',
+    'Columns updated hundreds of times per second',
+    'Columns used frequently in WHERE, JOIN, and ORDER BY clauses',
+    'Columns storing large NVARCHAR(MAX) values'],
+ a:2,e:'Index columns that appear in WHERE filters, JOIN conditions, and ORDER BY — these operations benefit most from index lookups.'},
+
+// ── SECTION 4: Retrieving Data (Q18–Q23) ───────────────────────
+{t:'mc',q:'Which clause filters rows AFTER aggregation has been applied by GROUP BY?',
+ o:['WHERE','ORDER BY','HAVING','FILTER'],
+ a:2,e:'HAVING filters groups produced by GROUP BY. WHERE filters individual rows BEFORE grouping.'},
+
+{t:'mc',q:'What does SELECT TOP 5 PERCENT * FROM Employees ORDER BY Salary DESC return?',
+ o:['The 5 highest-paid employees',
+    'The top 5% of rows from the table ordered by highest salary',
+    'The first 5 rows in physical storage order',
+    'Exactly 5 rows regardless of duplicates'],
+ a:1,e:'TOP 5 PERCENT returns the top 5% of the result set — with ORDER BY Salary DESC that means the top 5% highest earners.'},
+
+{t:'tf',q:'In SQL Server, DISTINCT removes duplicate rows from the entire result set, considering all selected columns together.',
+ a:true,e:'DISTINCT evaluates uniqueness across ALL selected columns combined, not per individual column.'},
+
+{t:'mc',q:'Which LIKE pattern matches any LastName that is exactly 5 characters long?',
+ o:["LIKE '%5%'","LIKE '_____'","LIKE '[5]%'","LIKE '5_'"],
+ a:1,e:"Five underscores ('_____') each match exactly one character — so this pattern matches strings of exactly 5 characters."},
+
+{t:'mc',q:'What is the correct SQL Server syntax for PAGINATION — skipping the first 20 rows and returning the next 10?',
+ o:['SELECT TOP 10 * FROM T SKIP 20',
+    'SELECT * FROM T ORDER BY ID LIMIT 10 OFFSET 20',
+    'SELECT * FROM T ORDER BY ID OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY',
+    'SELECT * FROM T WHERE ROWNUM BETWEEN 21 AND 30'],
+ a:2,e:'OFFSET ... FETCH NEXT ... ROWS ONLY is the T-SQL pagination syntax. It requires an ORDER BY clause.'},
+
+{t:'mc',q:'In which order does SQL Server logically process a SELECT statement?',
+ o:['SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY',
+    'FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY',
+    'FROM → SELECT → WHERE → ORDER BY → GROUP BY → HAVING',
+    'WHERE → FROM → SELECT → GROUP BY → HAVING → ORDER BY'],
+ a:1,e:'Logical processing order: FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → TOP/FETCH.'},
+
+// ── SECTION 5: T-SQL Functions (Q24–Q30) ───────────────────────
+{t:'mc',q:'Which function returns the number of characters in a string, NOT counting trailing spaces for CHAR types?',
+ o:['LEN()','DATALENGTH()','CHARINDEX()','PATINDEX()'],
+ a:0,e:'LEN() returns the number of characters, excluding trailing spaces. DATALENGTH() returns bytes including spaces.'},
+
+{t:'mc',q:'What is the result of: SELECT FLOOR(4.9)?',
+ o:['5','4','4.9','NULL'],
+ a:1,e:'FLOOR() rounds DOWN to the nearest integer. FLOOR(4.9) = 4.'},
+
+{t:'mc',q:'Which function should be preferred over CAST() when converting data types in SQL Server, to return NULL on failure instead of an error?',
+ o:['CONVERT()','TRY_CAST()','ISNULL()','COALESCE()'],
+ a:1,e:'TRY_CAST() (and TRY_CONVERT()) return NULL if the conversion fails instead of raising an error.'},
+
+{t:'tf',q:'COALESCE(A, B, C) returns the FIRST non-NULL value from its arguments.',
+ a:true,e:'COALESCE evaluates arguments left to right and returns the first one that is not NULL.'},
+
+{t:'mc',q:'Which date function adds 3 months to the current date?',
+ o:["DATEADD(MONTH, 3, GETDATE())",
+    "DATEDIFF(MONTH, 3, GETDATE())",
+    "DATEPART(MONTH, GETDATE()) + 3",
+    "FORMAT(GETDATE(), 'MM+3')"],
+ a:0,e:'DATEADD(interval, number, date) adds the specified number of intervals to a date.'},
+
+{t:'mc',q:'What does NULLIF(Score, 0) return when Score = 0?',
+ o:['0','1','NULL','An error'],
+ a:2,e:'NULLIF returns NULL if both arguments are equal. When Score = 0, NULLIF(0, 0) = NULL.'},
+
+{t:'mc',q:'Which window function assigns a sequential number per partition, restarting at 1 for each group?',
+ o:['RANK()','DENSE_RANK()','ROW_NUMBER()','NTILE()'],
+ a:2,e:'ROW_NUMBER() assigns a unique sequential integer. RANK() allows ties (with gaps); DENSE_RANK() allows ties (no gaps).'},
+
+// ── SECTION 6: Modifying Table Contents (Q31–Q36) ──────────────
+{t:'mc',q:'You want to copy all rows from Table A into Table B (which does not yet exist). Which statement achieves this in one step?',
+ o:['INSERT INTO B SELECT * FROM A',
+    'SELECT * INTO B FROM A',
+    'CREATE TABLE B AS SELECT * FROM A',
+    'COPY TABLE A TO B'],
+ a:1,e:'SELECT INTO creates a new table and inserts all rows in one step. INSERT INTO requires the target table to exist first.'},
+
+{t:'tf',q:'TRUNCATE TABLE fires DELETE triggers because it removes rows one by one like DELETE.',
+ a:false,e:'False. TRUNCATE is a DDL operation that deallocates data pages. It does NOT fire DML triggers and is not row-by-row.'},
+
+{t:'mc',q:'Which DML statement is used to INSERT, UPDATE, and DELETE in a single operation based on a matching condition?',
+ o:['UPSERT','COMBINE','MERGE','SYNC'],
+ a:2,e:'MERGE combines WHEN MATCHED (UPDATE/DELETE) and WHEN NOT MATCHED (INSERT) logic in one statement.'},
+
+{t:'mc',q:'What happens to an IDENTITY column when you execute TRUNCATE TABLE?',
+ o:['The identity value continues from where it left off',
+    'The identity seed is reset to its original starting value',
+    'The identity column is dropped',
+    'Nothing — TRUNCATE cannot be used on tables with IDENTITY columns'],
+ a:1,e:'TRUNCATE resets the IDENTITY seed back to the original seed value. DELETE does NOT reset the identity.'},
+
+{t:'mc',q:'You need to UPDATE rows using a JOIN to another table. Which syntax is correct in T-SQL?',
+ o:["UPDATE Employees SET Salary=60000 JOIN Dept ON Emp.DeptID=Dept.ID WHERE DeptName='HR'",
+    "UPDATE e SET e.Salary=60000 FROM Employees e JOIN Departments d ON e.DeptID=d.DeptID WHERE d.DeptName='HR'",
+    "UPDATE Employees JOIN Departments SET Salary=60000 WHERE DeptName='HR'",
+    "UPDATE (SELECT * FROM Employees JOIN Departments) SET Salary=60000"],
+ a:1,e:'T-SQL UPDATE with JOIN uses the FROM clause to reference the joined table.'},
+
+{t:'tf',q:'Running DELETE FROM Employees without a WHERE clause will delete all rows from the table.',
+ a:true,e:'True. Without a WHERE clause, DELETE removes every row. Always double-check before running a DELETE without WHERE.'},
+
+// ── SECTION 7: Joins (Q37–Q43) ─────────────────────────────────
+{t:'mc',q:'Which JOIN type returns ALL rows from the LEFT table and matching rows from the right, placing NULL where there is no match?',
+ o:['INNER JOIN','CROSS JOIN','LEFT OUTER JOIN','FULL OUTER JOIN'],
+ a:2,e:'LEFT OUTER JOIN returns all rows from the left table. If no matching row exists in the right table, NULLs are used.'},
+
+{t:'mc',q:'A CROSS JOIN between a table of 5 rows and a table of 4 rows returns how many rows?',
+ o:['5','9','20','Depends on the ON condition'],
+ a:2,e:'CROSS JOIN produces a Cartesian product: every row in A × every row in B = 5 × 4 = 20 rows. There is no ON condition.'},
+
+{t:'tf',q:'A SELF JOIN joins a table to itself and requires the use of table aliases to distinguish the two instances.',
+ a:true,e:'True. You alias the same table with two different names (e.g. e and m) to treat it as two separate tables.'},
+
+{t:'mc',q:'UNION vs UNION ALL — which statement is TRUE?',
+ o:['UNION ALL removes duplicates; UNION keeps all rows',
+    'UNION removes duplicates; UNION ALL keeps all rows including duplicates',
+    'Both always return the same result',
+    'UNION ALL requires identical column counts but not data types'],
+ a:1,e:'UNION removes duplicate rows (uses a DISTINCT internally). UNION ALL returns all rows including duplicates and is faster.'},
+
+{t:'mc',q:'When joining multiple tables, the correct order of clauses is:',
+ o:['FROM t1, JOIN t2 ON ..., JOIN t3 ON ...',
+    'FROM t1 JOIN t2 ON ... JOIN t3 ON ...',
+    'JOIN t1, t2, t3 FROM ... ON ...',
+    'SELECT ... USING JOIN(t1,t2,t3)'],
+ a:1,e:'Each JOIN clause follows directly after the table or previous join. All ON conditions specify the join predicate.'},
+
+{t:'mc',q:'Which join would you use to find customers who have NEVER placed an order?',
+ o:['INNER JOIN then filter for NULL orders',
+    'LEFT JOIN on Orders, then WHERE Orders.OrderID IS NULL',
+    'FULL OUTER JOIN',
+    'CROSS JOIN then GROUP BY'],
+ a:1,e:"LEFT JOIN returns all customers. WHERE Orders.OrderID IS NULL filters to only those with no matching order — the classic 'anti-join' pattern."},
+
+{t:'mc',q:'What does a FULL OUTER JOIN return that an INNER JOIN does not?',
+ o:['Duplicate rows from both tables',
+    'Rows that exist in EITHER table even if no match exists on the other side',
+    'A Cartesian product of both tables',
+    'Only rows with NULL foreign keys'],
+ a:1,e:'FULL OUTER JOIN returns all rows from both tables with NULLs where no match exists on either side.'},
+
+// ── SECTION 8: Sub Queries (Q44–Q50) ───────────────────────────
+{t:'mc',q:'Which sub-query operator stops processing as soon as ONE matching row is found, making it very efficient?',
+ o:['IN','ANY','ALL','EXISTS'],
+ a:3,e:'EXISTS short-circuits — it returns TRUE as soon as the first matching row is found and stops scanning.'},
+
+{t:'mc',q:'A CORRELATED sub-query differs from a regular sub-query because:',
+ o:['It runs only once and caches the result',
+    'It references a column from the outer query and is re-evaluated for every outer row',
+    'It can only be used with DELETE statements',
+    'It always returns a single scalar value'],
+ a:1,e:'A correlated sub-query refers to the outer query\'s columns. It must re-run for each row of the outer query.'},
+
+{t:'mc',q:'Which operator returns TRUE if the comparison is true for AT LEAST ONE value returned by the sub-query?',
+ o:['ALL','EXISTS','ANY / SOME','IN'],
+ a:2,e:'ANY (or SOME) returns TRUE if the condition is satisfied by at least one value in the sub-query result set.'},
+
+{t:'tf',q:'A sub-query used with IN can return multiple rows and multiple columns.',
+ a:false,e:'False. A sub-query used with IN must return exactly ONE column (but can return multiple rows).'},
+
+{t:'mc',q:'You want to find all employees earning more than the average salary of THEIR OWN department. Which approach is correct?',
+ o:['WHERE Salary > (SELECT AVG(Salary) FROM Employees)',
+    'WHERE Salary > (SELECT AVG(Salary) FROM Employees WHERE DeptID = e.DeptID)',
+    'WHERE Salary > ANY (SELECT Salary FROM Employees)',
+    'WHERE Salary IN (SELECT MAX(Salary) FROM Employees GROUP BY DeptID)'],
+ a:1,e:'This is a correlated sub-query — it references e.DeptID from the outer query to compute the average per department.'},
+
+{t:'mc',q:'Sub-queries can be used in which parts of a DML statement?',
+ o:['Only in the WHERE clause',
+    'Only in INSERT statements',
+    'In WHERE, FROM, SELECT, INSERT VALUES, UPDATE SET, and DELETE WHERE',
+    'Only in SELECT statements'],
+ a:2,e:'Sub-queries are versatile — they work in SELECT lists, FROM clauses, WHERE/HAVING filters, and all DML statements.'},
+
+{t:'mc',q:'What does NOT EXISTS return when the sub-query finds NO matching rows?',
+ o:['NULL','FALSE','TRUE','An error'],
+ a:2,e:'NOT EXISTS returns TRUE when the sub-query returns zero rows — i.e. when no match is found.'},
+
+// ── SECTION 9: CTEs & CASE (Q51–Q57) ───────────────────────────
+{t:'mc',q:'A Common Table Expression (CTE) is defined using which keyword?',
+ o:['DEFINE','TEMP','WITH','CTE'],
+ a:2,e:'CTEs begin with the WITH keyword followed by the CTE name, optional column list, and AS (SELECT ...).'},
+
+{t:'tf',q:'A CTE can be referenced multiple times within the same SQL statement that defines it.',
+ a:true,e:'True. Unlike a sub-query written inline, a CTE can be referenced by name multiple times in the same query.'},
+
+{t:'mc',q:'A RECURSIVE CTE must include which two components separated by UNION ALL?',
+ o:['A GROUP BY clause and a HAVING clause',
+    'An anchor member (base case) and a recursive member',
+    'An INNER JOIN and a LEFT JOIN',
+    'A WHERE clause and an ORDER BY clause'],
+ a:1,e:'Recursive CTEs have: (1) anchor member — base rows, and (2) recursive member — references the CTE itself, joined with UNION ALL.'},
+
+{t:'mc',q:'Which CASE syntax evaluates a single column against specific values (like a switch statement)?',
+ o:['Searched CASE: CASE WHEN col=1 THEN ...',
+    'Simple CASE: CASE col WHEN 1 THEN ...',
+    'DECODE CASE: DECODE(col, 1, ...)',
+    'IIF CASE: IIF(col=1, ..., ...)'],
+ a:1,e:'Simple CASE: CASE expression WHEN value THEN result. Searched CASE: CASE WHEN condition THEN result.'},
+
+{t:'mc',q:'CASE expressions can be used in which SQL clauses?',
+ o:['Only in the SELECT clause',
+    'Only in WHERE and HAVING',
+    'In SELECT, WHERE, ORDER BY, GROUP BY, HAVING, and UPDATE SET',
+    'Only in SELECT and ORDER BY'],
+ a:2,e:'CASE is an expression that can appear anywhere an expression is valid — SELECT, WHERE, ORDER BY, GROUP BY, HAVING, and DML.'},
+
+{t:'mc',q:'What does OPTION (MAXRECURSION 500) do in a recursive CTE query?',
+ o:['Limits the CTE to 500 column definitions',
+    'Allows up to 500 recursive iterations instead of the default 100',
+    'Caches the CTE result for 500 seconds',
+    'Restricts the CTE to 500 rows maximum'],
+ a:1,e:'MAXRECURSION sets the maximum number of recursive iterations. Default is 100. Use 0 for unlimited (with caution).'},
+
+{t:'tf',q:'A CTE result is physically stored in tempdb like a temporary table.',
+ a:false,e:'False. A CTE is not materialised (stored) — it is a logical definition that is resolved inline when the query executes.'},
+
+// ── SECTION 10: Programmability (Q58–Q63) ──────────────────────
+{t:'mc',q:'Which T-SQL global variable stores the number of rows affected by the last executed statement?',
+ o:['@@ROWCOUNT','@@ERROR','@@IDENTITY','@ROWS'],
+ a:0,e:'@@ROWCOUNT holds the count of rows affected by the most recently executed statement.'},
+
+{t:'mc',q:'What is the difference between RAISERROR and THROW in T-SQL?',
+ o:['RAISERROR is newer and preferred; THROW is legacy',
+    'THROW is newer (SQL 2012+), re-throws errors faithfully; RAISERROR is legacy and has different syntax',
+    'They are identical — both always rollback the transaction',
+    'THROW can only be used inside TRY blocks; RAISERROR cannot'],
+ a:1,e:'THROW is the modern replacement (SQL Server 2012+). It preserves error info perfectly and can re-throw with bare THROW.'},
+
+{t:'tf',q:'A local temp table (prefixed with #) is visible to ALL sessions connected to the SQL Server instance.',
+ a:false,e:'False. A local temp table (#) is only visible to the current session. A global temp table (##) is visible to all sessions.'},
+
+{t:'mc',q:'Which keyword inside a WHILE loop immediately exits the loop?',
+ o:['EXIT','RETURN','BREAK','CONTINUE'],
+ a:2,e:'BREAK exits the WHILE loop immediately. CONTINUE skips the rest of the current iteration and goes back to the loop condition.'},
+
+{t:'mc',q:'To declare and immediately assign a variable in T-SQL, which syntax is correct?',
+ o:['VAR @x INT = 5',
+    'DECLARE @x INT = 5',
+    'SET @x INT = 5',
+    'DEFINE @x AS INT = 5'],
+ a:1,e:'DECLARE @varname datatype = value assigns an initial value at declaration time (SQL Server 2008+).'},
+
+{t:'mc',q:'SCOPE_IDENTITY() is preferred over @@IDENTITY because:',
+ o:['It is faster than @@IDENTITY',
+    'It returns the last identity inserted in the CURRENT scope, preventing issues with triggers that insert into other tables',
+    'It works with all data types not just INT',
+    'It returns all recently inserted identity values as a set'],
+ a:1,e:'@@IDENTITY can be hijacked by a trigger inserting into another identity table. SCOPE_IDENTITY() is scoped to the current batch/proc.'},
+
+// ── SECTION 11: Stored Procedures & Functions (Q64–Q70) ─────────
+{t:'mc',q:'Which statement correctly executes a stored procedure named spGetOrders with one parameter?',
+ o:["CALL spGetOrders @CustomerID = 5",
+    "RUN spGetOrders @CustomerID = 5",
+    "EXEC spGetOrders @CustomerID = 5",
+    "EXECUTE PROCEDURE spGetOrders(5)"],
+ a:2,e:'In T-SQL, stored procedures are called with EXEC (or EXECUTE). Parameters can be named or positional.'},
+
+{t:'mc',q:'What does SET NOCOUNT ON do inside a stored procedure?',
+ o:['Prevents the procedure from counting any rows',
+    'Suppresses the "N rows affected" messages sent back to the client',
+    'Stops the procedure from returning result sets',
+    'Disables row counting for GROUP BY clauses'],
+ a:1,e:'SET NOCOUNT ON suppresses the DONE_IN_PROC message after each statement, reducing network traffic.'},
+
+{t:'tf',q:'A User-Defined Scalar Function can be used directly in a SELECT statement, just like a built-in function.',
+ a:true,e:'True. Scalar UDFs return a single value and can be used in SELECT, WHERE, and other expression contexts.'},
+
+{t:'mc',q:'Which type of User-Defined Function returns a table result set from a SINGLE SELECT statement with no BEGIN/END block?',
+ o:['Scalar function',
+    'Multi-statement table-valued function',
+    'Inline table-valued function (iTVF)',
+    'Stored procedure with SELECT'],
+ a:2,e:'An inline TVF uses RETURNS TABLE AS RETURN (SELECT ...) — no BEGIN/END, just a single query. Very efficient — the optimizer can inline it.'},
+
+{t:'mc',q:'Can a User-Defined Function perform INSERT, UPDATE, or DELETE on base tables?',
+ o:['Yes, always','Yes, only if it is a table-valued function','No — UDFs cannot modify database state','Yes, only scalar functions can'],
+ a:2,e:'UDFs are read-only by design. They cannot modify base table data. Use stored procedures for DML operations.'},
+
+{t:'mc',q:'Which procedure parameter type allows the procedure to return a value back to the caller?',
+ o:['RETURN parameter','IN parameter','OUTPUT parameter','REF parameter'],
+ a:2,e:'Declaring a parameter with OUTPUT allows the procedure to write a value into it that the caller can read after EXEC.'},
+
+{t:'mc',q:'What is the primary advantage of stored procedures over ad-hoc SQL queries?',
+ o:['Stored procedures always run faster than any other SQL',
+    'Execution plans are compiled and cached, improving performance and security through encapsulation',
+    'They can only be called by database administrators',
+    'They automatically encrypt all data they access'],
+ a:1,e:'SQL Server compiles and caches the execution plan on first run. Subsequent calls reuse the plan. They also prevent SQL injection.'},
+
+// ── SECTION 12: Views (Q71–Q75) ─────────────────────────────────
+{t:'mc',q:'A view defined WITH CHECK OPTION prevents which operation?',
+ o:['Reading data through the view',
+    'Creating an index on the view',
+    'INSERT or UPDATE operations that would produce rows invisible through the view\'s WHERE filter',
+    'Joining the view to other tables'],
+ a:2,e:'WITH CHECK OPTION rejects any INSERT/UPDATE that would result in a row not satisfying the view\'s WHERE condition.'},
+
+{t:'tf',q:'A standard (non-indexed) view stores its result set as a physical table on disk.',
+ a:false,e:'False. A regular view is just a saved query. Only an INDEXED (materialised) view stores data physically.'},
+
+{t:'mc',q:'To create an INDEXED view in SQL Server, the view must first be created with which option?',
+ o:['WITH ENCRYPTION','WITH NOCHECK','WITH SCHEMABINDING','WITH READ ONLY'],
+ a:2,e:'SCHEMABINDING is mandatory for indexed views. It locks the view to the schema, preventing underlying table changes that would break it.'},
+
+{t:'mc',q:'Which of the following is a key LIMITATION of standard views?',
+ o:['Views cannot use JOINs',
+    'Views cannot accept parameters — use Table-Valued Functions instead',
+    'Views cannot be queried with SELECT',
+    'Views cannot reference more than one table'],
+ a:1,e:'Standard views cannot be parameterised. If you need filtered views with parameters, use inline table-valued functions.'},
+
+{t:'mc',q:'What type of index must be created FIRST to materialise an indexed view?',
+ o:['A non-clustered index on the most queried column',
+    'A unique clustered index on the view',
+    'A filtered index on the view',
+    'A covering non-clustered index'],
+ a:1,e:'The first index on a view must be a UNIQUE CLUSTERED index. This is what materialises (physically stores) the view\'s data.'},
+
+// ── SECTION 13: Cursors (Q76–Q80) ───────────────────────────────
+{t:'mc',q:'What is the correct order of cursor operations?',
+ o:['OPEN → DECLARE → FETCH → CLOSE → DEALLOCATE',
+    'DECLARE → OPEN → FETCH → CLOSE → DEALLOCATE',
+    'DECLARE → FETCH → OPEN → CLOSE → DEALLOCATE',
+    'OPEN → FETCH → DECLARE → DEALLOCATE → CLOSE'],
+ a:1,e:'Always: DECLARE (define) → OPEN (execute query) → FETCH (get rows) → CLOSE (release rows) → DEALLOCATE (free resources).'},
+
+{t:'mc',q:'What value does @@FETCH_STATUS return when a FETCH is successful?',
+ o:['-1','1','0','-2'],
+ a:2,e:'@@FETCH_STATUS = 0 means the FETCH succeeded. -1 means failed/beyond result set. -2 means the row was deleted (KEYSET cursor).'},
+
+{t:'tf',q:'A FAST_FORWARD cursor is the most performant cursor type and is both FORWARD_ONLY and READ_ONLY.',
+ a:true,e:'True. FAST_FORWARD combines FORWARD_ONLY and READ_ONLY for maximum performance — it applies optimisations that other cursor types cannot.'},
+
+{t:'mc',q:'A STATIC cursor uses tempdb to take a snapshot of the data at OPEN time. What is a consequence of this?',
+ o:['Changes made by other users are immediately reflected in cursor results',
+    'Changes made to base tables after the cursor is opened are NOT visible',
+    'The cursor can only contain 100 rows',
+    'The cursor must be READ_WRITE'],
+ a:1,e:'STATIC cursors are a frozen snapshot. Any changes after OPEN are invisible to the cursor.'},
+
+{t:'mc',q:'When should you use a cursor instead of a set-based operation?',
+ o:['Always — cursors are more efficient than set-based operations',
+    'For all DELETE and UPDATE statements',
+    'Only when row-by-row processing is truly required and no set-based equivalent exists',
+    'For any query returning more than 1000 rows'],
+ a:2,e:'Cursors are slow and should be a last resort. Use set-based SQL whenever possible. Cursors suit tasks like sending one email per row.'},
+
+// ── SECTION 14: Triggers (Q81–Q86) ─────────────────────────────
+{t:'mc',q:'Which two pseudo-tables are available inside a DML trigger body?',
+ o:['ADDED and REMOVED','NEW and OLD','INSERTED and DELETED','BEFORE and AFTER'],
+ a:2,e:'SQL Server provides INSERTED (new rows) and DELETED (old rows) pseudo-tables inside all DML triggers.'},
+
+{t:'mc',q:'An INSTEAD OF trigger on a view fires:',
+ o:['After the DML statement completes',
+    'In place of the DML statement — the actual operation does NOT execute unless coded explicitly',
+    'Before AND after the DML statement',
+    'Only when the view is queried with SELECT'],
+ a:1,e:'INSTEAD OF replaces the triggering DML. The original operation is cancelled. You must explicitly write what should happen.'},
+
+{t:'tf',q:'A single DML trigger should be written to handle multiple rows because INSERT, UPDATE, and DELETE can affect many rows at once.',
+ a:true,e:'True. Always write triggers assuming the operation affected multiple rows. The INSERTED/DELETED tables can contain many rows.'},
+
+{t:'mc',q:'Which trigger event fires when a table is being DROPPED from the database?',
+ o:['DML AFTER trigger','DML INSTEAD OF trigger','DDL trigger for DROP_TABLE','LOGON trigger'],
+ a:2,e:'DDL triggers respond to schema-level events like CREATE_TABLE, DROP_TABLE, ALTER_TABLE. They are defined ON DATABASE or ON SERVER.'},
+
+{t:'mc',q:'What does DISABLE TRIGGER trg_Audit ON Employees do?',
+ o:['Permanently removes the trigger from the database',
+    'Prevents the trigger from firing without deleting its definition',
+    'Pauses the trigger for 24 hours',
+    'Converts it to an INSTEAD OF trigger'],
+ a:1,e:'DISABLE TRIGGER keeps the trigger definition intact but stops it from firing. Use ENABLE TRIGGER to re-activate it.'},
+
+{t:'mc',q:'Inside a trigger, the IF UPDATE(ColumnName) function is used to:',
+ o:['Check if the column was set to NULL',
+    'Determine if a specific column was included in the UPDATE statement that fired the trigger',
+    'Verify that the updated value has changed from the old value',
+    'Count how many rows were updated in the column'],
+ a:1,e:'IF UPDATE(col) returns TRUE if the column was included in the UPDATE statement — it does not check if the value actually changed.'},
+
+// ── SECTION 15: Database Security (Q87–Q91) ─────────────────────
+{t:'mc',q:'In SQL Server security, what is the difference between a LOGIN and a USER?',
+ o:['They are the same thing with different names',
+    'A LOGIN is server-level (instance access); a USER is database-level (mapped to a login)',
+    'A USER is server-level; a LOGIN is database-level',
+    'A LOGIN is for Windows accounts; a USER is for SQL accounts only'],
+ a:1,e:'Logins grant access to the SQL Server instance. Users are created inside a database and are mapped to a login.'},
+
+{t:'mc',q:'DENY SELECT ON Employees TO ReportUser is used. The same user is also a member of the db_datareader role which GRANTs SELECT. What happens when ReportUser tries to SELECT?',
+ o:['The GRANT from the role takes precedence — SELECT succeeds',
+    'The DENY takes precedence over the GRANT — SELECT is blocked',
+    'SQL Server prompts for administrator approval',
+    'An error is raised asking to resolve the conflict'],
+ a:1,e:'DENY always overrides GRANT. Even if the user has a GRANT via a role, an explicit DENY blocks the permission.'},
+
+{t:'tf',q:'WITH GRANT OPTION allows the grantee to grant the same permission to other users.',
+ a:true,e:'True. GRANT SELECT ON T TO UserA WITH GRANT OPTION means UserA can then grant SELECT on T to other principals.'},
+
+{t:'mc',q:'Which built-in database role grants SELECT access to ALL tables and views in the database?',
+ o:['db_owner','db_datawriter','db_datareader','db_ddladmin'],
+ a:2,e:'db_datareader grants SELECT on all user tables and views. db_datawriter grants INSERT, UPDATE, DELETE.'},
+
+{t:'mc',q:'REVOKE SELECT ON Employees FROM UserA CASCADE — what does CASCADE do here?',
+ o:['Also deletes UserA from the database',
+    'Also removes SELECT from any users that UserA previously granted it to using WITH GRANT OPTION',
+    'Rolls back any transactions UserA has open',
+    'Drops the Employees table after revoking'],
+ a:1,e:'CASCADE propagates the REVOKE to all principals that received the permission from UserA via WITH GRANT OPTION.'},
+
+// ── SECTION 16: Concurrency Control (Q92–Q96) ───────────────────
+{t:'mc',q:'Which ACID property ensures that if a system crashes mid-transaction, the committed changes survive?',
+ o:['Atomicity','Consistency','Isolation','Durability'],
+ a:3,e:'Durability guarantees that once a COMMIT is acknowledged, changes are permanent — even if the server crashes immediately after.'},
+
+{t:'mc',q:'A DIRTY READ occurs when a transaction reads data that:',
+ o:['Has been read twice with different values',
+    'Has been committed by another transaction',
+    'Has been modified but NOT yet committed by another transaction',
+    'Has been locked by the current transaction'],
+ a:2,e:'A dirty read = reading uncommitted changes from another transaction that may still be rolled back.'},
+
+{t:'mc',q:'Which isolation level prevents dirty reads AND non-repeatable reads, but still allows phantom reads?',
+ o:['READ UNCOMMITTED','READ COMMITTED','REPEATABLE READ','SERIALIZABLE'],
+ a:2,e:'REPEATABLE READ prevents dirty and non-repeatable reads by holding shared locks until transaction end, but new rows (phantoms) can still appear.'},
+
+{t:'tf',q:'In a deadlock situation, SQL Server automatically selects one transaction as the deadlock victim and rolls it back.',
+ a:true,e:'True. SQL Server\'s lock monitor detects circular deadlocks and kills the transaction with the lowest deadlock priority.'},
+
+{t:'mc',q:'What is the key difference between PESSIMISTIC and OPTIMISTIC concurrency models?',
+ o:['Pessimistic allows dirty reads; optimistic does not',
+    'Pessimistic locks resources immediately assuming conflicts are likely; optimistic checks for conflicts only at commit time',
+    'Optimistic is only available in SQL Server Enterprise Edition',
+    'Pessimistic uses row-level locks; optimistic uses table-level locks'],
+ a:1,e:'Pessimistic = lock upfront (assumes conflict). Optimistic = no lock during work, detect and resolve conflict at COMMIT time.'},
+
+// ── SECTION 17: Backup & Recovery (Q97–Q99, +DRAG) ──────────────
+{t:'mc',q:'Which backup type only captures changes made since the LAST FULL backup?',
+ o:['Transaction log backup','Differential backup','File backup','Copy-only backup'],
+ a:1,e:'Differential backup captures all pages changed since the last FULL backup — not just since the last differential.'},
+
+{t:'mc',q:'To perform a point-in-time restore, which recovery model must the database use?',
+ o:['SIMPLE','BULK_LOGGED','FULL','Any model works'],
+ a:2,e:'Point-in-time recovery requires FULL recovery model with transaction log backups. SIMPLE model truncates the log and cannot support this.'},
+
+{t:'mc',q:'What does RPO (Recovery Point Objective) define in a disaster recovery plan?',
+ o:['How quickly the system must be restored after a failure',
+    'The maximum acceptable amount of data loss measured in time',
+    'The geographic distance between primary and backup servers',
+    'The number of backup copies that must be maintained'],
+ a:1,e:'RPO = how much data you can afford to lose. E.g. RPO = 1 hour means you can tolerate losing up to 1 hour of transactions.'},
+
+// ── DRAG & DROP: Backup restore order ───────────────────────────
+{t:'dd',
+ q:'A database needs to be restored. Drag each backup type to its correct step number in the restore sequence.',
+ zones:['Step 1 — Apply first','Step 2 — Apply second','Step 3 — Apply last'],
+ items:['Differential Backup','Full Backup','Transaction Log Backup'],
+ ans:{'Full Backup':'Step 1 — Apply first','Differential Backup':'Step 2 — Apply second','Transaction Log Backup':'Step 3 — Apply last'},
+ e:'Restore order: Full → Differential (latest one) → Transaction Logs (in order) → RECOVERY to bring online.'},
+
+]; // end Q
+
+// ════════════════════════════════════════════════════════════════
+// SECTION DEFINITIONS
+// ════════════════════════════════════════════════════════════════
+const SECTIONS = [
+  {name:'Database Design',          icon:'🗂️', color:'#6366F1', start:0,  end:5,  desc:'Normalisation, ERDs, keys & constraints'},
+  {name:'Creating SQL Databases',   icon:'🏗️', color:'#0EA5E9', start:6,  end:11, desc:'CREATE DATABASE, files & filegroups'},
+  {name:'Indexing',                 icon:'⚡', color:'#F59E0B', start:12, end:17, desc:'Clustered, non-clustered, maintenance'},
+  {name:'Retrieving Data',          icon:'🔍', color:'#10B981', start:18, end:23, desc:'SELECT, WHERE, GROUP BY, pagination'},
+  {name:'T-SQL Functions',          icon:'🔧', color:'#EC4899', start:24, end:30, desc:'String, date, numeric, window functions'},
+  {name:'Modifying Table Contents', icon:'✏️', color:'#F97316', start:31, end:36, desc:'INSERT, UPDATE, DELETE, MERGE, TRUNCATE'},
+  {name:'Joins',                    icon:'🔗', color:'#14B8A6', start:37, end:43, desc:'INNER, OUTER, CROSS, SELF, UNION'},
+  {name:'Sub Queries',              icon:'📦', color:'#8B5CF6', start:44, end:50, desc:'Nested, correlated, EXISTS, ANY, ALL'},
+  {name:'CTEs & CASE',              icon:'🌀', color:'#06B6D4', start:51, end:57, desc:'WITH clause, recursive CTEs, CASE expressions'},
+  {name:'Programmability',          icon:'💻', color:'#84CC16', start:58, end:63, desc:'Variables, IF/ELSE, WHILE, error handling'},
+  {name:'Stored Procedures & Functions', icon:'⚙️', color:'#3B82F6', start:64, end:70, desc:'CREATE PROC, UDFs, OUTPUT params'},
+  {name:'Views',                    icon:'👁️', color:'#A855F7', start:71, end:75, desc:'CREATE VIEW, indexed views, CHECK OPTION'},
+  {name:'Cursors',                  icon:'🖱️', color:'#EF4444', start:76, end:80, desc:'DECLARE, OPEN, FETCH, CLOSE, types'},
+  {name:'Triggers',                 icon:'⚡', color:'#F43F5E', start:81, end:86, desc:'AFTER, INSTEAD OF, DDL triggers'},
+  {name:'Database Security',        icon:'🔒', color:'#0891B2', start:87, end:91, desc:'Logins, users, roles, GRANT/DENY/REVOKE'},
+  {name:'Concurrency Control',      icon:'🔄', color:'#7C3AED', start:92, end:96, desc:'Transactions, locks, isolation levels'},
+  {name:'Backup & Recovery',        icon:'💾', color:'#059669', start:97, end:100, desc:'Backup types, restore order, RPO/RTO'},
+];
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+const STORE_KEY = 'tsql_quiz_v1';
+let answered = {};
+let activeSec = null;
+let qList = [];
+let qPos = 0;
+let mcSel = null;
+let tfSel = null;
+let ddPlacements = {};
+let ddDraggingItem = null;
+
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(answered)); } catch(e){}
+}
+function load() {
+  try { const d = localStorage.getItem(STORE_KEY); if (d) answered = JSON.parse(d); } catch(e){}
+}
+load();
+
+// ════════════════════════════════════════════════════════════════
+// STATS
+// ════════════════════════════════════════════════════════════════
+function updateStats() {
+  let correct = 0, wrong = 0;
+  Object.values(answered).forEach(a => a.correct ? correct++ : wrong++);
+  const total = Q.length;
+  const answered_count = correct + wrong;
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('sRemain').textContent = total - answered_count;
+  document.getElementById('sScore').textContent = answered_count > 0 ? Math.round(correct/answered_count*100)+'%' : '0%';
+  document.getElementById('progBar').style.width = (answered_count/total*100)+'%';
+}
+updateStats();
+
+// ════════════════════════════════════════════════════════════════
+// HOME
+// ════════════════════════════════════════════════════════════════
+function renderHome() {
+  document.getElementById('homeView').style.display = 'block';
+  document.getElementById('quizView').style.display = 'none';
+  const cont = document.getElementById('secCards');
+  cont.innerHTML = '';
+  SECTIONS.forEach((sec, idx) => {
+    const total = sec.end - sec.start + 1;
+    let correct = 0, attempted = 0;
+    for (let i = sec.start; i <= sec.end; i++) {
+      if (answered[i] !== undefined) { attempted++; if (answered[i].correct) correct++; }
+    }
+    const pct = total > 0 ? Math.round(attempted/total*100) : 0;
+    const card = document.createElement('button');
+    card.className = 'sec-card';
+    card.onclick = () => openSection(idx);
+    card.innerHTML = `
+      <div class="sc-icon" style="background:${sec.color}">${sec.icon}</div>
+      <div class="sc-body">
+        <div class="sc-title">${sec.name}</div>
+        <div class="sc-desc">${sec.desc}</div>
+        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${pct}%;background:${sec.color}"></div></div>
+        <div class="sc-label">${attempted}/${total} attempted &nbsp;·&nbsp; ${correct} correct</div>
+      </div>
+      <div class="sc-arrow">›</div>`;
+    cont.appendChild(card);
+  });
+  updateStats();
+}
+
+function resetAll() {
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
+  answered = {};
+  save();
+  renderHome();
+  updateStats();
+}
+
+function goHome() { renderHome(); }
+
+// ════════════════════════════════════════════════════════════════
+// OPEN SECTION
+// ════════════════════════════════════════════════════════════════
+function openSection(idx) {
+  activeSec = SECTIONS[idx];
+  qList = [];
+  for (let i = activeSec.start; i <= activeSec.end; i++) qList.push(i);
+  qPos = 0;
+  mcSel = null; tfSel = null; ddPlacements = {};
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('quizView').style.display = 'block';
+  document.getElementById('qnavTitle').textContent = activeSec.name;
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  document.getElementById('btnResults').style.display = 'none';
+  document.getElementById('qprogFill').style.background = activeSec.color;
+  renderQ();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER QUESTION
+// ════════════════════════════════════════════════════════════════
+function renderQ() {
+  const qi = qList[qPos];
+  const q = Q[qi];
+  mcSel = null; tfSel = null; ddPlacements = {};
+
+  const total = qList.length;
+  document.getElementById('qnavCount').textContent = `${qPos+1} / ${total}`;
+  document.getElementById('qprogFill').style.width = ((qPos+1)/total*100)+'%';
+
+  const isLast = qPos === total - 1;
+  document.getElementById('btnPrev').disabled = qPos === 0;
+  document.getElementById('btnResults').style.display = isLast ? 'inline-block' : 'none';
+  if (isLast) document.getElementById('btnResults').style.background = activeSec.color;
+
+  const area = document.getElementById('questionArea');
+  if (q.t === 'mc') renderMC(area, q, qi);
+  else if (q.t === 'tf') renderTF(area, q, qi);
+  else if (q.t === 'dd') renderDD(area, q, qi);
+}
+
+function prevQ() { if (qPos > 0) { qPos--; renderQ(); } }
+
+function nextQ() {
+  if (qPos + 1 < qList.length) { qPos++; renderQ(); }
+  else showComplete();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MC
+// ════════════════════════════════════════════════════════════════
+function renderMC(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  const letters = ['A','B','C','D'];
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : ' wrong';
+
+  const codeBlock = q.code ? `<div class="q-code">${escHtml(q.code)}</div>` : '';
+
+  const optsHtml = q.o.map((opt,i) => {
+    let cls = 'opt-btn';
+    if (locked) {
+      if (i === q.a) cls += ' opt-correct';
+      else if (i === saved.selection && i !== q.a) cls += ' opt-wrong';
+    } else if (mcSel === i) cls += ' selected';
+    return `<button class="${cls}" onclick="selectMC(${qi},${i})" ${locked?'disabled':''}>
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${escHtml(opt)}</span>
+    </button>`;
+  }).join('');
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; Multiple Choice</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      ${codeBlock}
+      <div class="opts">${optsHtml}</div>
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkMC(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectMC(qi, i) {
+  if (answered[qi] !== undefined) return;
+  mcSel = i;
+  renderMC(document.getElementById('questionArea'), Q[qi], qi);
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
+}
+
+function checkMC(qi) {
+  const q = Q[qi];
+  if (mcSel === null || answered[qi] !== undefined) return;
+  const correct = mcSel === q.a;
+  answered[qi] = {correct, selection: mcSel};
+  save();
+  renderMC(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// TF
+// ════════════════════════════════════════════════════════════════
+function renderTF(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : ' wrong';
+
+  function tfCls(val) {
+    let c = 'tf-btn';
+    if (locked) {
+      if (val === q.a) c += ' tf-correct';
+      else if (val === saved.selection && val !== q.a) c += ' tf-wrong';
+    } else if (tfSel === val) c += ' selected';
+    return c;
+  }
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; True / False</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="tf-row">
+        <button id="tf_${qi}_true"  class="${tfCls(true)}"  onclick="selectTF(${qi},true)"  ${locked?'disabled':''}>✓ True</button>
+        <button id="tf_${qi}_false" class="${tfCls(false)}" onclick="selectTF(${qi},false)" ${locked?'disabled':''}>✗ False</button>
+      </div>
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkTF(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectTF(qi, val) {
+  if (answered[qi] !== undefined) return;
+  tfSel = val;
+  document.getElementById(`tf_${qi}_true`).className  = 'tf-btn' + (val === true  ? ' selected' : '');
+  document.getElementById(`tf_${qi}_false`).className = 'tf-btn' + (val === false ? ' selected' : '');
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
+}
+
+function checkTF(qi) {
+  const q = Q[qi];
+  if (tfSel === null || answered[qi] !== undefined) return;
+  const correct = tfSel === q.a;
+  answered[qi] = {correct, selection: tfSel};
+  save();
+  renderTF(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// DRAG & DROP
+// ════════════════════════════════════════════════════════════════
+function renderDD(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  if (locked && saved.selection) ddPlacements = {...saved.selection};
+
+  const bankItems = locked ? [] : q.items.filter(item => !ddPlacements[item]);
+
+  function zoneItems(zone) {
+    if (locked) return q.items.filter(item => (saved.selection||{})[item] === zone);
+    return q.items.filter(item => ddPlacements[item] === zone);
+  }
+
+  function itemHtml(item, zone) {
+    let cls = 'dd-item';
+    if (locked) {
+      cls += (q.ans[item] === zone) ? ' item-correct' : ' item-wrong';
+    }
+    return `<div class="${cls}" draggable="${!locked}"
+      ondragstart="ddStart(event,'${esc(item)}')"
+      ondragend="ddEnd(event)">${escHtml(item)}</div>`;
+  }
+
+  const bankHtml = bankItems.map(item => itemHtml(item, null)).join('');
+  const zonesHtml = q.zones.map(zone => `
+    <div class="dd-zone" id="ddz_${qi}_${esc(zone)}"
+      ondragover="ddOver(event,'${esc(zone)}')"
+      ondragleave="ddLeave(event,'${esc(zone)}')"
+      ondrop="ddDrop(event,${qi},'${esc(zone)}')">
+      <div class="dd-zone-label">${escHtml(zone)}</div>
+      <div class="dd-items" id="ddi_${qi}_${esc(zone)}">${zoneItems(zone).map(item=>itemHtml(item,zone)).join('')}</div>
+    </div>`).join('');
+
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : (saved.numCorrect>0?' partial':' wrong');
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; Drag &amp; Drop</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="dd-area">
+        <div class="dd-bank-wrap">
+          <div class="dd-bank-label">Items to place</div>
+          <div class="dd-bank" id="ddbank_${qi}"
+            ondragover="ddOver(event,'__bank__')"
+            ondragleave="ddLeave(event,'__bank__')"
+            ondrop="ddDrop(event,${qi},'__bank__')">${bankHtml}</div>
+        </div>
+        <div class="dd-zones">${zonesHtml}</div>
+      </div>
+      ${locked ? feedbackHtml(saved.correct, q.e + (saved.correct?'':` (${saved.numCorrect}/${q.items.length} correct)`)) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkDD(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function ddStart(e, item) {
+  ddDraggingItem = item;
+  setTimeout(() => { const el = e.target; if (el) el.classList.add('dragging'); }, 0);
+}
+function ddEnd(e) { e.target.classList.remove('dragging'); }
+
+function ddOver(e, zone) {
+  e.preventDefault();
+  const id = zone === '__bank__' ? 'ddbank_'+qList[qPos] : 'ddz_'+qList[qPos]+'_'+zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.add('dragover');
+}
+
+function ddLeave(e, zone) {
+  const id = zone === '__bank__' ? 'ddbank_'+qList[qPos] : 'ddz_'+qList[qPos]+'_'+zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('dragover');
+}
+
+function ddDrop(e, qi, zone) {
+  e.preventDefault();
+  if (!ddDraggingItem || answered[qi] !== undefined) return;
+  delete ddPlacements[ddDraggingItem];
+  if (zone !== '__bank__') ddPlacements[ddDraggingItem] = zone;
+  const allPlaced = Q[qi].items.every(item => ddPlacements[item]);
+  renderDD(document.getElementById('questionArea'), Q[qi], qi);
+  const btn = document.getElementById(`btnCheck_${qi}`);
+  if (btn) btn.disabled = !allPlaced;
+  ddDraggingItem = null;
+}
+
+function checkDD(qi) {
+  const q = Q[qi];
+  if (answered[qi] !== undefined) return;
+  let numCorrect = 0;
+  q.items.forEach(item => { if (ddPlacements[item] === q.ans[item]) numCorrect++; });
+  const correct = numCorrect === q.items.length;
+  answered[qi] = {correct, selection:{...ddPlacements}, numCorrect, total:q.items.length};
+  save();
+  renderDD(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// COMPLETE SCREEN
+// ════════════════════════════════════════════════════════════════
+function showComplete() {
+  const sec = activeSec;
+  let correct = 0, wrong = 0;
+  for (let qi = sec.start; qi <= sec.end; qi++) {
+    if (answered[qi] !== undefined) { answered[qi].correct ? correct++ : wrong++; }
+  }
+  const total = sec.end - sec.start + 1;
+  const pct = Math.round(correct/total*100);
+  let headline, sub;
+  if (pct>=90) { headline='Outstanding! 🎓'; sub='Excellent command of this topic!'; }
+  else if (pct>=75) { headline='Great work! 💪'; sub='Solid. Review missed questions to lock it in.'; }
+  else if (pct>=60) { headline='Good effort 👍'; sub='You have the foundations — revisit the tricky ones.'; }
+  else { headline='Keep studying 📖'; sub='Go back through the material and try again!'; }
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="complete-card">
+      <div class="score-ring">
+        <div class="score-num">${correct}</div>
+        <div class="score-pct">${pct}%</div>
+      </div>
+      <div class="complete-title">${headline}</div>
+      <div class="complete-sub">${sub}</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" style="color:#16A34A">${correct}</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#DC2626">${wrong}</div><div class="stat-lbl">Wrong</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#0369A1">${total-correct-wrong}</div><div class="stat-lbl">Skipped</div></div>
+      </div>
+      <div class="complete-btns">
+        <button class="btn-retry" onclick="retrySection()">↺ Retry section</button>
+        <button class="btn-home" onclick="goHome()">← All sections</button>
+      </div>
+    </div>`;
+  document.getElementById('qnavCount').textContent = '';
+  document.getElementById('btnPrev').style.display = 'none';
+  document.getElementById('btnResults').style.display = 'none';
+}
+
+function retrySection() {
+  const sec = activeSec;
+  for (let qi = sec.start; qi <= sec.end; qi++) delete answered[qi];
+  save();
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  openSection(SECTIONS.indexOf(sec));
+}
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+function feedbackHtml(correct, exp) {
+  const cls = correct ? 'correct' : 'wrong';
+  const icon = correct ? '✓' : '✗';
+  const label = correct ? 'Correct!' : 'Incorrect.';
+  return `<div class="feedback ${cls}">${icon} <strong>${label}</strong> ${escHtml(exp)}</div>`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function esc(s) {
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>
