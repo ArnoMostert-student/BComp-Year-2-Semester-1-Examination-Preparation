@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Management 281</title>
+<link rel="icon" href="icon.png" type="image/png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F4F8;color:#1E293B;min-height:100vh}
+button{font-family:inherit}
+
+/* HEADER */
+.hdr{background:#1A2B4A;color:#fff}
+.hdr-inner{max-width:720px;margin:0 auto;padding:22px 20px 16px}
+.hdr-eye{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7DD3FC;margin-bottom:4px}
+.hdr h1{font-size:22px;font-weight:700;margin-bottom:2px}
+.hdr-sub{font-size:12px;color:#94A3B8}
+.prog-track{background:rgba(255,255,255,.1);height:4px}
+.prog-fill{height:4px;background:#38BDF8;transition:width .4s}
+.stats-bar{border-top:1px solid rgba(255,255,255,.08)}
+.stats-inner{max-width:720px;margin:0 auto;padding:10px 20px;display:flex;gap:20px;flex-wrap:wrap}
+.stat{font-size:12px;color:#94A3B8;display:flex;align-items:center;gap:6px}
+.stat b{font-weight:600;color:#E2E8F0}
+.dot{width:7px;height:7px;border-radius:50%}
+
+/* MAIN */
+.main{max-width:720px;margin:0 auto;padding:28px 20px 60px}
+
+/* HOME */
+.home-title{font-size:18px;font-weight:700;color:#0F172A;margin-bottom:4px}
+.home-sub{font-size:13px;color:#64748B;margin-bottom:24px}
+.sec-cards{display:flex;flex-direction:column;gap:12px}
+.sec-card{display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:14px;border:1.5px solid #CBD5E1;background:#fff;cursor:pointer;text-align:left;width:100%;transition:border-color .15s,box-shadow .15s}
+.sec-card:hover{box-shadow:0 2px 14px rgba(15,23,42,.12)}
+.sc-icon{width:46px;height:46px;border-radius:11px;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc-body{flex:1;min-width:0}
+.sc-title{font-size:14px;font-weight:700;color:#0F172A;margin-bottom:2px}
+.sc-desc{font-size:11px;color:#64748B;margin-bottom:7px}
+.sc-bar-track{background:#E2E8F0;border-radius:4px;height:5px;overflow:hidden}
+.sc-bar-fill{height:5px;border-radius:4px;transition:width .4s}
+.sc-label{font-size:11px;color:#64748B;margin-top:4px}
+.sc-arrow{font-size:20px;color:#94A3B8;flex-shrink:0}
+.reset-wrap{text-align:center;margin-top:28px}
+.btn-reset{padding:9px 22px;background:transparent;border:1.5px solid #CBD5E1;border-radius:8px;font-size:13px;color:#94A3B8;cursor:pointer}
+.btn-reset:hover{border-color:#DC2626;color:#DC2626}
+
+/* QUIZ NAV */
+.quiz-nav{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.btn-back{padding:7px 14px;background:transparent;border:1.5px solid #CBD5E1;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer}
+.btn-back:hover{border-color:#0F172A;color:#0F172A}
+.qnav-title{font-size:14px;font-weight:700;color:#0F172A}
+.qnav-count{margin-left:auto;font-size:13px;color:#64748B}
+.qprog-track{background:#E2E8F0;border-radius:4px;height:4px;margin-bottom:20px;overflow:hidden}
+.qprog-fill{height:4px;border-radius:4px;transition:width .3s}
+
+/* QUESTION CARD */
+.q-card{background:#fff;border:1.5px solid #CBD5E1;border-radius:14px;padding:22px 20px}
+.q-card.correct{background:#F0FDF4;border-color:#86EFAC}
+.q-card.wrong{background:#FEF2F2;border-color:#FCA5A5}
+.q-card.partial{background:#FFFBEB;border-color:#FCD34D}
+.q-num{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.q-text{font-size:15px;font-weight:500;line-height:1.6;margin-bottom:18px;color:#1E293B}
+.q-code{font-family:'Courier New',monospace;font-size:12.5px;background:#1E293B;color:#7DD3FC;padding:12px 14px;border-radius:8px;margin-bottom:16px;white-space:pre;overflow-x:auto;line-height:1.6}
+
+/* OPTIONS */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt-btn{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border:1.5px solid #CBD5E1;border-radius:10px;background:#F8FAFC;cursor:pointer;text-align:left;font-size:13.5px;color:#1E293B;width:100%;transition:border-color .12s,background .12s}
+.opt-btn:not(:disabled):hover{border-color:#38BDF8;background:#F0F9FF}
+.opt-letter{width:26px;height:26px;min-width:26px;border-radius:50%;background:#CBD5E1;color:#64748B;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;flex-shrink:0}
+.opt-btn:not(:disabled):hover .opt-letter{background:#0EA5E9;color:#fff}
+.opt-btn.selected{border-color:#0369A1;background:#F0F9FF}
+.opt-btn.selected .opt-letter{background:#0369A1;color:#fff}
+.opt-btn.opt-correct{border-color:#16A34A;background:#F0FDF4}
+.opt-btn.opt-correct .opt-letter{background:#16A34A;color:#fff}
+.opt-btn.opt-wrong{border-color:#DC2626;background:#FEF2F2}
+.opt-btn.opt-wrong .opt-letter{background:#DC2626;color:#fff}
+
+/* TF */
+.tf-row{display:flex;gap:10px}
+.tf-btn{flex:1;padding:13px;border:1.5px solid #CBD5E1;border-radius:10px;background:#F8FAFC;cursor:pointer;font-size:14px;font-weight:600;color:#1E293B;transition:all .12s}
+.tf-btn:not(:disabled):hover{border-color:#0EA5E9;background:#F0F9FF;color:#0369A1}
+.tf-btn.selected{border-color:#0369A1;background:#F0F9FF;color:#0369A1}
+.tf-btn.tf-correct{border-color:#16A34A;background:#F0FDF4;color:#16A34A}
+.tf-btn.tf-wrong{border-color:#DC2626;background:#FEF2F2;color:#DC2626}
+
+/* DRAG & DROP */
+.dd-area{display:flex;gap:16px;flex-wrap:wrap}
+.dd-bank-wrap{flex:1 1 160px;min-width:160px}
+.dd-bank-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748B;margin-bottom:8px}
+.dd-bank{min-height:40px;padding:4px;border-radius:8px;border:1.5px dashed #CBD5E1;display:flex;flex-direction:column;gap:6px;transition:background .15s,border-color .15s}
+.dd-bank.dragover{background:#F0F9FF;border-color:#0EA5E9}
+.dd-zones{flex:2 1 240px;display:flex;flex-direction:column;gap:8px}
+.dd-zone{border:1.5px dashed #CBD5E1;border-radius:8px;padding:8px 10px;min-height:48px;transition:background .15s,border-color .15s}
+.dd-zone.dragover{background:#F0F9FF;border-color:#0EA5E9}
+.dd-zone-label{font-size:11px;font-weight:700;color:#0F172A;margin-bottom:4px;pointer-events:none;text-transform:uppercase;letter-spacing:.05em}
+.dd-items{display:flex;flex-direction:column;gap:4px}
+.dd-item{padding:7px 11px;border-radius:7px;font-size:12.5px;background:#fff;border:1.5px solid #CBD5E1;color:#1E293B;cursor:grab;user-select:none;transition:opacity .15s}
+.dd-item.dragging{opacity:.35}
+.dd-item.item-correct{border-color:#16A34A;background:#F0FDF4;color:#16A34A;cursor:default}
+.dd-item.item-wrong{border-color:#DC2626;background:#FEF2F2;color:#DC2626;cursor:default}
+
+/* FEEDBACK */
+.feedback{margin-top:14px;padding:11px 14px;border-radius:8px;font-size:13px;line-height:1.5}
+.feedback.correct{background:#F0FDF4;border:1px solid #86EFAC;color:#14532D}
+.feedback.wrong{background:#FEF2F2;border:1px solid #FCA5A5;color:#7F1D1D}
+.feedback.partial{background:#FFFBEB;border:1px solid #FCD34D;color:#78350F}
+
+/* FOOTER */
+.q-footer{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.btn-check{padding:10px 22px;background:#0F172A;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-check:disabled{background:#CBD5E1;color:#94A3B8;cursor:default}
+.btn-next{padding:10px 22px;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+
+/* NAV ROW */
+.nav-row{display:flex;justify-content:space-between;margin-top:14px}
+.btn-prev{padding:8px 16px;background:transparent;border:1.5px solid #CBD5E1;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer}
+.btn-prev:disabled{color:#CBD5E1;cursor:default}
+.btn-results{padding:8px 20px;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+
+/* COMPLETE */
+.complete-card{background:#fff;border:1.5px solid #CBD5E1;border-radius:14px;padding:40px 28px;text-align:center}
+.score-ring{width:100px;height:100px;border-radius:50%;background:#F0F9FF;border:4px solid #0369A1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px}
+.score-num{font-size:28px;font-weight:700;color:#0F172A}
+.score-pct{font-size:12px;color:#64748B}
+.complete-title{font-size:20px;font-weight:700;color:#0F172A;margin-bottom:6px}
+.complete-sub{font-size:14px;color:#64748B;margin-bottom:28px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:28px}
+.stat-box{background:#F8FAFC;border-radius:10px;padding:14px}
+.stat-val{font-size:22px;font-weight:700}
+.stat-lbl{font-size:12px;color:#64748B;margin-top:2px}
+.complete-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-retry{padding:11px 22px;background:transparent;border:1.5px solid #CBD5E1;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;color:#64748B}
+.btn-home{padding:11px 22px;background:#0F172A;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+
+#quizView{display:none}
+
+@media(max-width:560px){
+  .dd-area{flex-direction:column}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .stats-inner{gap:12px}
+}
+</style>
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-eye">Exam Preparation</div>
+    <h1>Project Management 281</h1>
+    <div class="hdr-sub">100 questions &nbsp;·&nbsp; Multiple choice, True / False, Drag &amp; Drop &nbsp;·&nbsp; 14 categories</div>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat"><div class="pip" style="background:#4ADE80"></div>Correct: <b id="sCorrect">0</b></div>
+      <div class="stat"><div class="pip" style="background:#F87171"></div>Wrong: <b id="sWrong">0</b></div>
+      <div class="stat"><div class="pip" style="background:#475569"></div>Remaining: <b id="sRemain">100</b></div>
+      <div class="stat">Score: <b id="sScore">—</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div id="homeView">
+    <div class="home-title">Choose a section to study</div>
+    <div class="home-sub">Progress is saved automatically — pick up where you left off.</div>
+    <div class="sec-cards" id="secCards"></div>
+    <div class="reset-wrap"><button class="btn-reset" onclick="resetAll()">↺ Reset all progress</button></div>
+  </div>
+
+  <div id="quizView">
+    <div class="quiz-nav">
+      <button class="btn-back" onclick="goHome()">← Back</button>
+      <div class="qnav-title" id="qnavTitle"></div>
+      <div class="qnav-count" id="qnavCount"></div>
+    </div>
+    <div class="qprog-track"><div class="qprog-fill" id="qprogFill"></div></div>
+    <div id="questionArea"></div>
+    <div class="nav-row">
+      <button class="btn-prev" id="btnPrev" onclick="prevQ()">← Previous</button>
+      <button class="btn-results" id="btnResults" style="display:none" onclick="showComplete()">See results →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// QUESTION BANK — 100 questions across 14 sections
+// ══════════════════════════════════════════════════════════════
+const Q = [
+
+// ── SECTION 1: Introduction to Project Management (Q0–Q6) ────
+{t:'mc',q:'Which of the following BEST describes a project?',
+ o:['An ongoing, repetitive business process','A temporary endeavour undertaken to create a unique product or result','A department responsible for delivering organisational goals','A document that authorises spending'],
+ a:1,e:'A project is temporary (defined start and end) and produces a unique deliverable — distinguishing it from ongoing operations.'},
+
+{t:'mc',q:'What are the three sides of the "Triple Constraint" (Iron Triangle) in project management?',
+ o:['Quality, Risk, and Stakeholders','Scope, Time, and Cost','Charter, Plan, and Closure','People, Process, and Technology'],
+ a:1,e:'The triple constraint is Scope, Time, and Cost. Changing one side forces a trade-off in at least one other.'},
+
+{t:'tf',q:'A project manager spends approximately 90% of their time on communication-related activities.',
+ a:true,e:'Research consistently shows PMs spend ~90% of their time communicating — with teams, stakeholders, sponsors, and clients.'},
+
+{t:'mc',q:'Which PMBOK process group formally authorises a project and names the project manager?',
+ o:['Planning','Executing','Initiating','Monitoring & Controlling'],
+ a:2,e:'The Initiating process group is where the Project Charter is created, formally authorising the project and assigning the PM.'},
+
+{t:'mc',q:'In the "diamond model," a fourth dimension is added to the Triple Constraint. What is it?',
+ o:['Risk','Resources','Quality','Stakeholders'],
+ a:2,e:'Quality is often added as a fourth constraint alongside Scope, Time, and Cost, forming the diamond model.'},
+
+{t:'tf',q:'Operations and projects share the same characteristic: both are temporary endeavours with a defined end date.',
+ a:false,e:'Operations are ongoing and continuous (e.g. payroll processing). Only projects are temporary with a defined start and end.'},
+
+{t:'mc',q:'Which of the following is the CORRECT logical order of the five PMBOK process groups?',
+ o:['Planning → Initiating → Executing → Closing → Monitoring','Initiating → Planning → Executing → Monitoring & Controlling → Closing','Executing → Planning → Initiating → Closing → Monitoring','Closing → Monitoring → Executing → Planning → Initiating'],
+ a:1,e:'The five process groups in order: Initiating → Planning → Executing → Monitoring & Controlling → Closing.'},
+
+// ── SECTION 2: Integration Management (Q7–Q13) ───────────────
+{t:'mc',q:'The Project Charter is typically created by the:',
+ o:['Project Manager','Development Team','Project Sponsor','Quality Assurance Lead'],
+ a:2,e:'The Project Sponsor (or authorising body) creates the Project Charter. The PM may help draft it but is named WITHIN it.'},
+
+{t:'mc',q:'Which Integration Management process handles reviewing and approving or rejecting change requests?',
+ o:['Direct and Manage Project Work','Monitor and Control Project Work','Perform Integrated Change Control','Manage Project Knowledge'],
+ a:2,e:'Perform Integrated Change Control reviews all change requests and decides whether to approve, reject, or defer them.'},
+
+{t:'tf',q:'The Change Control Board (CCB) can approve changes to scope, schedule, or cost baselines without documenting the decision.',
+ a:false,e:'All CCB decisions must be formally documented. Changes to baselines must be traceable and communicated to stakeholders.'},
+
+{t:'mc',q:'Which document records what went well, what could be improved, and recommendations for future projects?',
+ o:['Risk Register','Stakeholder Register','Lessons Learned Register','Issue Log'],
+ a:2,e:'The Lessons Learned Register captures knowledge throughout the project and is stored in Organisational Process Assets (OPA).'},
+
+{t:'mc',q:'The Project Management Plan is BEST described as:',
+ o:['A high-level summary created at project initiation','The integration of all subsidiary plans (scope, schedule, cost, quality, etc.)','A document listing all known risks','A communication log for stakeholder meetings'],
+ a:1,e:'The PM Plan integrates and consolidates all subsidiary plans. It is the definitive guide to how the project will be executed and controlled.'},
+
+{t:'tf',q:'Once a baseline is established, it can be changed informally by the project manager without CCB approval.',
+ a:false,e:'Baselines (scope, schedule, cost) can ONLY be changed through the formal Integrated Change Control process with CCB approval.'},
+
+{t:'mc',q:'What does "progressive elaboration" mean in the context of project management?',
+ o:['Adding more team members as the project grows','Continuously improving and detailing the project plan as more information becomes available','Escalating all issues to senior management','Replacing the project manager at each phase'],
+ a:1,e:'Progressive elaboration (also called rolling wave planning) means starting high-level and adding detail as the project unfolds and information becomes clearer.'},
+
+// ── SECTION 3: Software Lifecycles (Q14–Q21) ─────────────────
+{t:'mc',q:'Which SDLC classification is also known as "fully plan-driven" and determines scope, time, and cost upfront?',
+ o:['Adaptive','Iterative and Incremental','Predictive','Agile'],
+ a:2,e:'Predictive (plan-driven) lifecycles fix scope, schedule, and cost at the start. The Waterfall model is the classic example.'},
+
+{t:'mc',q:'In the Waterfall model, what MUST happen before moving from one phase to the next?',
+ o:['The sponsor must review the budget','The current phase must be fully completed and formally signed off','The team size must be doubled','Unit tests must be automated'],
+ a:1,e:'Waterfall is strictly sequential — each phase is fully completed and signed off (verified) before the next begins.'},
+
+{t:'mc',q:'The V-Model pairs every design phase with a corresponding test phase. Which test phase is paired with "Module Design (Low-Level Design)"?',
+ o:['Acceptance Testing','System Testing','Integration Testing','Unit Testing'],
+ a:3,e:'In the V-Model: Module Design (LLD) ↔ Unit Testing. Architectural Design ↔ Integration Testing. System Design ↔ System Testing. Business Requirements ↔ Acceptance Testing.'},
+
+{t:'tf',q:'The Spiral Model was introduced by Barry Boehm and is fundamentally risk-driven — each spiral focuses on identifying and mitigating risks.',
+ a:true,e:'Correct. Boehm (1986) designed the Spiral model around risk management. Every loop includes an Evaluation & Risk Analysis phase.'},
+
+{t:'mc',q:'In RAD (Rapid Application Development), what often happens to the prototype after requirements are confirmed?',
+ o:['It becomes the final production system','It is handed to the operations team','It is "thrown away" and the real system is built fresh','It is archived as documentation'],
+ a:2,e:'RAD intentionally discards (throws away) the prototype once requirements are validated. The purpose is fast feedback, not production code.'},
+
+{t:'mc',q:'Which Agile framework uses Sprints, a Product Backlog, and roles such as Product Owner and Scrum Master?',
+ o:['Kanban','Crystal','Scrum','Feature-Driven Development'],
+ a:2,e:'Scrum defines: Sprints (1–4 weeks), Product Backlog, Sprint Backlog, Daily Scrum, Sprint Review, Retrospective, and the three roles.'},
+
+{t:'mc',q:'What is the typical team size recommended in Agile development?',
+ o:['2–3 people','5–9 people','10–20 people','30+ people'],
+ a:1,e:'Agile recommends small, cross-functional teams of typically 5–9 people to maintain efficiency and communication.'},
+
+{t:'dd',
+ q:'Match each SDLC model to its primary defining characteristic.',
+ zones:['Risk-driven — analyses risks at every iteration','Linear-sequential — phases completed in strict order','Iterative prototyping — functional prototype built for early feedback'],
+ items:['Spiral Model','Waterfall Model','RAD Model'],
+ ans:{'Spiral Model':'Risk-driven — analyses risks at every iteration','Waterfall Model':'Linear-sequential — phases completed in strict order','RAD Model':'Iterative prototyping — functional prototype built for early feedback'},
+ e:'Spiral = risk-driven iterative. Waterfall = strictly sequential. RAD = prototype fast to validate requirements.'},
+
+// ── SECTION 4: Scope Management (Q22–Q28) ────────────────────
+{t:'mc',q:'What does the "100% Rule" for a Work Breakdown Structure (WBS) require?',
+ o:['Every work package must have exactly 100 hours of effort','The WBS must capture 100% of the project scope — all deliverables and work','Every team member must contribute 100% of their time','The WBS must have exactly 100 items'],
+ a:1,e:'The 100% Rule: the WBS must represent 100% of the project scope. Nothing should be left out, and nothing should be added that is out of scope.'},
+
+{t:'mc',q:'What is the lowest level of a WBS called?',
+ o:['Sub-deliverable','Activity','Work Package','Milestone'],
+ a:2,e:'The lowest level of a WBS is a Work Package — the smallest unit that can be assigned, scheduled, budgeted, and monitored.'},
+
+{t:'tf',q:'"Gold plating" is when the project team adds extra features or functions not requested by the customer, believing it adds value.',
+ a:true,e:'Gold plating is when the team delivers beyond scope without approval. Unlike scope creep (customer-driven), gold plating is team-driven.'},
+
+{t:'mc',q:'Which scope management process involves formally ACCEPTING completed deliverables?',
+ o:['Control Scope','Define Scope','Validate Scope','Create WBS'],
+ a:2,e:'Validate Scope is about getting formal sign-off from the customer/sponsor that deliverables meet requirements. It involves inspection.'},
+
+{t:'mc',q:'A Joint Application Development (JAD) session is primarily used for:',
+ o:['Risk identification workshops','Rapid, cross-functional requirements gathering with stakeholders','Sprint retrospectives in Agile','Budget review meetings'],
+ a:1,e:'JAD sessions are structured workshops bringing together stakeholders and developers to rapidly define and agree on requirements.'},
+
+{t:'mc',q:'What is the key difference between Product Scope and Project Scope?',
+ o:['Product scope is always larger than project scope','Product scope = features of the deliverable; Project scope = all the WORK needed to deliver it','They are the same concept used interchangeably','Project scope relates to budget; product scope relates to time'],
+ a:1,e:'Product scope describes WHAT is being built (features, functions). Project scope describes all the WORK required to build it.'},
+
+{t:'tf',q:'Scope creep is a controlled process where new features are added through the formal change control board.',
+ a:false,e:'Scope creep is UNCONTROLLED addition of scope — specifically, changes that bypass the formal change control process.'},
+
+// ── SECTION 5: Cost Management (Q29–Q36) ─────────────────────
+{t:'mc',q:'COCOMO stands for:',
+ o:['Cooperative Cost Monitoring','Constructive Cost Model','Complete Code Measurement Objective','Controlled Output Management'],
+ a:1,e:'COCOMO = Constructive Cost Model. Developed by Barry Boehm to estimate software project effort and schedule based on size (kLOC).'},
+
+{t:'mc',q:'In COCOMO, what is the primary input used to estimate effort?',
+ o:['Number of team members','Project budget in Rands','Software size measured in kLOC (thousands of lines of code)','Number of features in the backlog'],
+ a:2,e:'COCOMO\'s primary input is software size expressed as kLOC. From this, it estimates effort (person-months) and schedule.'},
+
+{t:'mc',q:'Which type of cost estimation uses actual costs from a PREVIOUS similar project as a reference?',
+ o:['Parametric Estimating','Bottom-Up Estimating','Analogous Estimating','Three-Point Estimating'],
+ a:2,e:'Analogous estimating uses historical data from similar projects. It is fast but less accurate — best for early-stage estimates.'},
+
+{t:'mc',q:'In EVM, if CPI = 0.8, what does this mean?',
+ o:['The project is ahead of schedule','The project is under budget','For every R1 spent, only R0.80 of work has been accomplished — over budget','The project is 80% complete'],
+ a:2,e:'CPI < 1 means over budget. CPI = 0.8 means you are getting only 80 cents of value per Rand spent.'},
+
+{t:'mc',q:'What does EV − AC calculate?',
+ o:['Schedule Variance (SV)','Cost Variance (CV)','Estimate at Completion (EAC)','Cost Performance Index (CPI)'],
+ a:1,e:'CV = EV − AC. A positive CV means under budget; negative CV means over budget.'},
+
+{t:'tf',q:'Bottom-Up Estimating is typically the MOST accurate cost estimation technique.',
+ a:true,e:'Bottom-up estimating breaks down every work package and sums the estimates. More effort but highest accuracy (−5% to +10%).'},
+
+{t:'mc',q:'A project has BAC = R500,000 and CPI = 1.25. What is the Estimate at Completion (EAC)?',
+ o:['R625,000','R400,000','R500,000','R375,000'],
+ a:1,e:'EAC = BAC ÷ CPI = 500,000 ÷ 1.25 = R400,000. A CPI > 1 means the project is under budget, so EAC < BAC.'},
+
+{t:'mc',q:'Which EVM metric answers "How much more will it cost to finish the project?"',
+ o:['EAC — Estimate at Completion','ETC — Estimate to Complete','VAC — Variance at Completion','BAC — Budget at Completion'],
+ a:1,e:'ETC = EAC − AC. It tells you the remaining cost needed to complete the project from today.'},
+
+// ── SECTION 6: Time / Schedule Management (Q37–Q43) ──────────
+{t:'mc',q:'Which scheduling technique uses a "longest path" calculation to determine the minimum project duration?',
+ o:['Gantt Chart','PERT Analysis','Critical Path Method (CPM)','Rolling Wave Planning'],
+ a:2,e:'CPM identifies the longest sequence of dependent activities from start to finish — this is the Critical Path and equals the minimum project duration.'},
+
+{t:'mc',q:'An activity on the Critical Path has a Total Float of:',
+ o:['More than zero','Exactly zero','Less than zero','It varies by project'],
+ a:1,e:'Critical Path activities have ZERO float — any delay to them directly delays the project end date.'},
+
+{t:'tf',q:'"Crashing" a project schedule means running activities in parallel that were originally planned sequentially.',
+ a:false,e:'Crashing adds resources (people, equipment) to critical path activities to shorten duration. Running activities in parallel is called Fast Tracking.'},
+
+{t:'mc',q:'What is the PERT formula for estimating activity duration?',
+ o:['(O + M + P) ÷ 3','(O + 4M + P) ÷ 6','(O + 2M + P) ÷ 4','(O + M + P) ÷ 6'],
+ a:1,e:'PERT: (Optimistic + 4×Most Likely + Pessimistic) ÷ 6. This gives a weighted average that accounts for uncertainty.'},
+
+{t:'mc',q:'In a Finish-to-Start (FS) dependency, what is the rule?',
+ o:['Activity B cannot FINISH until Activity A STARTS','Activity B cannot START until Activity A FINISHES','Activity B starts at the same time as Activity A','Activity B finishes at the same time as Activity A'],
+ a:1,e:'FS = most common dependency. B cannot start until A has finished. Example: cannot test (B) until coding (A) is done.'},
+
+{t:'mc',q:'In Agile scheduling, what does "velocity" measure?',
+ o:['The speed of the development server','The average number of story points completed per sprint','The number of bugs fixed per day','The percentage of features delivered on time'],
+ a:1,e:'Velocity = average story points completed per sprint. Used to forecast how many sprints are needed to finish the remaining backlog.'},
+
+{t:'mc',q:'Which compression technique carries MORE risk of rework but does NOT increase direct cost?',
+ o:['Crashing','Resource Levelling','Fast Tracking','Schedule Baselining'],
+ a:2,e:'Fast Tracking overlaps activities, increasing risk and potential rework. Crashing adds resources (increases cost). Fast Tracking does not add headcount.'},
+
+// ── SECTION 7: Risk Management (Q44–Q51) ─────────────────────
+{t:'mc',q:'A THREAT in risk management is defined as:',
+ o:['Any uncertain event in the project','A negative risk — an uncertain event with a negative impact on objectives','A definite problem that will occur','A risk with very low probability'],
+ a:1,e:'Threats are negative risks. Opportunities are positive risks. Both are uncertain events that may or may not occur.'},
+
+{t:'mc',q:'Which risk response strategy for a THREAT involves shifting the financial impact to a third party?',
+ o:['Avoid','Mitigate','Transfer','Accept'],
+ a:2,e:'Transfer shifts risk impact (not the risk itself) to a third party through insurance, warranties, or subcontracting.'},
+
+{t:'mc',q:'A "secondary risk" is:',
+ o:['A low-priority risk with minimal impact','A risk that arises DIRECTLY as a result of implementing a risk response','A risk identified in the second planning meeting','A risk that only affects secondary stakeholders'],
+ a:1,e:'Secondary risks are new risks that EMERGE from the response actions taken. Always analyse responses for the secondary risks they may create.'},
+
+{t:'tf',q:'The Contingency Reserve is budget or time set aside for UNKNOWN risks ("unknown unknowns").',
+ a:false,e:'Contingency Reserve is for KNOWN risks (identified risks). Management Reserve is for unknown risks — the "unknown unknowns."'},
+
+{t:'mc',q:'In a Probability × Impact matrix, a risk with HIGH probability and HIGH impact is classified as:',
+ o:['Low priority','Medium priority','High priority','Acceptable risk'],
+ a:2,e:'P×I matrix: High × High = High priority risk requiring immediate response planning.'},
+
+{t:'mc',q:'Expected Monetary Value (EMV) is calculated as:',
+ o:['Probability + Impact','Probability × Monetary Impact','Impact ÷ Probability','(Probability + Impact) ÷ 2'],
+ a:1,e:'EMV = Probability (%) × Monetary Impact (R). Example: 30% chance of R200,000 loss → EMV = −R60,000.'},
+
+{t:'mc',q:'Which risk identification technique uses anonymous expert opinions collected in multiple rounds to build consensus?',
+ o:['Brainstorming','SWOT Analysis','Delphi Technique','Checklist Analysis'],
+ a:2,e:'The Delphi Technique anonymously surveys experts in multiple rounds until consensus emerges — avoids groupthink and bias.'},
+
+{t:'mc',q:'For OPPORTUNITIES (positive risks), which response strategy ensures the opportunity DEFINITELY occurs by removing uncertainty?',
+ o:['Share','Enhance','Accept','Exploit'],
+ a:3,e:'Exploit eliminates the uncertainty — you take active steps to make sure the opportunity definitely happens. Compare to Avoid (threats).'},
+
+// ── SECTION 8: Project Viability & Financial Analysis (Q52–Q59) 
+{t:'mc',q:'Which financial metric accounts for the TIME VALUE of MONEY when evaluating a project?',
+ o:['Payback Period','Return on Investment (ROI)','Net Present Value (NPV)','Cost-Benefit Ratio'],
+ a:2,e:'NPV discounts future cash flows back to present value using an interest/inflation rate. Payback Period and ROI do NOT account for time value.'},
+
+{t:'mc',q:'A project has an NPV of −R150,000. What does this mean?',
+ o:['The project will return R150,000 in profit','The project destroys value in today\'s Rands and should generally be rejected','The project breaks even in year 2','The project has a negative risk score'],
+ a:1,e:'Negative NPV means the present value of costs exceeds the present value of returns. The project destroys rather than creates value.'},
+
+{t:'mc',q:'The Present Value Factor (f) is calculated using the formula:',
+ o:['f = (1 + i) ^ y','f = 1 ÷ (1 + i) ^ y','f = i ^ y','f = 1 ÷ i × y'],
+ a:1,e:'f = 1 ÷ (1 + i)^y, where i = interest/inflation rate and y = year number. Used to convert future values to today\'s Rands.'},
+
+{t:'tf',q:'The Payback Period method accounts for the time value of money by discounting future cash flows.',
+ a:false,e:'The Payback Period is a simple metric that does NOT discount cash flows. It simply asks: when do cumulative returns equal the investment?'},
+
+{t:'mc',q:'ROI = 25% means:',
+ o:['The project costs 25% more than planned','For every R100 invested, R25 net return is generated','The project will pay back in 25 months','The project has a 25% chance of success'],
+ a:1,e:'ROI = (Net Returns ÷ Investment Cost) × 100. ROI = 25% means R25 of return for every R100 invested.'},
+
+{t:'mc',q:'Which of the following is a PRIMARY strategic reason organisations initiate new projects?',
+ o:['To reduce headcount','To satisfy a regulatory filing deadline','To improve operational efficiency and reduce long-term costs','To train junior staff'],
+ a:2,e:'One of the five strategic reasons for projects: improving operational efficiency to reduce ongoing costs. Others include market expansion, new products, innovation, and risk diversification.'},
+
+{t:'mc',q:'The SARB (South African Reserve Bank) maintains a consumer price inflation target of:',
+ o:['0–2%','3–6%','5–10%','1–3%'],
+ a:1,e:'The SARB CPI target is 3–6%. This is important when calculating NPV/PV factors in the South African context.'},
+
+{t:'mc',q:'Cash Flow for period n is calculated as:',
+ o:['Cumulative Cash Flow (n−1) + Cash Flow(n)','Cash Inflow(n) − Cash Outflow(n)','Net Returns ÷ Investment Cost','FV × (1 + i)^y'],
+ a:1,e:'Cash Flow(n) = Cash Inflow(n) − Cash Outflow(n). Cumulative Cash Flow adds each period\'s CF to the running total.'},
+
+// ── SECTION 9: Quality Management (Q60–Q66) ──────────────────
+{t:'mc',q:'What is the KEY distinction between Quality Assurance (QA) and Quality Control (QC)?',
+ o:['QA is done at the end of the project; QC is done throughout','QA is process-oriented (prevent defects); QC is product-oriented (find defects)','QA tests individual components; QC tests the whole system','They are the same thing with different names'],
+ a:1,e:'QA = PROCESS focus → prevent defects by improving how work is done. QC = PRODUCT focus → inspect outputs to find and fix defects.'},
+
+{t:'mc',q:'A Pareto Chart in quality management is based on which principle?',
+ o:['50% of defects are caused by 50% of the problems','80% of problems come from 20% of causes','All causes contribute equally to defects','Defects must be fixed in chronological order'],
+ a:1,e:'The 80/20 rule: 80% of defects are caused by 20% of issues. A Pareto Chart prioritises the vital few causes to fix first.'},
+
+{t:'tf',q:'A Control Chart monitors process performance over time and has Upper and Lower Control Limits (UCL/LCL).',
+ a:true,e:'Control Charts track a process metric over time. Points outside the UCL/LCL or showing unusual patterns signal special cause variation requiring investigation.'},
+
+{t:'mc',q:'Six Sigma targets a defect rate of:',
+ o:['1 defect per 100 opportunities','3.4 defects per million opportunities (DPMO)','Zero defects at all times','5 defects per 1,000 opportunities'],
+ a:1,e:'Six Sigma = 3.4 DPMO. The DMAIC methodology (Define, Measure, Analyse, Improve, Control) is used to achieve this.'},
+
+{t:'mc',q:'Prevention costs, appraisal costs, and failure costs (internal and external) together make up the:',
+ o:['Project Budget','Cost of Quality (CoQ)','Earned Value','Overhead Allocation'],
+ a:1,e:'Cost of Quality = Prevention (build it right) + Appraisal (check it) + Internal Failure (fix before delivery) + External Failure (fix after delivery).'},
+
+{t:'mc',q:'A Cause-and-Effect diagram (Fishbone/Ishikawa) is used to:',
+ o:['Show project schedule progress','Map the organisational reporting structure','Identify potential root causes of a quality problem','Calculate the cost of defects'],
+ a:2,e:'Fishbone diagrams visually map causes branching into 6 categories (6 Ms): Man, Machine, Method, Material, Measurement, Environment.'},
+
+{t:'mc',q:'The principle "prevention is cheaper than inspection" means:',
+ o:['You should never inspect deliverables','Building quality INTO the process from the start costs less than finding and fixing defects later','Testing should be removed from the project plan','Only the PM is responsible for quality'],
+ a:1,e:'Prevention over inspection is a core quality principle. Fixing defects early in design costs far less than fixing them in production.'},
+
+// ── SECTION 10: Resource Management (Q67–Q72) ────────────────
+{t:'mc',q:'In a RACI matrix, who is ultimately ACCOUNTABLE for a task\'s outcome (only one person per task)?',
+ o:['R — Responsible','A — Accountable','C — Consulted','I — Informed'],
+ a:1,e:'"A" is Accountable — the single person who owns the outcome and has final decision authority. There can only be ONE "A" per task.'},
+
+{t:'mc',q:'According to Tuckman\'s team development model, in which stage do conflicts and power struggles first emerge?',
+ o:['Forming','Storming','Norming','Performing'],
+ a:1,e:'Storming: conflict, resistance, and power struggles emerge as personalities clash. The PM\'s role is to coach and facilitate resolution.'},
+
+{t:'mc',q:'In a PROJECTISED organisational structure, the project manager has:',
+ o:['Little to no authority','Limited authority shared with functional managers','High to almost total authority over the team','Authority only during the planning phase'],
+ a:2,e:'In a projectised structure, the PM has very high authority. Team members are dedicated full-time to the project under the PM\'s direct control.'},
+
+{t:'tf',q:'In Herzberg\'s Two-Factor Theory, salary is a "motivator" that drives higher performance.',
+ a:false,e:'In Herzberg\'s theory, salary is a HYGIENE FACTOR — its absence causes dissatisfaction, but its presence does not motivate. Motivators include achievement and recognition.'},
+
+{t:'mc',q:'Which conflict resolution technique is considered MOST effective for lasting resolution?',
+ o:['Force / Direct','Withdraw / Avoid','Smooth / Accommodate','Collaborate / Problem-Solve'],
+ a:3,e:'Problem-solving (collaborating) addresses root causes and finds a win-win solution. It is the most effective but requires time and willingness from both parties.'},
+
+{t:'mc',q:'The "Adjourning" stage in Tuckman\'s model is characterised by:',
+ o:['High conflict and power struggles','Team breaking up as the project concludes; potential sense of loss','Establishing team norms and procedures','Peak team performance and self-direction'],
+ a:1,e:'Adjourning: the project ends, the team disbands. The PM should celebrate achievements, capture lessons, and support team members transitioning.'},
+
+// ── SECTION 11: Communications Management (Q73–Q78) ──────────
+{t:'mc',q:'A team grows from 5 to 10 members. How many additional communication channels are created?',
+ o:['5 additional','35 additional','45 additional','25 additional'],
+ a:1,e:'Channels = n(n−1)/2. With 5 members: 10. With 10 members: 45. Difference = 35 additional channels.'},
+
+{t:'mc',q:'Which communication method is BEST suited for complex issues requiring immediate two-way feedback?',
+ o:['Push (email, memos)','Pull (intranet, portals)','Interactive (meetings, video calls)','Formal written reports'],
+ a:2,e:'Interactive communication is real-time and two-way — ideal for complex discussions where immediate clarification is needed.'},
+
+{t:'tf',q:'In the communication model, "noise" refers only to literal audio interference during meetings.',
+ a:false,e:'Noise is ANY interference distorting the message: language barriers, jargon, cultural differences, technical problems, emotional state, or distractions.'},
+
+{t:'mc',q:'The Communications Management Plan documents:',
+ o:['The project budget breakdown','Who needs what information, in what format, how often, and through what channel','The risk register and mitigation strategies','The WBS and activity list'],
+ a:1,e:'The Comm Plan defines: stakeholder info needs, frequency, format, medium, and the person responsible for each communication.'},
+
+{t:'mc',q:'A status report sent weekly to all stakeholders via email is an example of which communication method?',
+ o:['Interactive','Pull','Push','Synchronous'],
+ a:2,e:'Push communication sends information to recipients without them requesting it — emails, newsletters, memos, and reports are push methods.'},
+
+{t:'mc',q:'When the sender "encodes" a message, this means:',
+ o:['The sender applies encryption for security','The sender translates thoughts into words, symbols, or visuals that can be transmitted','The sender records the message in the project log','The sender decides the feedback strategy'],
+ a:1,e:'Encoding is the process of translating an idea into a transmittable form (words, diagrams, data). The receiver then decodes it.'},
+
+// ── SECTION 12: Procurement Management (Q79–Q84) ─────────────
+{t:'mc',q:'In a Firm Fixed Price (FFP) contract, who bears the financial risk if actual costs exceed the agreed price?',
+ o:['The buyer (client)','The seller (vendor)','The risk is split 50/50','The government regulatory body'],
+ a:1,e:'In FFP, the seller bears ALL cost risk. If it costs more than the fixed price to deliver, the seller absorbs the overrun.'},
+
+{t:'mc',q:'A Cost Plus Fixed Fee (CPFF) contract is MOST appropriate when:',
+ o:['Scope is very well-defined and stable','The buyer wants the lowest possible price guaranteed','Scope is unclear and the buyer is willing to pay actual costs plus a fee','The project is very short in duration'],
+ a:2,e:'CPFF suits R&D or projects with undefined scope where costs cannot be predicted. The seller is reimbursed all costs plus a fixed management fee.'},
+
+{t:'mc',q:'A Statement of Work (SOW) in procurement is used to:',
+ o:['Document lessons learned for future projects','Describe in detail what the seller must provide (deliverables, specifications, timeline)','Set the maximum budget the buyer will pay','Record all approved change requests'],
+ a:1,e:'The SOW is the detailed description of what the seller must deliver — the contractual basis of what is being procured.'},
+
+{t:'tf',q:'In a Time & Material (T&M) contract, the buyer bears cost risk if there is no cap on total hours.',
+ a:true,e:'T&M has fixed unit rates but variable quantity. If hours run over with no cap, the buyer pays for all of them — buyer bears the cost risk.'},
+
+{t:'mc',q:'A "Make-or-Buy" analysis helps the project team decide:',
+ o:['Which team member to assign to a task','Whether to develop something in-house or outsource it to an external vendor','How many developers to hire','Which programming language to use'],
+ a:1,e:'Make-or-Buy analysis weighs cost, control, expertise, risk, and strategic fit to decide whether to produce internally or procure externally.'},
+
+{t:'mc',q:'Which procurement document requests a PRICE QUOTE and is typically used for commodity items?',
+ o:['Request for Proposal (RFP)','Request for Quotation (RFQ)','Invitation for Bid (IFB)','Statement of Work (SOW)'],
+ a:1,e:'RFQ focuses on price for a well-defined, commodity item. RFP requests full proposals including methodology and approach for complex procurement.'},
+
+// ── SECTION 13: Stakeholder Management (Q85–Q91) ─────────────
+{t:'mc',q:'According to the Power/Interest Grid, stakeholders with HIGH power and LOW interest should be:',
+ o:['Managed closely with frequent detailed updates','Kept satisfied — meet their key needs without overwhelming them with detail','Kept informed with regular project updates','Monitored with minimal engagement'],
+ a:1,e:'High power / Low interest = Keep Satisfied. They have authority to impact the project but are not deeply engaged. Satisfy their key concerns.'},
+
+{t:'mc',q:'A stakeholder who is "Resistant" on the engagement spectrum is:',
+ o:['Unaware of the project and its potential impact','Aware of the project but actively opposed to it','Neutral — neither supporting nor opposing','Actively advocating for the project'],
+ a:1,e:'Resistant stakeholders are aware but opposed — potential blockers. The goal is to move them toward Neutral or Supportive through engagement.'},
+
+{t:'tf',q:'The Stakeholder Register is created once during the Initiating phase and never updated again.',
+ a:false,e:'The Stakeholder Register is a living document updated throughout the project as new stakeholders are identified or engagement levels change.'},
+
+{t:'mc',q:'Which stakeholder engagement level is MOST desirable for project success?',
+ o:['Neutral','Resistant','Leading','Unaware'],
+ a:2,e:'Leading stakeholders actively champion the project. They are the most engaged and most valuable — they actively drive others toward success.'},
+
+{t:'mc',q:'The Stakeholder Register contains all of the following EXCEPT:',
+ o:['Stakeholder\'s role on the project','Contact information and organisation','The project\'s complete financial budget','Current and desired engagement levels'],
+ a:2,e:'The project financial budget belongs in the Cost Management Plan / Project Management Plan — not the Stakeholder Register.'},
+
+{t:'mc',q:'Which process identifies ALL individuals and groups that may affect or be affected by the project?',
+ o:['Plan Stakeholder Engagement','Manage Stakeholder Engagement','Identify Stakeholders','Monitor Stakeholder Engagement'],
+ a:2,e:'Identify Stakeholders (Initiating process) produces the Stakeholder Register — the first step is knowing who your stakeholders ARE.'},
+
+{t:'mc',q:'A project manager notices a key stakeholder has moved from "Supportive" to "Resistant." What should they do?',
+ o:['Ignore it as stakeholder opinions are irrelevant','Escalate immediately to senior management','Revisit the stakeholder engagement plan and increase targeted engagement efforts','Remove the stakeholder from the register'],
+ a:2,e:'A drop in engagement level signals a problem. The PM should investigate the cause and update the engagement strategy to re-engage this stakeholder.'},
+
+// ── SECTION 14: Review & Integration (Q92–Q99, + DD) ─────────
+{t:'mc',q:'Which PMBOK Knowledge Area contains the process "Perform Integrated Change Control"?',
+ o:['Scope Management','Risk Management','Integration Management','Communications Management'],
+ a:2,e:'Integrated Change Control lives in Integration Management — because changes affect ALL knowledge areas and must be coordinated centrally.'},
+
+{t:'mc',q:'A project is SPI = 0.9 and CPI = 1.1. How should this project be described?',
+ o:['Ahead of schedule and over budget','Behind schedule but under budget','On time and on budget','Behind schedule and over budget'],
+ a:1,e:'SPI < 1 = behind schedule. CPI > 1 = under budget. This project is delivering efficiently (good CPI) but slower than planned (poor SPI).'},
+
+{t:'tf',q:'In the Waterfall model, a major DISADVANTAGE is that functional software is not available for testing until very late in the project.',
+ a:true,e:'Waterfall\'s late testing is a critical weakness — defects discovered near the end are expensive to fix and can derail budgets and timelines.'},
+
+{t:'mc',q:'Which is the MOST comprehensive financial evaluation technique for major project investment decisions?',
+ o:['Payback Period','Return on Investment (ROI)','Net Present Value (NPV)','Break-Even Analysis'],
+ a:2,e:'NPV is most comprehensive: it accounts for the time value of money, risk-adjusted discount rates, and ALL future cash flows.'},
+
+{t:'mc',q:'The WBS Dictionary provides:',
+ o:['A list of all project team members and their salaries','Detailed descriptions of each WBS element including scope, deliverables, and acceptance criteria','A risk register for each deliverable','The communication plan for each WBS level'],
+ a:1,e:'The WBS Dictionary documents each WBS element in detail: description, acceptance criteria, responsible owner, milestones, and resource requirements.'},
+
+{t:'mc',q:'During project closure, the project manager should:',
+ o:['Begin planning the next project immediately','Archive records, release resources, update lessons learned, and obtain formal acceptance','Hand all documentation to the operations team and move on','Hold a risk planning session for follow-on work'],
+ a:1,e:'Closure activities: formal acceptance of final deliverable, archive project documents, update lessons learned, release team members, and close contracts.'},
+
+{t:'mc',q:'Which term describes the project manager\'s responsibility to coordinate all knowledge areas and ensure they work together cohesively?',
+ o:['Scope Management','Integration Management','Resource Management','Quality Management'],
+ a:1,e:'Integration Management is the PM\'s core responsibility — ensuring all parts of the project (scope, schedule, cost, quality, etc.) work together as a unified whole.'},
+
+// ── DRAG & DROP: EVM Interpretation ─────────────────────────
+{t:'dd',
+ q:'Drag each EVM scenario to the correct interpretation.',
+ zones:['Over budget','Under budget','Behind schedule'],
+ items:['CPI = 0.75','CPI = 1.3','SPI = 0.85'],
+ ans:{'CPI = 0.75':'Over budget','CPI = 1.3':'Under budget','SPI = 0.85':'Behind schedule'},
+ e:'CPI < 1 = over budget. CPI > 1 = under budget. SPI < 1 = behind schedule. SPI > 1 = ahead of schedule.'},
+
+// ── DRAG & DROP: Process Groups ───────────────────────────────
+{t:'dd',
+ q:'Match each project management activity to its correct PMBOK Process Group.',
+ zones:['Initiating','Planning','Closing'],
+ items:['Develop Project Charter','Create Work Breakdown Structure','Archive project records and release resources'],
+ ans:{'Develop Project Charter':'Initiating','Create Work Breakdown Structure':'Planning','Archive project records and release resources':'Closing'},
+ e:'Project Charter = Initiating. WBS = Planning. Archiving and releasing resources = Closing.'},
+
+]; // end Q
+
+// ════════════════════════════════════════════════════════════════
+// SECTION DEFINITIONS
+// ════════════════════════════════════════════════════════════════
+const SECTIONS = [
+  {name:'Introduction to Project Management', icon:'📋', color:'#6366F1', start:0,  end:6,  desc:'Projects, triple constraint, PM role, process groups'},
+  {name:'Integration Management',             icon:'🔗', color:'#0EA5E9', start:7,  end:13, desc:'Charter, PM plan, change control, lessons learned'},
+  {name:'Software Lifecycles (SDLC)',         icon:'🔄', color:'#10B981', start:14, end:21, desc:'Waterfall, V-Model, Spiral, RAD, Agile, Scrum'},
+  {name:'Scope Management',                   icon:'🎯', color:'#F59E0B', start:22, end:28, desc:'WBS, scope creep, gold plating, requirements'},
+  {name:'Cost Management',                    icon:'💰', color:'#EC4899', start:29, end:36, desc:'COCOMO, estimation, EVM formulas, direct vs indirect costs'},
+  {name:'Schedule Management',                icon:'📅', color:'#F97316', start:37, end:43, desc:'CPM, critical path, float, crashing, fast tracking'},
+  {name:'Risk Management',                    icon:'⚠️', color:'#EF4444', start:44, end:51, desc:'Threats, opportunities, EMV, response strategies'},
+  {name:'Project Viability & Finance',        icon:'📈', color:'#14B8A6', start:52, end:59, desc:'NPV, ROI, payback period, cash flow, PV factor'},
+  {name:'Quality Management',                 icon:'✅', color:'#8B5CF6', start:60, end:66, desc:'QA vs QC, Six Sigma, CoQ, Pareto, control charts'},
+  {name:'Resource Management',                icon:'👥', color:'#3B82F6', start:67, end:72, desc:'RACI, Tuckman, conflict resolution, motivation theories'},
+  {name:'Communications Management',         icon:'📡', color:'#06B6D4', start:73, end:78, desc:'Channels formula, push/pull/interactive, comm model'},
+  {name:'Procurement Management',            icon:'📝', color:'#84CC16', start:79, end:84, desc:'Contract types, make-or-buy, SOW, RFP vs RFQ'},
+  {name:'Stakeholder Management',            icon:'🤝', color:'#A855F7', start:85, end:91, desc:'Power/interest grid, engagement levels, register'},
+  {name:'Review & Integration',              icon:'🎓', color:'#F43F5E', start:92, end:99, desc:'Mixed questions across all knowledge areas'},
+];
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+const STORE_KEY = 'tsql_quiz_v1';
+let answered = {};
+let activeSec = null;
+let qList = [];
+let qPos = 0;
+let mcSel = null;
+let tfSel = null;
+let ddPlacements = {};
+let ddDraggingItem = null;
+
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(answered)); } catch(e){}
+}
+function load() {
+  try { const d = localStorage.getItem(STORE_KEY); if (d) answered = JSON.parse(d); } catch(e){}
+}
+load();
+
+// ════════════════════════════════════════════════════════════════
+// STATS
+// ════════════════════════════════════════════════════════════════
+function updateStats() {
+  let correct = 0, wrong = 0;
+  Object.values(answered).forEach(a => a.correct ? correct++ : wrong++);
+  const total = Q.length;
+  const answered_count = correct + wrong;
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('sRemain').textContent = total - answered_count;
+  document.getElementById('sScore').textContent = answered_count > 0 ? Math.round(correct/answered_count*100)+'%' : '0%';
+  document.getElementById('progBar').style.width = (answered_count/total*100)+'%';
+}
+updateStats();
+
+// ════════════════════════════════════════════════════════════════
+// HOME
+// ════════════════════════════════════════════════════════════════
+function renderHome() {
+  document.getElementById('homeView').style.display = 'block';
+  document.getElementById('quizView').style.display = 'none';
+  const cont = document.getElementById('secCards');
+  cont.innerHTML = '';
+  SECTIONS.forEach((sec, idx) => {
+    const total = sec.end - sec.start + 1;
+    let correct = 0, attempted = 0;
+    for (let i = sec.start; i <= sec.end; i++) {
+      if (answered[i] !== undefined) { attempted++; if (answered[i].correct) correct++; }
+    }
+    const pct = total > 0 ? Math.round(attempted/total*100) : 0;
+    const card = document.createElement('button');
+    card.className = 'sec-card';
+    card.onclick = () => openSection(idx);
+    card.innerHTML = `
+      <div class="sc-icon" style="background:${sec.color}">${sec.icon}</div>
+      <div class="sc-body">
+        <div class="sc-title">${sec.name}</div>
+        <div class="sc-desc">${sec.desc}</div>
+        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${pct}%;background:${sec.color}"></div></div>
+        <div class="sc-label">${attempted}/${total} attempted &nbsp;·&nbsp; ${correct} correct</div>
+      </div>
+      <div class="sc-arrow">›</div>`;
+    cont.appendChild(card);
+  });
+  updateStats();
+}
+
+function resetAll() {
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
+  answered = {};
+  save();
+  renderHome();
+  updateStats();
+}
+
+function goHome() { renderHome(); }
+
+// ════════════════════════════════════════════════════════════════
+// OPEN SECTION
+// ════════════════════════════════════════════════════════════════
+function openSection(idx) {
+  activeSec = SECTIONS[idx];
+  qList = [];
+  for (let i = activeSec.start; i <= activeSec.end; i++) qList.push(i);
+  qPos = 0;
+  mcSel = null; tfSel = null; ddPlacements = {};
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('quizView').style.display = 'block';
+  document.getElementById('qnavTitle').textContent = activeSec.name;
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  document.getElementById('btnResults').style.display = 'none';
+  document.getElementById('qprogFill').style.background = activeSec.color;
+  renderQ();
+}
+
+// ════════════════════════════════════════════════════════════════
+// RENDER QUESTION
+// ════════════════════════════════════════════════════════════════
+function renderQ() {
+  const qi = qList[qPos];
+  const q = Q[qi];
+  mcSel = null; tfSel = null; ddPlacements = {};
+
+  const total = qList.length;
+  document.getElementById('qnavCount').textContent = `${qPos+1} / ${total}`;
+  document.getElementById('qprogFill').style.width = ((qPos+1)/total*100)+'%';
+
+  const isLast = qPos === total - 1;
+  document.getElementById('btnPrev').disabled = qPos === 0;
+  document.getElementById('btnResults').style.display = isLast ? 'inline-block' : 'none';
+  if (isLast) document.getElementById('btnResults').style.background = activeSec.color;
+
+  const area = document.getElementById('questionArea');
+  if (q.t === 'mc') renderMC(area, q, qi);
+  else if (q.t === 'tf') renderTF(area, q, qi);
+  else if (q.t === 'dd') renderDD(area, q, qi);
+}
+
+function prevQ() { if (qPos > 0) { qPos--; renderQ(); } }
+
+function nextQ() {
+  if (qPos + 1 < qList.length) { qPos++; renderQ(); }
+  else showComplete();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MC
+// ════════════════════════════════════════════════════════════════
+function renderMC(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  const letters = ['A','B','C','D'];
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : ' wrong';
+
+  const codeBlock = q.code ? `<div class="q-code">${escHtml(q.code)}</div>` : '';
+
+  const optsHtml = q.o.map((opt,i) => {
+    let cls = 'opt-btn';
+    if (locked) {
+      if (i === q.a) cls += ' opt-correct';
+      else if (i === saved.selection && i !== q.a) cls += ' opt-wrong';
+    } else if (mcSel === i) cls += ' selected';
+    return `<button class="${cls}" onclick="selectMC(${qi},${i})" ${locked?'disabled':''}>
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${escHtml(opt)}</span>
+    </button>`;
+  }).join('');
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; Multiple Choice</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      ${codeBlock}
+      <div class="opts">${optsHtml}</div>
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkMC(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectMC(qi, i) {
+  if (answered[qi] !== undefined) return;
+  mcSel = i;
+  renderMC(document.getElementById('questionArea'), Q[qi], qi);
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
+}
+
+function checkMC(qi) {
+  const q = Q[qi];
+  if (mcSel === null || answered[qi] !== undefined) return;
+  const correct = mcSel === q.a;
+  answered[qi] = {correct, selection: mcSel};
+  save();
+  renderMC(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// TF
+// ════════════════════════════════════════════════════════════════
+function renderTF(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : ' wrong';
+
+  function tfCls(val) {
+    let c = 'tf-btn';
+    if (locked) {
+      if (val === q.a) c += ' tf-correct';
+      else if (val === saved.selection && val !== q.a) c += ' tf-wrong';
+    } else if (tfSel === val) c += ' selected';
+    return c;
+  }
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; True / False</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="tf-row">
+        <button id="tf_${qi}_true"  class="${tfCls(true)}"  onclick="selectTF(${qi},true)"  ${locked?'disabled':''}>✓ True</button>
+        <button id="tf_${qi}_false" class="${tfCls(false)}" onclick="selectTF(${qi},false)" ${locked?'disabled':''}>✗ False</button>
+      </div>
+      ${locked ? feedbackHtml(saved.correct, q.e) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkTF(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function selectTF(qi, val) {
+  if (answered[qi] !== undefined) return;
+  tfSel = val;
+  document.getElementById(`tf_${qi}_true`).className  = 'tf-btn' + (val === true  ? ' selected' : '');
+  document.getElementById(`tf_${qi}_false`).className = 'tf-btn' + (val === false ? ' selected' : '');
+  document.getElementById(`btnCheck_${qi}`).disabled = false;
+}
+
+function checkTF(qi) {
+  const q = Q[qi];
+  if (tfSel === null || answered[qi] !== undefined) return;
+  const correct = tfSel === q.a;
+  answered[qi] = {correct, selection: tfSel};
+  save();
+  renderTF(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// DRAG & DROP
+// ════════════════════════════════════════════════════════════════
+function renderDD(area, q, qi) {
+  const locked = answered[qi] !== undefined;
+  const saved = answered[qi];
+  if (locked && saved.selection) ddPlacements = {...saved.selection};
+
+  const bankItems = locked ? [] : q.items.filter(item => !ddPlacements[item]);
+
+  function zoneItems(zone) {
+    if (locked) return q.items.filter(item => (saved.selection||{})[item] === zone);
+    return q.items.filter(item => ddPlacements[item] === zone);
+  }
+
+  function itemHtml(item, zone) {
+    let cls = 'dd-item';
+    if (locked) {
+      cls += (q.ans[item] === zone) ? ' item-correct' : ' item-wrong';
+    }
+    return `<div class="${cls}" draggable="${!locked}"
+      ondragstart="ddStart(event,'${esc(item)}')"
+      ondragend="ddEnd(event)">${escHtml(item)}</div>`;
+  }
+
+  const bankHtml = bankItems.map(item => itemHtml(item, null)).join('');
+  const zonesHtml = q.zones.map(zone => `
+    <div class="dd-zone" id="ddz_${qi}_${esc(zone)}"
+      ondragover="ddOver(event,'${esc(zone)}')"
+      ondragleave="ddLeave(event,'${esc(zone)}')"
+      ondrop="ddDrop(event,${qi},'${esc(zone)}')">
+      <div class="dd-zone-label">${escHtml(zone)}</div>
+      <div class="dd-items" id="ddi_${qi}_${esc(zone)}">${zoneItems(zone).map(item=>itemHtml(item,zone)).join('')}</div>
+    </div>`).join('');
+
+  let resultCls = '';
+  if (locked) resultCls = saved.correct ? ' correct' : (saved.numCorrect>0?' partial':' wrong');
+
+  area.innerHTML = `
+    <div class="q-card${resultCls}" id="qcard_${qi}">
+      <div class="q-num" style="color:${activeSec.color}">Q${qi+1} &nbsp;·&nbsp; Drag &amp; Drop</div>
+      <div class="q-text">${escHtml(q.q)}</div>
+      <div class="dd-area">
+        <div class="dd-bank-wrap">
+          <div class="dd-bank-label">Items to place</div>
+          <div class="dd-bank" id="ddbank_${qi}"
+            ondragover="ddOver(event,'__bank__')"
+            ondragleave="ddLeave(event,'__bank__')"
+            ondrop="ddDrop(event,${qi},'__bank__')">${bankHtml}</div>
+        </div>
+        <div class="dd-zones">${zonesHtml}</div>
+      </div>
+      ${locked ? feedbackHtml(saved.correct, q.e + (saved.correct?'':` (${saved.numCorrect}/${q.items.length} correct)`)) : ''}
+      <div class="q-footer">
+        ${!locked ? `<button class="btn-check" id="btnCheck_${qi}" onclick="checkDD(${qi})" disabled>Check answer</button>` : ''}
+        ${locked ? `<button class="btn-next" onclick="nextQ()" style="background:${activeSec.color}">Next →</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function ddStart(e, item) {
+  ddDraggingItem = item;
+  setTimeout(() => { const el = e.target; if (el) el.classList.add('dragging'); }, 0);
+}
+function ddEnd(e) { e.target.classList.remove('dragging'); }
+
+function ddOver(e, zone) {
+  e.preventDefault();
+  const id = zone === '__bank__' ? 'ddbank_'+qList[qPos] : 'ddz_'+qList[qPos]+'_'+zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.add('dragover');
+}
+
+function ddLeave(e, zone) {
+  const id = zone === '__bank__' ? 'ddbank_'+qList[qPos] : 'ddz_'+qList[qPos]+'_'+zone;
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('dragover');
+}
+
+function ddDrop(e, qi, zone) {
+  e.preventDefault();
+  if (!ddDraggingItem || answered[qi] !== undefined) return;
+  delete ddPlacements[ddDraggingItem];
+  if (zone !== '__bank__') ddPlacements[ddDraggingItem] = zone;
+  const allPlaced = Q[qi].items.every(item => ddPlacements[item]);
+  renderDD(document.getElementById('questionArea'), Q[qi], qi);
+  const btn = document.getElementById(`btnCheck_${qi}`);
+  if (btn) btn.disabled = !allPlaced;
+  ddDraggingItem = null;
+}
+
+function checkDD(qi) {
+  const q = Q[qi];
+  if (answered[qi] !== undefined) return;
+  let numCorrect = 0;
+  q.items.forEach(item => { if (ddPlacements[item] === q.ans[item]) numCorrect++; });
+  const correct = numCorrect === q.items.length;
+  answered[qi] = {correct, selection:{...ddPlacements}, numCorrect, total:q.items.length};
+  save();
+  renderDD(document.getElementById('questionArea'), q, qi);
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// COMPLETE SCREEN
+// ════════════════════════════════════════════════════════════════
+function showComplete() {
+  const sec = activeSec;
+  let correct = 0, wrong = 0;
+  for (let qi = sec.start; qi <= sec.end; qi++) {
+    if (answered[qi] !== undefined) { answered[qi].correct ? correct++ : wrong++; }
+  }
+  const total = sec.end - sec.start + 1;
+  const pct = Math.round(correct/total*100);
+  let headline, sub;
+  if (pct>=90) { headline='Outstanding! 🎓'; sub='Excellent command of this topic!'; }
+  else if (pct>=75) { headline='Great work! 💪'; sub='Solid. Review missed questions to lock it in.'; }
+  else if (pct>=60) { headline='Good effort 👍'; sub='You have the foundations — revisit the tricky ones.'; }
+  else { headline='Keep studying 📖'; sub='Go back through the material and try again!'; }
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="complete-card">
+      <div class="score-ring">
+        <div class="score-num">${correct}</div>
+        <div class="score-pct">${pct}%</div>
+      </div>
+      <div class="complete-title">${headline}</div>
+      <div class="complete-sub">${sub}</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" style="color:#16A34A">${correct}</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#DC2626">${wrong}</div><div class="stat-lbl">Wrong</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#0369A1">${total-correct-wrong}</div><div class="stat-lbl">Skipped</div></div>
+      </div>
+      <div class="complete-btns">
+        <button class="btn-retry" onclick="retrySection()">↺ Retry section</button>
+        <button class="btn-home" onclick="goHome()">← All sections</button>
+      </div>
+    </div>`;
+  document.getElementById('qnavCount').textContent = '';
+  document.getElementById('btnPrev').style.display = 'none';
+  document.getElementById('btnResults').style.display = 'none';
+}
+
+function retrySection() {
+  const sec = activeSec;
+  for (let qi = sec.start; qi <= sec.end; qi++) delete answered[qi];
+  save();
+  document.getElementById('btnPrev').style.display = 'inline-block';
+  openSection(SECTIONS.indexOf(sec));
+}
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+function feedbackHtml(correct, exp) {
+  const cls = correct ? 'correct' : 'wrong';
+  const icon = correct ? '✓' : '✗';
+  const label = correct ? 'Correct!' : 'Incorrect.';
+  return `<div class="feedback ${cls}">${icon} <strong>${label}</strong> ${escHtml(exp)}</div>`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function esc(s) {
+  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>
